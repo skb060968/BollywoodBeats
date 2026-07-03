@@ -1045,7 +1045,7 @@ body {
 /* iPad Landscape - 768px to 1366px width in landscape */
 @media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
     html {
-        zoom: 0.9;
+        zoom: 1.0;
     }
     
     body {
