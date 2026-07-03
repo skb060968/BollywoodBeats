@@ -1065,22 +1065,27 @@ body {
     }
     
     .character-container {
-        width: 160px;
-        height: 210px;
-        max-height: 42vh;
+        width: 100%;
+        height: auto;
+        max-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .character-image {
         width: 100%;
         height: 100%;
+        max-width: 200px;
+        max-height: 350px;
         object-fit: contain;
     }
     
-    /* Move score to top-left corner of game area */
+    /* Move score to center-left (between character and game area) */
     .score-panel {
         position: fixed;
         top: 70px;
-        left: 12px;
+        left: 80px;
         z-index: 500;
         padding: 5px 15px;
         min-width: 100px;
