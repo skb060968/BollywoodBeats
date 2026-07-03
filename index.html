@@ -239,19 +239,91 @@
     <input type="file" id="validateXMLInput" accept=".xml,.txt" style="display: none;">
 
     <script src="game.js"></script>
+    
+    <!-- Update Toast Notification -->
+    <div id="updateToast" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; padding: 15px 25px; border-radius: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 10001; font-family: 'Arial Black', sans-serif; text-align: center; min-width: 300px;">
+        <div style="font-size: 1.1rem; margin-bottom: 8px;">🎉 New Update Available!</div>
+        <div style="font-size: 0.9rem; margin-bottom: 12px; opacity: 0.9;">Refresh to get the latest version</div>
+        <button onclick="reloadForUpdate()" style="background: white; color: #388E3C; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">Reload Now</button>
+        <button onclick="dismissUpdate()" style="background: transparent; color: white; border: 2px solid white; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 0.9rem;">Later</button>
+    </div>
+    
     <script>
-        // Register Service Worker for PWA
+        // Update notification functions
+        function reloadForUpdate() {
+            window.location.reload();
+        }
+        
+        function dismissUpdate() {
+            document.getElementById('updateToast').style.display = 'none';
+        }
+        
+        function showUpdateToast() {
+            const toast = document.getElementById('updateToast');
+            toast.style.display = 'block';
+            toast.style.animation = 'slideUp 0.4s ease-out';
+        }
+        
+        // Register Service Worker for PWA with update detection
         if ('serviceWorker' in navigator) {
+            let refreshing = false;
+            
+            // Detect controller change and reload
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                refreshing = true;
+                console.log('[App] Controller changed, reloading...');
+            });
+            
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
                         console.log('✅ Service Worker registered:', registration);
+                        
+                        // Check for updates periodically (every 5 minutes)
+                        setInterval(() => {
+                            registration.update();
+                        }, 5 * 60 * 1000);
+                        
+                        // Listen for waiting service worker
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('[App] New service worker found');
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('[App] New service worker installed, update available');
+                                    showUpdateToast();
+                                }
+                            });
+                        });
                     })
                     .catch((error) => {
                         console.log('❌ Service Worker registration failed:', error);
                     });
+                
+                // Listen for messages from service worker
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                        console.log(`[App] Update available: ${event.data.version}`);
+                        showUpdateToast();
+                    }
+                });
             });
         }
     </script>
+    
+    <style>
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </body>
 </html>
