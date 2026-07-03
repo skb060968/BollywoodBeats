@@ -1057,44 +1057,32 @@ body {
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        position: relative;
     }
     
     .left-panel {
         padding: 8px 10px;
         gap: 8px;
-        justify-content: center;
-        position: relative;
     }
     
     .character-container {
-        width: 100%;
-        max-height: 75vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 160px;
+        height: 210px;
+        max-height: 42vh;
     }
     
     .character-image {
         width: 100%;
-        height: auto;
-        max-width: 180px;
-        max-height: 320px;
+        height: 100%;
         object-fit: contain;
     }
     
-    .character {
-        width: 180px;
-        height: 240px;
-    }
-    
-    /* Move score panel to top-right of screen */
+    /* Move score to top-left corner of game area */
     .score-panel {
         position: fixed;
         top: 70px;
-        right: 12px;
+        left: 12px;
         z-index: 500;
-        padding: 6px 16px;
+        padding: 5px 15px;
         min-width: 100px;
     }
     
@@ -1103,7 +1091,7 @@ body {
     }
     
     .score-value {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
     
     .right-panel {
