@@ -1085,12 +1085,9 @@ body {
         object-fit: contain;
     }
     
-    /* Move score to center-left (more to the right) */
+    /* Move score back to left panel (below character) */
     .score-panel {
-        position: fixed;
-        top: 70px;
-        left: 120px;
-        z-index: 500;
+        position: relative;
         padding: 5px 15px;
         min-width: 100px;
     }
