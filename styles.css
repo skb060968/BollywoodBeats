@@ -1062,31 +1062,39 @@ body {
     .left-panel {
         padding: 8px 10px;
         gap: 8px;
+        flex-direction: column-reverse; /* Reverse order: character bottom, score top */
     }
     
     .character-container {
-        width: 160px;
-        height: 210px;
-        max-height: 42vh;
+        width: 100%;
+        height: auto;
+        max-height: 65vh; /* Use more vertical space */
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .character-image {
         width: 100%;
         height: 100%;
+        max-width: 180px;
+        max-height: 240px;
         object-fit: contain;
     }
     
     .score-panel {
-        padding: 5px 15px;
+        padding: 8px 15px;
         min-width: 100px;
+        flex-shrink: 0;
     }
     
     .score-label {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
     }
     
     .score-value {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
     }
     
     .right-panel {
@@ -1100,46 +1108,46 @@ body {
     }
     
     .game-title-bar h1 {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
     }
     
     .status-bar {
-        padding: 6px 8px;
+        padding: 7px 8px;
         gap: 4px;
         flex-wrap: nowrap;
         overflow: visible;
     }
     
     .control-block {
-        padding: 4px 3px;
+        padding: 5px 3px;
         gap: 3px;
         min-width: fit-content;
     }
     
     .block-label {
-        font-size: 0.55rem;
+        font-size: 0.6rem;
         white-space: nowrap;
     }
     
     .levels-dots {
         column-gap: 2px;
-        row-gap: 12px;
+        row-gap: 14px;
     }
     
     .level-dot {
-        width: 18px;
-        height: 26px;
+        width: 20px;
+        height: 28px;
     }
     
     .lives-panel {
-        gap: 2px;
-        row-gap: 6px;
+        gap: 3px;
+        row-gap: 7px;
     }
     
     .life-box {
-        width: 34px;
-        height: 34px;
-        font-size: 1.2rem;
+        width: 36px;
+        height: 36px;
+        font-size: 1.3rem;
     }
     
     .letter-row-compact {
@@ -1151,56 +1159,56 @@ body {
     }
     
     .letter-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 1rem;
+        width: 36px;
+        height: 36px;
+        font-size: 1.05rem;
         border-width: 2px;
     }
     
     .mute-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
+        width: 38px;
+        height: 38px;
+        font-size: 1.15rem;
         padding: 5px;
     }
     
     .menu-btn-compact {
         padding: 6px 12px;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
     }
     
     .category-banner {
-        padding: 8px 15px;
+        padding: 9px 15px;
     }
     
     .category-banner span {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
     }
     
     .phrase-board {
-        padding: 10px;
-        min-height: 30vh;
+        padding: 12px;
+        min-height: 32vh;
         flex: 1;
     }
     
     .phrase-grid {
-        gap: 6px;
-        padding: 8px;
+        gap: 7px;
+        padding: 10px;
     }
     
     .word-container {
-        gap: 6px;
+        gap: 7px;
     }
     
     .phrase-tile {
-        width: 45px;
-        height: 55px;
-        font-size: 1.7rem;
+        width: 48px;
+        height: 58px;
+        font-size: 1.8rem;
         border-width: 3px;
     }
     
     .phrase-tile.space {
-        width: 20px;
+        width: 22px;
     }
     
     /* Ensure controls panel items are visible */
@@ -1213,7 +1221,7 @@ body {
     
     /* Make letters block more compact */
     .letters-block {
-        padding: 4px 2px;
+        padding: 5px 2px;
     }
     
     /* Ensure number grid is visible */
