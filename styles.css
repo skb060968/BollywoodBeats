@@ -1045,7 +1045,7 @@ body {
 /* iPad Landscape - 768px to 1366px width in landscape */
 @media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
     html {
-        zoom: 0.85;
+        zoom: 0.8;
     }
     
     body {
@@ -1089,7 +1089,7 @@ body {
     .score-panel {
         position: fixed;
         top: 70px;
-        left: 100px;
+        left: 120px;
         z-index: 500;
         padding: 5px 15px;
         min-width: 100px;
