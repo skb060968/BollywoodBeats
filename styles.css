@@ -1062,12 +1062,19 @@ body {
     .left-panel {
         padding: 8px 10px;
         gap: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
     
     .character-container {
         width: 100%;
         height: auto;
         max-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .character-image {
