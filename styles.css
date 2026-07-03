@@ -1193,8 +1193,13 @@ body {
     }
 }
 
-/* Small phones in landscape */
+/* Small phones in landscape - phones smaller than 768px */
+@media (max-width: 767px) and (orientation: landscape) {
     /* Ensure full viewport usage and prevent cutoff */
+    html {
+        zoom: 1.0; /* No zoom for small phones */
+    }
+    
     body {
         margin: 0;
         padding: 0;
@@ -1363,22 +1368,27 @@ body {
     }
 }
 
+/* Very small phones in landscape */
 @media (max-width: 480px) and (orientation: landscape) {
     .letter-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 1rem;
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
         border-width: 2px;
     }
     
     .phrase-tile {
-        width: 32px;
-        height: 42px;
-        font-size: 1.3rem;
+        width: 28px;
+        height: 36px;
+        font-size: 1.1rem;
     }
     
     .phrase-grid {
-        gap: 6px;
+        gap: 5px;
+    }
+    
+    .word-container {
+        gap: 5px;
     }
 }
 
