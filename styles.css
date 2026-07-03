@@ -64,8 +64,8 @@ body {
     opacity: 0.9;
 }
 
-/* Show rotate message ONLY in portrait mode on mobile */
-@media (max-width: 768px) and (orientation: portrait) {
+/* Show rotate message ONLY in portrait mode on small mobile devices */
+@media (max-width: 767px) and (orientation: portrait) {
     .rotate-message {
         display: flex !important;
     }
@@ -75,8 +75,8 @@ body {
     }
 }
 
-/* Hide rotate message in landscape on mobile */
-@media (max-width: 768px) and (orientation: landscape) {
+/* Hide rotate message on tablets/iPads and in landscape */
+@media (min-width: 768px), (orientation: landscape) {
     .rotate-message {
         display: none !important;
     }
@@ -1042,7 +1042,260 @@ body {
     }
 }
 
-@media (max-width: 768px) and (orientation: landscape) {
+/* iPad Portrait - 768px to 1024px width in portrait */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    html {
+        zoom: 0.85; /* Slightly reduce for portrait iPads */
+    }
+    
+    .game-layout {
+        grid-template-columns: 30% 70%;
+        height: 100vh;
+    }
+    
+    .left-panel {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .character-container {
+        width: 250px;
+        height: 330px;
+        max-height: 40vh;
+    }
+    
+    .character-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    
+    .score-panel {
+        padding: 8px 20px;
+        min-width: 120px;
+    }
+    
+    .right-panel {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .game-title-bar h1 {
+        font-size: 1.8rem;
+    }
+    
+    .status-bar {
+        padding: 8px 10px;
+        gap: 5px;
+    }
+    
+    .control-block {
+        padding: 6px 4px;
+    }
+    
+    .block-label {
+        font-size: 0.65rem;
+    }
+    
+    .level-dot {
+        width: 20px;
+        height: 28px;
+    }
+    
+    .life-box {
+        width: 38px;
+        height: 38px;
+        font-size: 1.4rem;
+    }
+    
+    .letter-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+    }
+    
+    .category-banner span {
+        font-size: 1.5rem;
+    }
+    
+    .phrase-tile {
+        width: 40px;
+        height: 50px;
+        font-size: 1.6rem;
+    }
+    
+    /* Menu and settings screens */
+    .menu-container, .settings-container, .instructions-container {
+        max-width: 90%;
+    }
+    
+    .game-title h1 {
+        font-size: 3.5rem;
+    }
+    
+    .menu-btn {
+        min-width: 350px;
+        padding: 18px 45px;
+    }
+}
+
+/* iPad Landscape - 768px to 1366px width in landscape */
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+    html {
+        zoom: 0.9; /* Standard zoom for landscape iPads */
+    }
+    
+    .game-layout {
+        grid-template-columns: 22% 78%;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+    
+    .left-panel {
+        padding: 10px 15px;
+        gap: 12px;
+    }
+    
+    .character-container {
+        width: 200px;
+        height: 270px;
+        max-height: 50vh;
+    }
+    
+    .character-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    
+    .score-panel {
+        padding: 6px 18px;
+        min-width: 110px;
+    }
+    
+    .score-label {
+        font-size: 0.85rem;
+    }
+    
+    .score-value {
+        font-size: 1.6rem;
+    }
+    
+    .right-panel {
+        padding: 10px;
+        gap: 8px;
+        overflow-y: auto;
+    }
+    
+    .game-title-bar {
+        padding: 8px 15px;
+    }
+    
+    .game-title-bar h1 {
+        font-size: 1.7rem;
+    }
+    
+    .status-bar {
+        padding: 8px 10px;
+        gap: 5px;
+    }
+    
+    .control-block {
+        padding: 5px 4px;
+    }
+    
+    .block-label {
+        font-size: 0.65rem;
+    }
+    
+    .levels-dots {
+        column-gap: 2px;
+        row-gap: 16px;
+    }
+    
+    .level-dot {
+        width: 20px;
+        height: 28px;
+    }
+    
+    .lives-panel {
+        gap: 3px;
+        row-gap: 8px;
+    }
+    
+    .life-box {
+        width: 38px;
+        height: 38px;
+        font-size: 1.4rem;
+    }
+    
+    .letter-row-compact {
+        gap: 3px;
+    }
+    
+    .number-grid {
+        gap: 3px;
+    }
+    
+    .letter-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+        border-width: 3px;
+    }
+    
+    .mute-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .menu-btn-compact {
+        padding: 7px 14px;
+        font-size: 0.85rem;
+    }
+    
+    .category-banner {
+        padding: 10px 20px;
+    }
+    
+    .category-banner span {
+        font-size: 1.5rem;
+    }
+    
+    .phrase-board {
+        padding: 12px;
+        min-height: 25vh;
+    }
+    
+    .phrase-grid {
+        gap: 7px;
+        padding: 10px;
+    }
+    
+    .word-container {
+        gap: 7px;
+    }
+    
+    .phrase-tile {
+        width: 40px;
+        height: 50px;
+        font-size: 1.6rem;
+        border-width: 3px;
+    }
+    
+    .phrase-tile.space {
+        width: 18px;
+    }
+    
+    /* Menu screens */
+    .rotate-message {
+        display: none !important; /* iPads don't need rotate message */
+    }
+}
+
+/* Small phones in landscape */
     /* Ensure full viewport usage and prevent cutoff */
     body {
         margin: 0;
