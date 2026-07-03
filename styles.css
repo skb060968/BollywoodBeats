@@ -64,8 +64,8 @@ body {
     opacity: 0.9;
 }
 
-/* Show rotate message ONLY in portrait mode on small mobile devices */
-@media (max-width: 767px) and (orientation: portrait) {
+/* Show rotate message in portrait mode for ALL devices (phones and tablets) */
+@media (orientation: portrait) {
     .rotate-message {
         display: flex !important;
     }
@@ -75,8 +75,8 @@ body {
     }
 }
 
-/* Hide rotate message on tablets/iPads and in landscape */
-@media (min-width: 768px), (orientation: landscape) {
+/* Hide rotate message in landscape mode for ALL devices */
+@media (orientation: landscape) {
     .rotate-message {
         display: none !important;
     }
@@ -1042,103 +1042,6 @@ body {
     }
 }
 
-/* iPad Portrait - 768px to 1024px width in portrait */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
-    html {
-        zoom: 0.85; /* Slightly reduce for portrait iPads */
-    }
-    
-    .game-layout {
-        grid-template-columns: 30% 70%;
-        height: 100vh;
-    }
-    
-    .left-panel {
-        padding: 15px;
-        gap: 15px;
-    }
-    
-    .character-container {
-        width: 250px;
-        height: 330px;
-        max-height: 40vh;
-    }
-    
-    .character-image {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-    
-    .score-panel {
-        padding: 8px 20px;
-        min-width: 120px;
-    }
-    
-    .right-panel {
-        padding: 12px;
-        gap: 10px;
-    }
-    
-    .game-title-bar h1 {
-        font-size: 1.8rem;
-    }
-    
-    .status-bar {
-        padding: 8px 10px;
-        gap: 5px;
-    }
-    
-    .control-block {
-        padding: 6px 4px;
-    }
-    
-    .block-label {
-        font-size: 0.65rem;
-    }
-    
-    .level-dot {
-        width: 20px;
-        height: 28px;
-    }
-    
-    .life-box {
-        width: 38px;
-        height: 38px;
-        font-size: 1.4rem;
-    }
-    
-    .letter-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1.1rem;
-    }
-    
-    .category-banner span {
-        font-size: 1.5rem;
-    }
-    
-    .phrase-tile {
-        width: 40px;
-        height: 50px;
-        font-size: 1.6rem;
-    }
-    
-    /* Menu and settings screens */
-    .menu-container, .settings-container, .instructions-container {
-        max-width: 90%;
-    }
-    
-    .game-title h1 {
-        font-size: 3.5rem;
-    }
-    
-    .menu-btn {
-        min-width: 350px;
-        padding: 18px 45px;
-    }
-}
-
 /* iPad Landscape - 768px to 1366px width in landscape */
 @media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
     html {
@@ -1287,11 +1190,6 @@ body {
     
     .phrase-tile.space {
         width: 18px;
-    }
-    
-    /* Menu screens */
-    .rotate-message {
-        display: none !important; /* iPads don't need rotate message */
     }
 }
 
