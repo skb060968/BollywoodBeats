@@ -4,6 +4,17 @@
     box-sizing: border-box;
 }
 
+/* Desktop zoom fix - better fit at 100% */
+html {
+    zoom: 0.9;
+}
+
+@media (max-width: 768px) {
+    html {
+        zoom: 1; /* Reset zoom on mobile */
+    }
+}
+
 body {
     font-family: 'Arial Black', 'Arial Bold', sans-serif;
     background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
@@ -11,7 +22,7 @@ body {
     overflow: hidden;
 }
 
-/* Rotate Message */
+/* Rotate Message - Better detection */
 .rotate-message {
     display: none;
     position: fixed;
@@ -53,12 +64,20 @@ body {
     opacity: 0.9;
 }
 
+/* Show rotate message ONLY in portrait mode on mobile */
 @media (max-width: 768px) and (orientation: portrait) {
     .rotate-message {
         display: flex !important;
     }
     
-    body > *:not(.rotate-message) {
+    .screen {
+        display: none !important;
+    }
+}
+
+/* Hide rotate message in landscape on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .rotate-message {
         display: none !important;
     }
 }
@@ -1024,13 +1043,38 @@ body {
 }
 
 @media (max-width: 768px) and (orientation: landscape) {
+    /* Ensure full viewport usage and prevent cutoff */
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+    }
+    
     .game-layout {
         grid-template-columns: 20% 80%;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
     }
     
     .left-panel {
-        padding: 10px;
-        gap: 15px;
+        padding: 5px;
+        gap: 10px;
+    }
+    
+    .character-container {
+        width: 120px;
+        height: 160px;
+        max-height: 45vh;
+    }
+    
+    .character-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
     
     .character {
@@ -1043,76 +1087,128 @@ body {
         height: 80px;
     }
     
+    .score-panel {
+        padding: 4px 12px;
+        min-width: 80px;
+    }
+    
     .score-label {
-        font-size: 0.85rem;
+        font-size: 0.7rem;
     }
     
     .score-value {
-        font-size: 1.5rem;
-    }
-    
-    .right-panel {
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    .status-bar {
-        padding: 8px 15px;
-    }
-    
-    .levels-title {
-        font-size: 0.75rem;
-    }
-    
-    .life-box {
-        width: 40px;
-        height: 40px;
-        font-size: 1.5rem;
-    }
-    
-    .menu-btn-game {
-        padding: 10px 20px;
-        font-size: 0.95rem;
-    }
-    
-    .letter-keyboard-container {
-        padding: 10px;
-    }
-    
-    .letter-row {
-        gap: 6px;
-        margin-bottom: 6px;
-    }
-    
-    .letter-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1.2rem;
-        border-width: 3px;
-    }
-    
-    .category-banner {
-        padding: 10px 20px;
-    }
-    
-    .category-banner span {
         font-size: 1.3rem;
     }
     
+    .right-panel {
+        padding: 8px;
+        gap: 6px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    .game-title-bar {
+        padding: 6px 10px;
+    }
+    
+    .game-title-bar h1 {
+        font-size: 1.3rem;
+    }
+    
+    .status-bar {
+        padding: 6px 8px;
+        gap: 4px;
+        flex-wrap: nowrap;
+    }
+    
+    .control-block {
+        padding: 4px 3px;
+        gap: 3px;
+    }
+    
+    .block-label {
+        font-size: 0.6rem;
+    }
+    
+    .levels-dots {
+        column-gap: 2px;
+        row-gap: 10px;
+    }
+    
+    .level-dot {
+        width: 18px;
+        height: 24px;
+    }
+    
+    .lives-panel {
+        gap: 2px;
+        row-gap: 6px;
+    }
+    
+    .life-box {
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+    }
+    
+    .letter-row-compact {
+        gap: 2px;
+    }
+    
+    .number-grid {
+        gap: 2px;
+    }
+    
+    .letter-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        border-width: 2px;
+    }
+    
+    .mute-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+        padding: 6px;
+    }
+    
+    .menu-btn-compact {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .category-banner {
+        padding: 8px 15px;
+    }
+    
+    .category-banner span {
+        font-size: 1.1rem;
+    }
+    
     .phrase-board {
-        padding: 15px;
+        padding: 10px;
+        min-height: 20vh;
     }
     
     .phrase-grid {
-        gap: 8px;
-        padding: 10px;
+        gap: 6px;
+        padding: 8px;
+    }
+    
+    .word-container {
+        gap: 6px;
     }
     
     .phrase-tile {
-        width: 38px;
-        height: 48px;
-        font-size: 1.5rem;
+        width: 32px;
+        height: 40px;
+        font-size: 1.2rem;
         border-width: 2px;
+    }
+    
+    .phrase-tile.space {
+        width: 15px;
     }
 }
 
