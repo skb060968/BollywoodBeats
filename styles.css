@@ -1062,28 +1062,15 @@ body {
     .left-panel {
         padding: 8px 10px;
         gap: 8px;
-        flex-direction: column-reverse; /* Reverse order: character bottom, score top */
-    }
-    
-    .character-container {
-        width: 100%;
-        height: auto;
-        max-height: 65vh; /* Use more vertical space */
-        flex: 1;
         display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
         align-items: center;
-        justify-content: center;
     }
     
-    .character-image {
-        width: 100%;
-        height: 100%;
-        max-width: 180px;
-        max-height: 240px;
-        object-fit: contain;
-    }
-    
+    /* Score on top */
     .score-panel {
+        order: 1;
         padding: 8px 15px;
         min-width: 100px;
         flex-shrink: 0;
@@ -1097,14 +1084,41 @@ body {
         font-size: 1.6rem;
     }
     
+    /* Character below score */
+    .character-container {
+        order: 2;
+        width: 100%;
+        height: auto;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+    }
+    
+    .character-image {
+        width: auto;
+        height: auto;
+        max-width: 180px;
+        max-height: 280px;
+        object-fit: contain;
+    }
+    
+    .character {
+        width: 180px;
+        height: 240px;
+    }
+    
     .right-panel {
-        padding: 8px 12px;
+        padding: 8px 12px 8px 8px;
         gap: 6px;
-        overflow: hidden;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
     
     .game-title-bar {
         padding: 6px 12px;
+        flex-shrink: 0;
     }
     
     .game-title-bar h1 {
@@ -1112,16 +1126,19 @@ body {
     }
     
     .status-bar {
-        padding: 7px 8px;
-        gap: 4px;
+        padding: 7px 6px;
+        gap: 3px;
         flex-wrap: nowrap;
-        overflow: visible;
+        overflow-x: auto;
+        overflow-y: visible;
+        flex-shrink: 0;
     }
     
     .control-block {
         padding: 5px 3px;
         gap: 3px;
         min-width: fit-content;
+        flex-shrink: 0;
     }
     
     .block-label {
@@ -1179,6 +1196,7 @@ body {
     
     .category-banner {
         padding: 9px 15px;
+        flex-shrink: 0;
     }
     
     .category-banner span {
@@ -1187,7 +1205,7 @@ body {
     
     .phrase-board {
         padding: 12px;
-        min-height: 32vh;
+        min-height: 30vh;
         flex: 1;
     }
     
