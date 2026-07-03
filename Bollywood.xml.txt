@@ -1,0 +1,170 @@
+<bollywood_phrases>
+    <category name="BOLLYWOOD HERO">
+      <phrase>Ranbir Kapoor</phrase>
+      <phrase>Ranveer Singh</phrase>
+      <phrase>Shahid Kapoor</phrase>
+      <phrase>Shah Rukh Khan</phrase>
+      <phrase>Salman Khan</phrase>
+      <phrase>Aamir Khan</phrase>
+      <phrase>Hrithik Roshan</phrase>
+      <phrase>Akshay Kumar</phrase>
+      <phrase>Ajay Devgan</phrase>
+      <phrase>Varun Dhawan</phrase>
+      <phrase>Vicky Kaushal</phrase>
+      <phrase>Kartik Aaryan</phrase>
+      <phrase>Ayushmann Khurrana</phrase>
+      <phrase>Siddharth Malhotra</phrase>
+      <phrase>Tiger Shroff</phrase>
+      <phrase>Arjun Kapoor</phrase>
+      <phrase>Sunny Deol</phrase>
+      <phrase>John Abraham</phrase>
+      <phrase>Saif Ali Khan</phrase>
+      <phrase>Abhishek Bachchan</phrase>
+      <phrase>Amitabh Bachchan</phrase>
+      <phrase>Dilip Kumar</phrase>
+      <phrase>Rajesh Khanna</phrase>
+      <phrase>Guru Dutt</phrase>
+      <phrase>Naseeruddin Shah</phrase>
+      <phrase>Sanjeev Kumar</phrase>
+      <phrase>Manoj Bajpayee</phrase>
+      <phrase>Amrish Puri</phrase>
+      <phrase>Nana Patekar</phrase>
+      <phrase>Raj Kapoor</phrase>
+      <phrase>Dev Anand</phrase>
+      <phrase>Kader Khan</phrase>
+      <phrase>Paresh Rawal</phrase>
+      <phrase>Om Puri</phrase>
+      <phrase>Rishi Kapoor</phrase>
+      <phrase>Anil Kapoor</phrase>
+      <phrase>Dharmendra</phrase>
+      <phrase>Anupam Kher</phrase>
+      <phrase>Irrfan Khan</phrase>
+      <phrase>Mithun Chakraborty</phrase>
+      <phrase>Govinda</phrase>
+      <phrase>Boman Irani</phrase>
+      <phrase>Ashok Kumar</phrase>
+      <phrase>Pankaj Kapur</phrase>
+      <phrase>Sunil Dutt</phrase>
+      <phrase>Jackie Shroff</phrase>
+      <phrase>Manoj Kumar</phrase>
+      <phrase>Jeetendra</phrase>
+      <phrase>Johny Lever</phrase>
+      <phrase>Shatrughan Sinha</phrase>
+      <phrase>Vinod Khanna</phrase>
+      <phrase>Shakti Kapoor</phrase>
+      <phrase>Amol Palekar</phrase>
+      <phrase>Saurabh Shukla</phrase>
+      <phrase>Sanjay Mishra</phrase>
+      <phrase>Nawazuddin Siddiqui</phrase>
+      <phrase>Shammi Kapoor</phrase>
+      <phrase>Prithviraj Kapoor</phrase>
+      <phrase>Mehmood</phrase>
+      <phrase>Raaj Kumar</phrase>
+      <phrase>Kishore Kumar</phrase>
+      <phrase>Sanjay Dutt</phrase>
+      <phrase>Balraj Sahni</phrase>
+      <phrase>Shashi Kapoor</phrase>
+      <phrase>Farooq Shaikh</phrase>
+      <phrase>Amjad Khan</phrase>
+      <phrase>Danny Denzongpa</phrase>
+      <phrase>Annu Kapoor</phrase>
+      <phrase>Utpal Dutt</phrase>
+      <phrase>Prem Chopra</phrase>
+      <phrase>Rajpal Yadav</phrase>
+      <phrase>Asrani</phrase>
+      <phrase>Raj Babbar</phrase>
+      <phrase>Jimmy Shergill</phrase>
+      <phrase>Arshad Warsi</phrase>
+      <phrase>Suniel Shetty</phrase>
+      <phrase>Vinay Pathak</phrase>
+      <phrase>Farhan Akhtar</phrase>
+      <phrase>Abhay Deol</phrase>
+      <phrase>Gulshan Grover</phrase>
+      <phrase>Akshaye Khanna</phrase>
+      <phrase>Kulbhushan Kharbanda</phrase>
+      <phrase>Om Prakash</phrase>
+      <phrase>Rahul Bose</phrase>
+      <phrase>Ronit Roy</phrase>
+      <phrase>Randeep Hooda</phrase>
+      <phrase>Emraan Hashmi</phrase>
+      <phrase>Mohnish Behl</phrase>
+      <phrase>Arjun Rampal</phrase>
+      <phrase>Riteish Deshmukh</phrase>
+      <phrase>Shekhar Suman</phrase>
+      <phrase>Rakesh Roshan</phrase>
+      <phrase>Feroz Khan</phrase>
+      <phrase>Mukesh Khanna</phrase>
+      <phrase>Johnny Walker</phrase>
+      <phrase>Deepak Tijori</phrase>
+      <phrase>Saeed Jaffrey</phrase>
+      <phrase>Bobby Deol</phrase>
+      <phrase>Jaaved Jaaferi</phrase>
+      <phrase>Chunky Pandey</phrase>
+      </category>
+    <category name="BOLLYWOOD HEROINE"> 
+      <phrase>Shraddha Kapoor</phrase>
+      <phrase>Deepika Padukone</phrase>
+      <phrase>Alia Bhatt</phrase>
+      <phrase>Katrina Kaif</phrase>
+      <phrase>Kriti Sanon</phrase>
+      <phrase>Anushka Sharma</phrase>
+      <phrase>Aishwarya Rai Bachchan</phrase>
+      <phrase>Tamannaah Bhatia</phrase>
+      <phrase>Kareena Kapoor Khan</phrase>
+      <phrase>Priyanka Chopra Jonas</phrase>
+      <phrase>Vidya Balan</phrase>
+      <phrase>Kangana Ranaut</phrase>
+      <phrase>Jacqueline Fernandez</phrase>
+      <phrase>Sara Ali Khan</phrase>
+      <phrase>Janhvi Kapoor</phrase>
+      <phrase>Ananya Panday</phrase>
+      <phrase>Kiara Advani</phrase>
+      <phrase>Disha Patani</phrase>
+      <phrase>Nora Fatehi</phrase>
+      <phrase>Madhuri Dixit</phrase>
+      <phrase>Kajol</phrase>
+      <phrase>Tabu</phrase>
+      <phrase>Preity Zinta</phrase>
+      <phrase>Rani Mukerji</phrase>
+      <phrase>Sonam Kapoor Ahuja</phrase>
+      <phrase>Parineeti Chopra</phrase>
+      <phrase>Tripti Dimri</phrase>
+      <phrase>Mrunal Thakur</phrase>
+      <phrase>Sonakshi Sinha</phrase>
+      <phrase>Taapsee Pannu</phrase>
+      <phrase>Yami Gautam</phrase>
+      <phrase>Aditi Rao Hydari</phrase>
+      <phrase>Urvashi Rautela</phrase>
+      <phrase>Rakul Preet Singh</phrase>
+      <phrase>Kriti Kharbanda</phrase>
+      <phrase>Mouni Roy</phrase>
+      <phrase>Juhi Chawla</phrase>
+      <phrase>Shilpa Shetty</phrase>
+      <phrase>Raveena Tandon</phrase>
+      <phrase>Sanya Malhotra</phrase>
+      <phrase>Radhika Madan</phrase>
+      <phrase>Tara Sutaria</phrase>
+      <phrase>Esha Gupta</phrase>
+      <phrase>Amrita Rao</phrase>
+      </category>
+    <category name="SOUTH INDIAN FILM STAR">
+      <phrase>Ram Charan</phrase>
+      <phrase>Prabhas</phrase>
+      <phrase>Jr NTR</phrase>
+      <phrase>Yash</phrase>
+      <phrase>Allu Arjun</phrase>
+      <phrase>Mahesh Babu</phrase>
+      <phrase>Rishab Shetty</phrase>
+      <phrase>Dhanush</phrase>
+      <phrase>Samantha Ruth Prabhu</phrase>
+      <phrase>Nayanthara</phrase>
+      <phrase>Malavika Mohanan</phrase>
+      <phrase>Sai Pallavi</phrase>
+      <phrase>Pooja Hegde</phrase>
+      <phrase>Rashmika Mandanna</phrase>
+      <phrase>Shruti Haasan</phrase>
+      <phrase>Kamal Haasan</phrase>
+      <phrase>Rajinikanth</phrase>
+      <phrase>Madhavan</phrase>
+      </category>
+</bollywood_phrases>

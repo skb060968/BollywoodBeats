@@ -1,0 +1,8 @@
+node_modules/
+.vercel
+.DS_Store
+*.log
+
+# Exclude documentation files (keep README.md)
+*.md
+!README.md

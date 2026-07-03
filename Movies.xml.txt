@@ -1,0 +1,62 @@
+<bollywood_phrases>
+    <category name="FILMS">
+      <phrase>Dilwale Dulhania Le Jayenge</phrase>
+      <phrase>Sholay</phrase>
+      <phrase>Three Idiots</phrase>
+      <phrase>Dangal</phrase>
+      <phrase>Gadar</phrase>
+      <phrase>Kabhi Khushi Kabhie Gham</phrase>
+      <phrase>Bajrangi Bhaijaan</phrase>
+      <phrase>Zindagi Na Milegi Dobara</phrase>
+      <phrase>Dil Chahta Hai</phrase>
+      <phrase>Lagaan</phrase>
+      <phrase>Kuch Kuch Hota Hai</phrase>
+      <phrase>Chennai Express</phrase>
+      <phrase>Gadar 2</phrase>
+      <phrase>Sultan</phrase>
+      <phrase>Gully Boy</phrase>
+      <phrase>Baahubali</phrase>
+      <phrase>Jab We Met</phrase>
+      <phrase>Taare Zameen Par</phrase>
+      <phrase>Rang De Basanti</phrase>
+      <phrase>Krrish</phrase>
+      <phrase>Om Shanti Om</phrase>
+      <phrase>Devdas</phrase>
+      <phrase>Kal Ho Naa Ho</phrase>
+      <phrase>Chak De India</phrase>
+      <phrase>Barfi</phrase>
+      <phrase>Yeh Jawaani Hai Deewani</phrase>
+      <phrase>Drishyam</phrase>
+      <phrase>Dabangg</phrase>
+      <phrase>Pathaan</phrase>
+      <phrase>Jawan</phrase>
+      <phrase>Animal</phrase>
+      <phrase>Dunki</phrase>
+      <phrase>Krrish 3</phrase>
+      <phrase>Rocky Aur Rani Kii Prem Kahaani</phrase>
+      <phrase>Housefull 4</phrase>
+      <phrase>Chhaava</phrase>
+      <phrase>Singham Again</phrase>
+      <phrase>Bade Miyan Chote Miyan</phrase>
+      <phrase>Teri Baaton Mein Aisa Uljha Jiya</phrase>
+      <phrase>Yodha</phrase>
+      <phrase>Raid 2</phrase>
+      <phrase>Bholaa</phrase>
+      <phrase>K G F Chapter 1</phrase>
+      <phrase>Thamma</phrase>
+      <phrase>Sky Force</phrase>
+      <phrase>Azaad</phrase>
+      <phrase>The Diplomat</phrase>
+      <phrase>Jewel Thief</phrase>
+      <phrase>Kaalidhar Laapata</phrase>
+      <phrase>Tanvi the Great</phrase>
+      <phrase>Son of Sardaar</phrase>
+      <phrase>Baaghi 4</phrase>
+      <phrase>Tehran</phrase>
+      <phrase>Sunny Sanskari Ki Tulsi Kumari</phrase>
+      <phrase>Ek Deewane Ki Deewaniyat</phrase>
+      <phrase>The Taj Story</phrase>
+      <phrase>Single Salma</phrase>
+      <phrase>Tere Ishk Mein</phrase>
+    </category>
+</bollywood_phrases>

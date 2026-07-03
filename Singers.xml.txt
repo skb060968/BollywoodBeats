@@ -1,0 +1,43 @@
+<bollywood_phrases>
+    <category name="PLAYBACK SINGERS">
+      <phrase>Lata Mangeshkar</phrase>
+      <phrase>Asha Bhosle</phrase>
+      <phrase>Kishore Kumar</phrase>
+      <phrase>Mohammed Rafi</phrase>
+      <phrase>Mukesh</phrase>
+      <phrase>Manna Dey</phrase>
+      <phrase>Talat Mahmood</phrase>
+      <phrase>Hemant Kumar</phrase>
+      <phrase>Geeta Dutt</phrase>
+      <phrase>Suraiya</phrase>
+      <phrase>Shamshad Begum</phrase>
+      <phrase>S D Burman</phrase>
+      <phrase>Mahendra Kapoor</phrase>
+      <phrase>Udit Narayan</phrase>
+      <phrase>Kumar Sanu</phrase>
+      <phrase>Alka Yagnik</phrase>
+      <phrase>Kavita Krishnamurthy</phrase>
+      <phrase>Sadhana Sargam</phrase>
+      <phrase>Anuradha Paudwal</phrase>
+      <phrase>Sonu Nigam</phrase>
+      <phrase>Shaan</phrase>
+      <phrase>Shreya Ghoshal</phrase>
+      <phrase>Sunidhi Chauhan</phrase>
+      <phrase>Arijit Singh</phrase>
+      <phrase>Neha Kakkar</phrase>
+      <phrase>Atif Aslam</phrase>
+      <phrase>Mohit Chauhan</phrase>
+      <phrase>Rahat Fateh Ali Khan</phrase>
+      <phrase>Armaan Malik</phrase>
+      <phrase>Jubin Nautiyal</phrase>
+      <phrase>Hariharan</phrase>
+      <phrase>Kailash Kher</phrase>
+      <phrase>Sukhwinder Singh</phrase>
+      <phrase>Mika Singh</phrase>
+      <phrase>Badshah</phrase>
+      <phrase>Guru Randhawa</phrase>
+      <phrase>Diljit Dosanjh</phrase>
+      <phrase>B Praak</phrase>
+      <phrase>Palak Muchhal</phrase>
+    </category>
+</bollywood_phrases>
