@@ -764,7 +764,7 @@ function gameLost() {
     const gameOverContent = document.getElementById('gameOverContent');
     gameOverContent.innerHTML = `
         <h2 class="lose">😢 Game Over</h2>
-        <p style="font-size: 1rem; margin: 8px 0; color: #666; font-weight: 600; line-height: 1.2;">The phrase was:</p>
+        <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">The phrase was:</p>
         <div class="revealed-phrase">${gameState.currentPhrase}</div>
         <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">Level Reached: ${gameState.currentLevel}</p>
         <div class="final-score">Final Score: <span style="color: #0066CC;">${gameState.score}</span></div>
