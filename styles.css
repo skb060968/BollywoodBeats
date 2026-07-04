@@ -505,7 +505,7 @@ body {
 
 /* Block Labels - Centered - RESPONSIVE */
 .block-label {
-    font-size: min(0.7rem, 1.2vh);
+    font-size: 0.8rem; /* Increased from 0.7rem */
     color: #FFD700;
     font-weight: bold;
     text-align: center;
@@ -516,8 +516,8 @@ body {
 
 .levels-dots {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     column-gap: 0.15vw;
     row-gap: 0.5vh;
 }
@@ -596,7 +596,7 @@ body {
 
 .levels-section .block-label,
 .lives-section .block-label {
-    font-size: min(0.6rem, 1vh);
+    font-size: 0.7rem; /* Slightly bigger for stacked blocks */
 }
 
 /* Legacy support - hide old separate rows */
@@ -681,12 +681,12 @@ body {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid white;
     border-radius: 8px;
-    padding: 0.6vh 0.8vw;
-    font-size: min(1.3rem, 2vh);
+    padding: 0;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: min(45px, 3vw);
-    height: min(45px, 4.2vh);
+    width: 40px; /* Fixed 40px to match keys */
+    height: 40px; /* Fixed 40px to match keys */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -701,14 +701,19 @@ body {
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     color: white;
-    padding: 0.6vh 1vw;
-    font-size: min(0.9rem, 1.4vh);
+    padding: 0;
+    font-size: 1.2rem;
     font-weight: bold;
-    border-radius: 20px;
+    border-radius: 8px;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     white-space: nowrap;
+    width: 40px; /* Fixed 40px to match keys */
+    height: 40px; /* Fixed 40px to match keys */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .menu-btn-compact:hover {
