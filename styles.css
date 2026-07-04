@@ -700,6 +700,26 @@ body {
     transform: scale(1.1);
 }
 
+.settings-emoji {
+    font-size: 2.5rem; /* Large emoji without button constraints */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.settings-emoji:hover {
+    transform: scale(1.15) rotate(45deg);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+}
+
+.settings-emoji:active {
+    transform: scale(1.05) rotate(45deg);
+}
+
 .menu-btn-compact {
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
