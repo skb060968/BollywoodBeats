@@ -469,24 +469,24 @@ body {
     text-shadow: 3px 3px 0 #8B0000, 4px 4px 0 rgba(0,0,0,0.3);
 }
 
-/* Status Bar - Horizontal Layout */
+/* Status Bar - Horizontal Layout - RESPONSIVE */
 .status-bar {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 12px;
+    gap: 0.4vw;
+    padding: 0.8vh 1vw;
     background: rgba(0,0,0,0.1);
     border-radius: 10px;
     flex-wrap: nowrap;
 }
 
-/* Control Blocks - Visual Separation */
+/* Control Blocks - Visual Separation - RESPONSIVE */
 .control-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    padding: 6px 4px;
+    gap: 0.3vh;
+    padding: 0.5vh 0.3vw;
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 215, 0, 0.4);
     border-radius: 8px;
@@ -496,34 +496,35 @@ body {
 }
 
 .keyboard-block {
-    margin-left: 2px;
+    margin-left: 0.15vw;
 }
 
 .keyboard-block:last-of-type {
-    margin-right: 2px;
+    margin-right: 0.15vw;
 }
 
-/* Block Labels - Centered */
+/* Block Labels - Centered - RESPONSIVE */
 .block-label {
-    font-size: 0.7rem;
+    font-size: min(0.7rem, 1.2vh);
     color: #FFD700;
     font-weight: bold;
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .levels-dots {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    column-gap: 2px;
-    row-gap: 26px;
+    column-gap: 0.15vw;
+    row-gap: 1.8vh;
 }
 
 .level-dot {
-    width: 22px;
-    height: 32px;
+    width: min(22px, 1.5vw);
+    height: min(32px, 3vh);
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
@@ -539,21 +540,21 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 3px;
-    column-gap: 3px;
-    row-gap: 12px;
+    gap: 0.2vw;
+    column-gap: 0.2vw;
+    row-gap: 0.8vh;
 }
 
 .life-box {
-    width: 42px;
-    height: 42px;
+    width: min(42px, 2.8vw);
+    height: min(42px, 4vh);
     background: linear-gradient(135deg, #555 0%, #333 100%);
     border: 2px solid #222;
     border-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.7rem;
+    font-size: min(1.7rem, 2.5vh);
     color: #999;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
 }
@@ -564,28 +565,28 @@ body {
     color: white;
 }
 
-/* Letter Keyboard Rows */
+/* Letter Keyboard Rows - RESPONSIVE */
 .letter-row-compact {
     display: flex;
-    gap: 3px;
+    gap: 0.2vw;
 }
 
-/* Number Grid - 2x2 */
+/* Number Grid - 2x2 - RESPONSIVE */
 .number-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 3px;
+    gap: 0.2vw;
 }
 
 .letter-btn {
-    width: 42px;
-    height: 42px;
+    width: min(42px, 2.8vw);
+    height: min(42px, 4vh);
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 50%;
     color: white;
-    font-size: 1.2rem;
+    font-size: min(1.2rem, 1.8vh);
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -638,11 +639,11 @@ body {
     animation: btnShake 0.4s ease-out;
 }
 
-/* Controls Panel */
+/* Controls Panel - RESPONSIVE */
 .controls-panel {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0.3vh;
     align-items: center;
 }
 
@@ -650,12 +651,12 @@ body {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid white;
     border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 1.3rem;
+    padding: 0.6vh 0.8vw;
+    font-size: min(1.3rem, 2vh);
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 45px;
-    height: 45px;
+    width: min(45px, 3vw);
+    height: min(45px, 4.2vh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -670,8 +671,8 @@ body {
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     color: white;
-    padding: 8px 16px;
-    font-size: 0.9rem;
+    padding: 0.6vh 1vw;
+    font-size: min(0.9rem, 1.4vh);
     font-weight: bold;
     border-radius: 20px;
     cursor: pointer;
@@ -749,28 +750,28 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
-    gap: 10px;
+    gap: 0.7vw;
     height: 100%;
-    padding: 20px;
+    padding: 1.5vh 1vw;
 }
 
 /* Word Container - Prevents word splitting */
 .word-container {
     display: flex;
-    gap: 10px;
+    gap: 0.7vw;
     flex-wrap: nowrap;
 }
 
 .phrase-tile {
-    width: 50px;
-    height: 60px;
+    width: min(50px, 3.3vw);
+    height: min(60px, 5.5vh);
     background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
     border: 3px solid #FFEB3B;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2rem;
+    font-size: min(2rem, 3vh);
     font-weight: bold;
     color: white;
     box-shadow: 
