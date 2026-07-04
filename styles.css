@@ -575,16 +575,6 @@ body {
     row-gap: 0.8vh;
 }
 
-/* Number grid - 2x2 layout on right */
-.number-grid-combined {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 0.2vw;
-    column-gap: 0.2vw;
-    row-gap: 0.8vh;
-}
-
 /* Levels and Lives stacked together */
 .levels-lives-block {
     padding: 0.5vh 0.3vw;
