@@ -611,8 +611,8 @@ function displayPhrase() {
 }
 
 function createKeyboard() {
-    // Merge letters A-Z and numbers 1-4 into one keyboard (30 keys total)
-    const allKeys = 'ABCDEFGHIJ1KLMNOPQRST2UVWXYZ34'; // 10 keys per row × 3 rows
+    // Merge letters A-Z and numbers 1-4 into 15×2 grid (30 keys total)
+    const allKeys = 'ABCDEFGHIJKLMNO1PQRSTUVWXYZ234'; // 15 keys per row × 2 rows
     
     const keyboardCombined = document.getElementById('keyboardCombined');
     
@@ -623,7 +623,7 @@ function createKeyboard() {
     
     keyboardCombined.innerHTML = '';
     
-    // Create all 30 buttons in 10×3 grid
+    // Create all 30 buttons in 15×2 grid
     for (let key of allKeys) {
         const btn = document.createElement('button');
         btn.className = 'letter-btn';
