@@ -1251,15 +1251,15 @@ body {
         font-size: 1.8vh; /* Pure viewport for high-res screens */
     }
     
-    /* Merged keyboard - Use base 45px size */
+    /* Merged keyboard - proper sizing to fill space */
     .keyboard-combined {
-        gap: 0.1vw;
-        column-gap: 0.1vw;
-        row-gap: 0.5vh;
+        gap: 0.3vw; /* Increased gap for proper spacing */
+        column-gap: 0.3vw;
+        row-gap: 0.8vh;
     }
     
     .letter-btn {
-        width: 2.8vw; /* Pure viewport for high-res screens */
+        width: 3.5vw; /* Increased width to fill keyboard block */
         height: 5.5vh; /* Increased to match visible size on S20 */
         font-size: 2.2vh; /* Increased font size */
     }
