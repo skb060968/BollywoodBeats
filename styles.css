@@ -702,12 +702,12 @@ body {
 
 .menu-btn-compact {
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
-    border: none;
+    border: 3px solid #FFD700;
     color: white;
     padding: 0;
-    font-size: 0; /* Hide the emoji text */
+    font-size: 2rem; /* Large emoji size */
     font-weight: bold;
-    border-radius: 0; /* Remove border radius for gear shape */
+    border-radius: 8px;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
@@ -717,27 +717,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    /* Gear shape using clip-path */
-    clip-path: polygon(
-        50% 0%, 55% 10%, 65% 5%, 70% 15%, 80% 15%, 85% 25%, 95% 25%, 
-        90% 35%, 100% 40%, 95% 50%, 100% 60%, 90% 65%, 95% 75%, 
-        85% 75%, 80% 85%, 70% 85%, 65% 95%, 55% 90%, 50% 100%, 
-        45% 90%, 35% 95%, 30% 85%, 20% 85%, 15% 75%, 5% 75%, 
-        10% 65%, 0% 60%, 5% 50%, 0% 40%, 10% 35%, 5% 25%, 
-        15% 25%, 20% 15%, 30% 15%, 35% 5%, 45% 10%
-    );
-}
-
-/* Gear center circle (inner circle of the gear) */
-.menu-btn-compact::before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
 }
 
 .menu-btn-compact:hover {
