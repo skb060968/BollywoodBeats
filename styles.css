@@ -1253,15 +1253,15 @@ body {
     
     /* Merged keyboard - proper sizing to match other blocks */
     .keyboard-combined {
-        gap: 0.5vw; /* Larger gap for proper spacing */
-        column-gap: 0.5vw;
-        row-gap: 1vh;
+        gap: 0.7vw; /* Larger gap */
+        column-gap: 0.7vw;
+        row-gap: 1.2vh;
     }
     
     .letter-btn {
-        width: 4.2vw; /* Much larger width to fill space */
-        height: 6.5vh; /* Much taller to match levels/lives block height */
-        font-size: 2.5vh; /* Larger font */
+        width: 5vw; /* Even larger width */
+        height: 7.5vh; /* Even taller to match block heights */
+        font-size: 3vh; /* Larger font */
     }
     
     /* Controls - scale with viewport */
