@@ -586,13 +586,13 @@ body {
 }
 
 .letter-btn {
-    width: min(42px, 2.8vw); /* Same as life-box */
-    height: min(42px, 4vh); /* Same as life-box */
+    width: 45px; /* Fixed 45px for ALL devices */
+    height: 45px; /* Fixed 45px for ALL devices */
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px;
     color: white;
-    font-size: min(1.2rem, 1.8vh);
+    font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -1137,18 +1137,11 @@ body {
         font-size: min(1.2rem, 1.8vh);
     }
     
-    /* Merged keyboard - Exactly like lives-panel */
+    /* Merged keyboard - Use base 45px size */
     .keyboard-combined {
         gap: 0.1vw;
         column-gap: 0.1vw;
         row-gap: 0.5vh;
-    }
-    
-    .letter-btn {
-        width: min(34px, 2.3vw); /* Same as life-box */
-        height: min(34px, 3.5vh); /* Same as life-box */
-        font-size: min(1rem, 1.5vh);
-        border-width: 2px;
     }
     
     /* Controls - scale with viewport */
@@ -1335,18 +1328,11 @@ body {
         font-size: min(1.2rem, 1.9vh);
     }
     
-    /* Merged keyboard - Exactly like lives-panel but BIGGER (50px) */
+    /* Merged keyboard - Use base 45px size */
     .keyboard-combined {
         gap: 0.3vw;
         column-gap: 0.3vw;
         row-gap: 0.8vh;
-    }
-    
-    .letter-btn {
-        width: 50px !important; /* Fixed 50px for mobile - FORCE */
-        height: 50px !important; /* Fixed 50px for mobile - FORCE */
-        font-size: min(1.3rem, 2vh) !important;
-        border-width: 2px !important;
     }
     
     /* Controls - BIGGER BUTTONS */
@@ -1768,15 +1754,3 @@ body {
     75% { transform: translateX(5px); }
 }
 
-
-/* ========== FINAL MOBILE OVERRIDE - HIGHEST PRIORITY ========== */
-@media (max-width: 767px) and (orientation: landscape) {
-    .letter-btn {
-        width: 50px !important;
-        height: 50px !important;
-        min-width: 50px !important;
-        min-height: 50px !important;
-        max-width: 50px !important;
-        max-height: 50px !important;
-    }
-}
