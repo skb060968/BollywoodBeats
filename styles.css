@@ -505,13 +505,19 @@ body {
 
 /* Block Labels - Centered - RESPONSIVE */
 .block-label {
-    font-size: 0.8rem; /* Increased from 0.7rem */
+    font-size: 0.8rem; /* Base size */
     color: #FFD700;
     font-weight: bold;
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     letter-spacing: 0.5px;
     white-space: nowrap;
+}
+
+/* Specific labels for keyboard and controls - larger font */
+.keyboard-block .block-label,
+.control-block:has(.controls-panel) .block-label {
+    font-size: 0.9rem !important; /* Larger for keyboard and controls */
 }
 
 .levels-dots {
@@ -673,7 +679,7 @@ body {
 .controls-panel {
     display: flex;
     flex-direction: column;
-    gap: 0.8vh; /* Increased spacing to match keyboard height */
+    gap: 18px; /* Fixed pixel gap for visibility */
     align-items: center;
     justify-content: center;
     padding: 0.5vh 0;
