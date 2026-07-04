@@ -279,9 +279,10 @@ body {
 
 .instruction-item p {
     font-size: 0.85rem;
-    color: #333;
+    color: #222;
     margin: 0;
     line-height: 1.3;
+    font-weight: 600;
 }
 
 .scores-list {
