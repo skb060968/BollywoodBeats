@@ -516,15 +516,15 @@ body {
 
 .levels-dots {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     column-gap: 0.15vw;
-    row-gap: 1.8vh;
+    row-gap: 0.5vh;
 }
 
 .level-dot {
     width: min(22px, 1.5vw);
-    height: min(32px, 3vh);
+    height: min(24px, 2.2vh);
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
@@ -565,28 +565,32 @@ body {
     color: white;
 }
 
-/* Letter Keyboard Rows - RESPONSIVE */
-.letter-row-compact {
-    display: flex;
+/* Letter + Number Keyboard - Merged into 10×3 grid */
+.keyboard-combined {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     gap: 0.2vw;
+}
+
+/* Legacy support - hide old separate rows */
+.letter-row-compact {
+    display: none;
 }
 
 /* Number Grid - 2x2 - RESPONSIVE */
 .number-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 0.2vw;
+    display: none;
 }
 
 .letter-btn {
-    width: min(42px, 2.8vw);
-    height: min(42px, 4vh);
+    width: min(48px, 3.2vw);
+    height: min(48px, 4.5vh);
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 50%;
     color: white;
-    font-size: min(1.2rem, 1.8vh);
+    font-size: min(1.3rem, 2vh);
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -1137,15 +1141,15 @@ body {
         white-space: nowrap;
     }
     
-    /* Levels - scale with viewport */
+    /* Levels - 2×5 grid */
     .levels-dots {
         column-gap: 0.1vw;
-        row-gap: 0.8vh;
+        row-gap: 0.4vh;
     }
     
     .level-dot {
         width: min(18px, 1.2vw);
-        height: min(26px, 2.5vh);
+        height: min(20px, 2vh);
     }
     
     /* Lives - scale with viewport */
@@ -1160,19 +1164,15 @@ body {
         font-size: min(1.2rem, 1.8vh);
     }
     
-    /* Letters - scale with available width */
-    .letter-row-compact {
-        gap: 0.1vw;
-    }
-    
-    .number-grid {
-        gap: 0.1vw;
+    /* Merged keyboard - 10×3 grid with bigger keys */
+    .keyboard-combined {
+        gap: 0.15vw;
     }
     
     .letter-btn {
-        width: min(34px, 2.3vw);
-        height: min(34px, 3.5vh);
-        font-size: min(1rem, 1.5vh);
+        width: min(40px, 2.7vw);
+        height: min(40px, 4vh);
+        font-size: min(1.1rem, 1.7vh);
         border-width: 2px;
     }
     
@@ -1321,14 +1321,14 @@ body {
     
     /* Status bar - responsive horizontal layout */
     .status-bar {
-        padding: 0.5vh 0.5vw;
-        gap: 0.3vw;
+        padding: 0.4vh 0.4vw;
+        gap: 0.25vw;
         flex-wrap: nowrap;
         overflow: visible;
     }
     
     .control-block {
-        padding: 0.3vh 0.2vw;
+        padding: 0.3vh 0.15vw;
         gap: 0.2vh;
         flex-shrink: 0;
     }
@@ -1337,15 +1337,15 @@ body {
         font-size: min(0.5rem, 0.9vh);
     }
     
-    /* Levels - responsive sizing */
+    /* Levels - 2×5 grid, responsive sizing */
     .levels-dots {
         column-gap: 0.1vw;
-        row-gap: 0.6vh;
+        row-gap: 0.3vh;
     }
     
     .level-dot {
-        width: min(18px, 1.2vw);
-        height: min(24px, 2.2vh);
+        width: min(16px, 1.1vw);
+        height: min(18px, 1.8vh);
     }
     
     /* Lives - responsive sizing */
@@ -1355,38 +1355,34 @@ body {
     }
     
     .life-box {
-        width: min(32px, 2.2vw);
-        height: min(32px, 3vh);
-        font-size: min(1.2rem, 1.8vh);
+        width: min(28px, 2vw);
+        height: min(28px, 2.8vh);
+        font-size: min(1.1rem, 1.6vh);
     }
     
-    /* Letters - responsive sizing */
-    .letter-row-compact {
-        gap: 0.1vw;
-    }
-    
-    .number-grid {
-        gap: 0.1vw;
+    /* Merged keyboard - 10×3 grid with bigger keys */
+    .keyboard-combined {
+        gap: 0.15vw;
     }
     
     .letter-btn {
-        width: min(32px, 2.2vw);
-        height: min(32px, 3vh);
+        width: min(36px, 2.5vw);
+        height: min(36px, 3.5vh);
         font-size: min(1rem, 1.5vh);
         border-width: 2px;
     }
     
     /* Controls - responsive sizing */
     .mute-btn {
-        width: min(36px, 2.5vw);
-        height: min(36px, 3.3vh);
-        font-size: min(1.1rem, 1.8vh);
-        padding: 0.4vh;
+        width: min(32px, 2.2vw);
+        height: min(32px, 3.2vh);
+        font-size: min(1rem, 1.6vh);
+        padding: 0.3vh;
     }
     
     .menu-btn-compact {
         padding: 0.4vh 0.8vw;
-        font-size: min(0.8rem, 1.2vh);
+        font-size: min(0.75rem, 1.1vh);
     }
     
     .category-banner {
