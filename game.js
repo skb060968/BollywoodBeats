@@ -611,25 +611,44 @@ function displayPhrase() {
 }
 
 function createKeyboard() {
-    // Merge letters A-Z and numbers 1-4 into 10×3 grid (30 keys total)
-    const allKeys = 'ABCDEFGHIJ1KLMNOPQRST2UVWXYZ34'; // 10 keys per row × 3 rows
+    // Letters A-Z only in 10×3 grid (26 letters + 4 empty spaces = 30 cells)
+    const allKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ    '; // 26 letters + 4 spaces = 30
     
     const keyboardCombined = document.getElementById('keyboardCombined');
+    const numberGridCombined = document.getElementById('numberGridCombined');
     
-    if (!keyboardCombined) {
-        console.error('keyboardCombined element not found');
+    if (!keyboardCombined || !numberGridCombined) {
+        console.error('Keyboard or number grid element not found');
         return;
     }
     
     keyboardCombined.innerHTML = '';
+    numberGridCombined.innerHTML = '';
     
-    // Create all 30 buttons in 10×3 grid
+    // Create letter buttons in 10×3 grid
     for (let key of allKeys) {
+        if (key === ' ') {
+            // Empty space filler
+            const empty = document.createElement('div');
+            empty.style.visibility = 'hidden';
+            keyboardCombined.appendChild(empty);
+        } else {
+            const btn = document.createElement('button');
+            btn.className = 'letter-btn';
+            btn.textContent = key;
+            btn.onclick = () => guessLetter(key, btn);
+            keyboardCombined.appendChild(btn);
+        }
+    }
+    
+    // Create number buttons (1-4) in 2×2 grid
+    const numbers = '1234';
+    for (let num of numbers) {
         const btn = document.createElement('button');
         btn.className = 'letter-btn';
-        btn.textContent = key;
-        btn.onclick = () => guessLetter(key, btn);
-        keyboardCombined.appendChild(btn);
+        btn.textContent = num;
+        btn.onclick = () => guessLetter(num, btn);
+        numberGridCombined.appendChild(btn);
     }
     
     // Display the actual category of current phrase

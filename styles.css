@@ -575,6 +575,40 @@ body {
     row-gap: 0.8vh;
 }
 
+/* Number grid - 2x2 layout on right */
+.number-grid-combined {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0.2vw;
+    column-gap: 0.2vw;
+    row-gap: 0.8vh;
+}
+
+/* Levels and Lives stacked together */
+.levels-lives-block {
+    padding: 0.5vh 0.3vw;
+}
+
+.levels-lives-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vh;
+}
+
+.levels-section,
+.lives-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2vh;
+}
+
+.levels-section .block-label,
+.lives-section .block-label {
+    font-size: min(0.6rem, 1vh);
+}
+
 /* Legacy support - hide old separate rows */
 .letter-row-compact {
     display: none;
@@ -586,8 +620,8 @@ body {
 }
 
 .letter-btn {
-    width: 45px; /* Fixed 45px for ALL devices */
-    height: 45px; /* Fixed 45px for ALL devices */
+    width: 40px; /* Fixed 40px for ALL devices */
+    height: 40px; /* Fixed 40px for ALL devices */
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px;
