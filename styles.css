@@ -585,13 +585,13 @@ body {
 }
 
 .letter-btn {
-    width: min(42px, 2.8vw); /* Exact same as life-box */
-    height: min(42px, 4vh); /* Exact same as life-box */
+    width: min(52px, 3.5vw); /* Bigger than life-box */
+    height: min(52px, 5vh); /* Bigger than life-box */
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px; /* Square with rounded corners like life-box */
     color: white;
-    font-size: min(1.2rem, 1.8vh);
+    font-size: min(1.4rem, 2.2vh);
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -1165,16 +1165,16 @@ body {
         font-size: min(1.2rem, 1.8vh);
     }
     
-    /* Merged keyboard - 10×3 grid with exact same size as lives */
+    /* Merged keyboard - 10×3 grid with bigger square keys */
     .keyboard-combined {
-        gap: 0.1vw;
-        row-gap: 0.5vh;
+        gap: 0.15vw;
+        row-gap: 0.6vh;
     }
     
     .letter-btn {
-        width: min(34px, 2.3vw); /* Exact same as life-box */
-        height: min(34px, 3.5vh); /* Exact same as life-box */
-        font-size: min(1rem, 1.5vh);
+        width: min(42px, 2.8vw); /* Bigger square keys */
+        height: min(42px, 4.2vh); /* Bigger square keys */
+        font-size: min(1.2rem, 1.8vh);
         border-width: 2px;
     }
     
@@ -1362,16 +1362,16 @@ body {
         font-size: min(1.2rem, 1.9vh);
     }
     
-    /* Merged keyboard - 10×3 grid with exact same size as lives */
+    /* Merged keyboard - 10×3 grid with bigger square keys */
     .keyboard-combined {
-        gap: 0.2vw;
-        row-gap: 0.5vh;
+        gap: 0.25vw;
+        row-gap: 0.6vh;
     }
     
     .letter-btn {
-        width: min(32px, 2.3vw); /* Exact same as life-box */
-        height: min(32px, 3.2vh); /* Exact same as life-box */
-        font-size: min(1rem, 1.6vh);
+        width: min(40px, 2.8vw); /* Bigger square keys */
+        height: min(40px, 4vh); /* Bigger square keys */
+        font-size: min(1.2rem, 1.8vh);
         border-width: 2px;
     }
     
