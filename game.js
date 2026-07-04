@@ -570,6 +570,21 @@ function displayPhrase() {
     
     const phrase = gameState.currentPhrase;
     
+    // Calculate phrase length (excluding spaces and punctuation) for dynamic sizing
+    const letterCount = phrase.replace(/[^A-Z0-9]/g, '').length;
+    
+    // Add dynamic sizing class based on phrase length
+    grid.classList.remove('short-phrase', 'medium-phrase', 'long-phrase', 'very-long-phrase');
+    if (letterCount <= 15) {
+        grid.classList.add('short-phrase'); // Big tiles for short phrases
+    } else if (letterCount <= 25) {
+        grid.classList.add('medium-phrase'); // Medium tiles
+    } else if (letterCount <= 35) {
+        grid.classList.add('long-phrase'); // Smaller tiles
+    } else {
+        grid.classList.add('very-long-phrase'); // Very small tiles for long phrases
+    }
+    
     // Split phrase into words to prevent breaking words across lines
     const words = phrase.split(' ');
     
