@@ -1251,17 +1251,17 @@ body {
         font-size: 1.8vh; /* Pure viewport for high-res screens */
     }
     
-    /* Merged keyboard - proper sizing to fill space */
+    /* Merged keyboard - proper sizing to match other blocks */
     .keyboard-combined {
-        gap: 0.3vw; /* Increased gap for proper spacing */
-        column-gap: 0.3vw;
-        row-gap: 0.8vh;
+        gap: 0.5vw; /* Larger gap for proper spacing */
+        column-gap: 0.5vw;
+        row-gap: 1vh;
     }
     
     .letter-btn {
-        width: 3.5vw; /* Increased width to fill keyboard block */
-        height: 5.5vh; /* Increased to match visible size on S20 */
-        font-size: 2.2vh; /* Increased font size */
+        width: 4.2vw; /* Much larger width to fill space */
+        height: 6.5vh; /* Much taller to match levels/lives block height */
+        font-size: 2.5vh; /* Larger font */
     }
     
     /* Controls - scale with viewport */
