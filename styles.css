@@ -1767,3 +1767,16 @@ body {
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
 }
+
+
+/* ========== FINAL MOBILE OVERRIDE - HIGHEST PRIORITY ========== */
+@media (max-width: 767px) and (orientation: landscape) {
+    .letter-btn {
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+        min-height: 50px !important;
+        max-width: 50px !important;
+        max-height: 50px !important;
+    }
+}
