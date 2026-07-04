@@ -743,7 +743,7 @@ function gameWon() {
     const gameOverContent = document.getElementById('gameOverContent');
     gameOverContent.innerHTML = `
         <h2 class="win">🎉 Congratulations! 🎉</h2>
-        <p style="font-size: 1.1rem; margin: 12px 0; color: #333;">You completed all ${gameState.maxLevels} levels!</p>
+        <p style="font-size: 0.9rem; margin: 6px 0; color: #333;">You completed all ${gameState.maxLevels} levels!</p>
         <div class="final-score">Final Score: <span style="color: #FFD700;">${gameState.score}</span></div>
         <div class="gameover-buttons">
             <button class="gameover-btn primary" onclick="startGame()">
@@ -764,9 +764,9 @@ function gameLost() {
     const gameOverContent = document.getElementById('gameOverContent');
     gameOverContent.innerHTML = `
         <h2 class="lose">😢 Game Over</h2>
-        <p style="font-size: 0.95rem; margin: 10px 0; color: #333;">The phrase was:</p>
+        <p style="font-size: 0.8rem; margin: 6px 0; color: #333;">The phrase was:</p>
         <div class="revealed-phrase">${gameState.currentPhrase}</div>
-        <p style="font-size: 0.9rem; margin: 10px 0; color: #666;">You reached level ${gameState.currentLevel}</p>
+        <p style="font-size: 0.75rem; margin: 6px 0; color: #666;">You reached level ${gameState.currentLevel}</p>
         <div class="final-score">Final Score: <span style="color: #FFD700;">${gameState.score}</span></div>
         <div class="gameover-buttons">
             <button class="gameover-btn primary" onclick="startGame()">

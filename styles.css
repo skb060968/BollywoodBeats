@@ -898,20 +898,22 @@ body {
     background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
 }
 
-/* Game Over Screen - Compact Layout */
+/* Game Over Screen - Very Compact Layout for Landscape */
 .gameover-container {
     background: rgba(255,255,255,0.95);
-    padding: 25px 35px;
-    border-radius: 15px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    max-width: 85vw;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    max-width: 80vw;
+    max-height: 80vh;
     width: 100%;
     text-align: center;
+    overflow-y: auto;
 }
 
 .gameover-container h2 {
-    font-size: 2rem;
-    margin-bottom: 12px;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
 }
 
 .gameover-container .win {
@@ -923,45 +925,45 @@ body {
 }
 
 .revealed-phrase {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #0066CC;
     font-weight: bold;
-    padding: 12px 15px;
-    margin: 12px 0;
+    padding: 8px 12px;
+    margin: 8px 0;
     background: rgba(0, 102, 204, 0.1);
-    border-radius: 8px;
-    border: 3px solid #0066CC;
-    line-height: 1.3;
+    border-radius: 6px;
+    border: 2px solid #0066CC;
+    line-height: 1.2;
 }
 
 .final-score {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #333;
-    margin: 12px 0;
+    margin: 8px 0;
     font-weight: bold;
 }
 
 .gameover-buttons {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: center;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .gameover-btn {
     background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
     border: 2px solid #FFD700 !important;
     color: white !important;
-    padding: 10px 25px !important;
-    font-size: 0.95rem !important;
+    padding: 8px 20px !important;
+    font-size: 0.85rem !important;
     font-weight: bold !important;
-    border-radius: 20px !important;
+    border-radius: 18px !important;
     cursor: pointer !important;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
     transition: all 0.3s ease !important;
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 6px !important;
 }
 
 .gameover-btn.primary {
@@ -970,11 +972,11 @@ body {
 
 .gameover-btn:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.3) !important;
 }
 
 .gameover-btn span {
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 /* Settings Screen - Compact Layout for Landscape */
