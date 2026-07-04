@@ -1343,10 +1343,10 @@ body {
     }
     
     .letter-btn {
-        width: 50px; /* Fixed 50px for mobile */
-        height: 50px; /* Fixed 50px for mobile */
-        font-size: min(1.3rem, 2vh);
-        border-width: 2px;
+        width: 50px !important; /* Fixed 50px for mobile - FORCE */
+        height: 50px !important; /* Fixed 50px for mobile - FORCE */
+        font-size: min(1.3rem, 2vh) !important;
+        border-width: 2px !important;
     }
     
     /* Controls - BIGGER BUTTONS */
