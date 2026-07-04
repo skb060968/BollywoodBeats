@@ -1369,9 +1369,9 @@ body {
     }
     
     .letter-btn {
-        width: min(40px, 2.8vw); /* Bigger square keys */
-        height: min(40px, 4vh); /* Bigger square keys */
-        font-size: min(1.2rem, 1.8vh);
+        width: min(50px, 3.5vw); /* 50px square keys for mobile */
+        height: min(50px, 5vh); /* 50px square keys for mobile */
+        font-size: min(1.4rem, 2vh);
         border-width: 2px;
     }
     
