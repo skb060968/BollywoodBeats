@@ -589,7 +589,7 @@ body {
     height: min(42px, 4vh); /* Match life-box height for uniform block height */
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
-    border-radius: 50%;
+    border-radius: 6px; /* Square with rounded corners like life-box */
     color: white;
     font-size: min(1.2rem, 1.8vh);
     font-weight: bold;
@@ -601,7 +601,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    aspect-ratio: 1; /* Keep buttons circular */
+    aspect-ratio: 1; /* Keep buttons square */
     justify-self: center; /* Center in grid cell */
 }
 
