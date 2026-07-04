@@ -1260,8 +1260,8 @@ body {
     
     .letter-btn {
         width: 2.8vw; /* Pure viewport for high-res screens */
-        height: 3.8vh; /* Pure viewport for high-res screens */
-        font-size: 1.8vh; /* Pure viewport for high-res screens */
+        height: 5.5vh; /* Increased to match visible size on S20 */
+        font-size: 2.2vh; /* Increased font size */
     }
     
     /* Controls - scale with viewport */
