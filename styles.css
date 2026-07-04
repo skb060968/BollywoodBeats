@@ -510,7 +510,7 @@ body {
 
 /* Block Labels - Centered - RESPONSIVE */
 .block-label {
-    font-size: 0.8rem; /* Same size for all blocks */
+    font-size: 0.5rem; /* Smaller uniform size for all blocks */
     color: #FFD700;
     font-weight: bold;
     text-align: center;
@@ -523,13 +523,13 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    column-gap: 0.4vw; /* Increased from 0.15vw for better visibility */
+    column-gap: 0.2vw; /* Reduced back from 0.4vw */
     row-gap: 0.5vh;
 }
 
 .level-dot {
-    width: min(22px, 1.5vw);
-    height: min(24px, 2.2vh);
+    width: min(28px, 2vw); /* Increased from 22px for larger dots */
+    height: min(24px, 2.2vh); /* Keep same height to maintain block height */
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
@@ -601,13 +601,13 @@ body {
 
 .levels-section .block-label,
 .lives-section .block-label {
-    font-size: 0.7rem;
+    font-size: 0.5rem; /* Same as base */
 }
 
-/* Keyboard and Controls block labels - same size as levels/lives, immune to media query overrides */
+/* Keyboard and Controls block labels - same size as all blocks, immune to media query overrides */
 .keyboard-block .block-label,
 .control-block:has(.controls-panel) > .block-label {
-    font-size: 0.7rem !important; /* Same as levels/lives, prevent media query overrides */
+    font-size: 0.5rem !important; /* Same uniform size, prevent media query overrides */
 }
 
 /* Legacy support - hide old separate rows */
