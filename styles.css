@@ -1251,17 +1251,17 @@ body {
         font-size: 1.8vh; /* Pure viewport for high-res screens */
     }
     
-    /* Merged keyboard - proper sizing to match other blocks */
+    /* Merged keyboard - balanced sizing */
     .keyboard-combined {
-        gap: 0.7vw; /* Larger gap */
-        column-gap: 0.7vw;
-        row-gap: 1.2vh;
+        gap: 0.5vw; /* Reduced gap */
+        column-gap: 0.5vw;
+        row-gap: 1.3vh;
     }
     
     .letter-btn {
-        width: 5vw; /* Even larger width */
-        height: 7.5vh; /* Even taller to match block heights */
-        font-size: 3vh; /* Larger font */
+        width: 4.3vw; /* Reduced width to fit properly */
+        height: 8vh; /* Increased height to match control block */
+        font-size: 3vh; /* Keep larger font */
     }
     
     /* Controls - scale with viewport */
