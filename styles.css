@@ -1019,35 +1019,6 @@ body {
     font-family: monospace;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .game-layout {
-        grid-template-columns: 25% 75%;
-    }
-    
-    .character {
-        width: 120px;
-        height: 120px;
-    }
-    
-    .character-face {
-        width: 120px;
-        height: 120px;
-    }
-    
-    .letter-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
-    }
-    
-    .phrase-tile {
-        width: 45px;
-        height: 55px;
-        font-size: 1.8rem;
-    }
-}
-
 /* ========== RESPONSIVE DESIGN - PERCENTAGE BASED ========== */
 
 /* iPad Landscape - 768px to 1366px width in landscape */
