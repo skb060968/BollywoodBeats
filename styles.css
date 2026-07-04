@@ -1319,70 +1319,70 @@ body {
         font-size: min(1.3rem, 2vh);
     }
     
-    /* Status bar - responsive horizontal layout */
+    /* Status bar - MORE SPACE, BIGGER ELEMENTS */
     .status-bar {
-        padding: 0.4vh 0.4vw;
-        gap: 0.25vw;
+        padding: 0.8vh 0.6vw;
+        gap: 0.4vw;
         flex-wrap: nowrap;
         overflow: visible;
     }
     
     .control-block {
-        padding: 0.3vh 0.15vw;
-        gap: 0.2vh;
+        padding: 0.5vh 0.3vw;
+        gap: 0.3vh;
         flex-shrink: 0;
     }
     
     .block-label {
-        font-size: min(0.5rem, 0.9vh);
+        font-size: min(0.6rem, 1.1vh);
     }
     
-    /* Levels - 2×5 grid, responsive sizing */
+    /* Levels - BIGGER DOTS - 2×5 grid */
     .levels-dots {
-        column-gap: 0.1vw;
-        row-gap: 0.3vh;
+        column-gap: 0.2vw;
+        row-gap: 0.5vh;
     }
     
     .level-dot {
-        width: min(16px, 1.1vw);
-        height: min(18px, 1.8vh);
+        width: min(20px, 1.4vw);
+        height: min(22px, 2.2vh);
     }
     
     /* Lives - responsive sizing */
     .lives-panel {
-        gap: 0.1vw;
-        row-gap: 0.4vh;
+        gap: 0.2vw;
+        row-gap: 0.5vh;
     }
     
     .life-box {
-        width: min(28px, 2vw);
-        height: min(28px, 2.8vh);
-        font-size: min(1.1rem, 1.6vh);
+        width: min(32px, 2.3vw);
+        height: min(32px, 3.2vh);
+        font-size: min(1.2rem, 1.9vh);
     }
     
-    /* Merged keyboard - 10×3 grid with bigger keys */
+    /* Merged keyboard - BIGGER KEYS - 10×3 grid */
     .keyboard-combined {
-        gap: 0.15vw;
+        gap: 0.2vw;
     }
     
     .letter-btn {
-        width: min(36px, 2.5vw);
-        height: min(36px, 3.5vh);
-        font-size: min(1rem, 1.5vh);
+        width: min(42px, 3vw);
+        height: min(42px, 4.2vh);
+        font-size: min(1.2rem, 1.8vh);
         border-width: 2px;
     }
     
-    /* Controls - responsive sizing */
+    /* Controls - BIGGER BUTTONS */
     .mute-btn {
-        width: min(32px, 2.2vw);
-        height: min(32px, 3.2vh);
-        font-size: min(1rem, 1.6vh);
-        padding: 0.3vh;
+        width: min(38px, 2.7vw);
+        height: min(38px, 3.8vh);
+        font-size: min(1.2rem, 1.9vh);
+        padding: 0.4vh;
     }
     
     .menu-btn-compact {
-        padding: 0.4vh 0.8vw;
-        font-size: min(0.75rem, 1.1vh);
+        padding: 0.5vh 1vw;
+        font-size: min(0.85rem, 1.3vh);
     }
     
     .category-banner {
@@ -1393,29 +1393,31 @@ body {
         font-size: min(1.1rem, 1.8vh);
     }
     
+    /* Phrase board - LESS SPACE, smaller tiles */
     .phrase-board {
-        padding: 1vh;
-        min-height: 20vh;
+        padding: 0.8vh;
+        min-height: 14vh; /* Reduced from 20vh */
+        flex: 1;
     }
     
     .phrase-grid {
-        gap: 0.5vw;
-        padding: 0.8vh;
+        gap: 0.4vw;
+        padding: 0.6vh;
     }
     
     .word-container {
-        gap: 0.5vw;
+        gap: 0.4vw;
     }
     
     .phrase-tile {
-        width: min(32px, 2.2vw);
-        height: min(40px, 3.8vh);
-        font-size: min(1.2rem, 1.8vh);
+        width: min(28px, 2vw);
+        height: min(36px, 3.5vh);
+        font-size: min(1.1rem, 1.6vh);
         border-width: 2px;
     }
     
     .phrase-tile.space {
-        width: min(15px, 1vw);
+        width: min(12px, 0.9vw);
     }
 }
 
