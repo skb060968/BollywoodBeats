@@ -1136,8 +1136,8 @@ body {
 
 /* ========== RESPONSIVE DESIGN - PERCENTAGE BASED ========== */
 
-/* Phones and Tablets - 768px to 3200px (S20 Ultra, OnePlus 11R, iPads, all similar devices) */
-@media (min-width: 768px) and (max-width: 3200px) and (orientation: landscape) {
+/* Phones, Tablets, Desktops, and TVs - 768px and wider (all landscape devices except small phones) */
+@media (min-width: 768px) and (orientation: landscape) {
     html {
         zoom: 1.0;
     }
