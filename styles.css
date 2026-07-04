@@ -1042,6 +1042,8 @@ body {
     }
 }
 
+/* ========== RESPONSIVE DESIGN - PERCENTAGE BASED ========== */
+
 /* iPad Landscape - 768px to 1366px width in landscape */
 @media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
     html {
@@ -1115,70 +1117,75 @@ body {
         font-size: 1.4rem;
     }
     
+    /* Status bar elements - scale based on available width */
     .status-bar {
-        padding: 6px 8px;
-        gap: 4px;
+        padding: 0.5vh 0.5vw;
+        gap: 0.3vw;
         flex-wrap: nowrap;
         overflow: visible;
     }
     
     .control-block {
-        padding: 4px 3px;
-        gap: 3px;
+        padding: 0.3vh 0.2vw;
+        gap: 0.2vh;
         min-width: fit-content;
     }
     
     .block-label {
-        font-size: 0.55rem;
+        font-size: min(0.55rem, 1vh);
         white-space: nowrap;
     }
     
+    /* Levels - scale with viewport */
     .levels-dots {
-        column-gap: 2px;
-        row-gap: 12px;
+        column-gap: 0.1vw;
+        row-gap: 0.8vh;
     }
     
     .level-dot {
-        width: 18px;
-        height: 26px;
+        width: min(18px, 1.2vw);
+        height: min(26px, 2.5vh);
     }
     
+    /* Lives - scale with viewport */
     .lives-panel {
-        gap: 2px;
-        row-gap: 6px;
+        gap: 0.1vw;
+        row-gap: 0.5vh;
     }
     
     .life-box {
-        width: 34px;
-        height: 34px;
-        font-size: 1.2rem;
+        width: min(34px, 2.3vw);
+        height: min(34px, 3.5vh);
+        font-size: min(1.2rem, 1.8vh);
     }
     
+    /* Letters - scale with available width */
     .letter-row-compact {
-        gap: 2px;
+        gap: 0.1vw;
     }
     
     .number-grid {
-        gap: 2px;
+        gap: 0.1vw;
     }
     
     .letter-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 1rem;
+        width: min(34px, 2.3vw);
+        height: min(34px, 3.5vh);
+        font-size: min(1rem, 1.5vh);
         border-width: 2px;
     }
     
+    /* Controls - scale with viewport */
     .mute-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
-        padding: 5px;
+        width: min(36px, 2.5vw);
+        height: min(36px, 3.6vh);
+        font-size: min(1.1rem, 1.8vh);
+        padding: 0.4vh;
     }
     
     .menu-btn-compact {
-        padding: 6px 12px;
-        font-size: 0.75rem;
+        padding: 0.5vh 1vw;
+        font-size: min(0.75rem, 1.2vh);
     }
     
     .category-banner {
@@ -1206,15 +1213,16 @@ body {
         gap: 6px;
     }
     
+    /* Phrase tiles - scale based on available space */
     .phrase-tile {
-        width: 45px;
-        height: 55px;
-        font-size: 1.7rem;
+        width: min(45px, 3vw);
+        height: min(55px, 5.5vh);
+        font-size: min(1.7rem, 2.5vh);
         border-width: 3px;
     }
     
     .phrase-tile.space {
-        width: 20px;
+        width: min(20px, 1.5vw);
     }
     
     .controls-panel {
@@ -1257,13 +1265,13 @@ body {
     }
     
     .left-panel {
-        padding: 5px;
-        gap: 10px;
+        padding: 0.5vh 0.5vw;
+        gap: 1vh;
     }
     
     .character-container {
-        width: 120px;
-        height: 160px;
+        width: 100%;
+        height: auto;
         max-height: 45vh;
     }
     
@@ -1284,127 +1292,133 @@ body {
     }
     
     .score-panel {
-        padding: 4px 12px;
-        min-width: 80px;
+        padding: 0.5vh 1vw;
+        min-width: fit-content;
     }
     
     .score-label {
-        font-size: 0.7rem;
+        font-size: min(0.7rem, 1.2vh);
     }
     
     .score-value {
-        font-size: 1.3rem;
+        font-size: min(1.3rem, 2vh);
     }
     
     .right-panel {
-        padding: 8px;
-        gap: 6px;
-        overflow-y: auto;
-        overflow-x: hidden;
+        padding: 0.5vh 1vw;
+        gap: 0.5vh;
+        overflow: hidden;
     }
     
     .game-title-bar {
-        padding: 6px 10px;
+        padding: 0.5vh 1vw;
     }
     
     .game-title-bar h1 {
-        font-size: 1.3rem;
+        font-size: min(1.3rem, 2vh);
     }
     
+    /* Status bar - responsive horizontal layout */
     .status-bar {
-        padding: 6px 8px;
-        gap: 4px;
+        padding: 0.5vh 0.5vw;
+        gap: 0.3vw;
         flex-wrap: nowrap;
+        overflow: visible;
     }
     
     .control-block {
-        padding: 4px 3px;
-        gap: 3px;
+        padding: 0.3vh 0.2vw;
+        gap: 0.2vh;
+        flex-shrink: 0;
     }
     
     .block-label {
-        font-size: 0.6rem;
+        font-size: min(0.5rem, 0.9vh);
     }
     
+    /* Levels - responsive sizing */
     .levels-dots {
-        column-gap: 2px;
-        row-gap: 10px;
+        column-gap: 0.1vw;
+        row-gap: 0.6vh;
     }
     
     .level-dot {
-        width: 18px;
-        height: 24px;
+        width: min(18px, 1.2vw);
+        height: min(24px, 2.2vh);
     }
     
+    /* Lives - responsive sizing */
     .lives-panel {
-        gap: 2px;
-        row-gap: 6px;
+        gap: 0.1vw;
+        row-gap: 0.4vh;
     }
     
     .life-box {
-        width: 32px;
-        height: 32px;
-        font-size: 1.2rem;
+        width: min(32px, 2.2vw);
+        height: min(32px, 3vh);
+        font-size: min(1.2rem, 1.8vh);
     }
     
+    /* Letters - responsive sizing */
     .letter-row-compact {
-        gap: 2px;
+        gap: 0.1vw;
     }
     
     .number-grid {
-        gap: 2px;
+        gap: 0.1vw;
     }
     
     .letter-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 1rem;
+        width: min(32px, 2.2vw);
+        height: min(32px, 3vh);
+        font-size: min(1rem, 1.5vh);
         border-width: 2px;
     }
     
+    /* Controls - responsive sizing */
     .mute-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
-        padding: 6px;
+        width: min(36px, 2.5vw);
+        height: min(36px, 3.3vh);
+        font-size: min(1.1rem, 1.8vh);
+        padding: 0.4vh;
     }
     
     .menu-btn-compact {
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        padding: 0.4vh 0.8vw;
+        font-size: min(0.8rem, 1.2vh);
     }
     
     .category-banner {
-        padding: 8px 15px;
+        padding: 0.6vh 1vw;
     }
     
     .category-banner span {
-        font-size: 1.1rem;
+        font-size: min(1.1rem, 1.8vh);
     }
     
     .phrase-board {
-        padding: 10px;
+        padding: 1vh;
         min-height: 20vh;
     }
     
     .phrase-grid {
-        gap: 6px;
-        padding: 8px;
+        gap: 0.5vw;
+        padding: 0.8vh;
     }
     
     .word-container {
-        gap: 6px;
+        gap: 0.5vw;
     }
     
     .phrase-tile {
-        width: 32px;
-        height: 40px;
-        font-size: 1.2rem;
+        width: min(32px, 2.2vw);
+        height: min(40px, 3.8vh);
+        font-size: min(1.2rem, 1.8vh);
         border-width: 2px;
     }
     
     .phrase-tile.space {
-        width: 15px;
+        width: min(15px, 1vw);
     }
 }
 
