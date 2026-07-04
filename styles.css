@@ -601,13 +601,13 @@ body {
 
 .levels-section .block-label,
 .lives-section .block-label {
-    font-size: 0.7rem; /* Slightly bigger for stacked blocks */
+    font-size: 0.7rem;
 }
 
-/* Keyboard and Controls block labels - larger and immune to media query overrides */
+/* Keyboard and Controls block labels - same size as levels/lives, immune to media query overrides */
 .keyboard-block .block-label,
 .control-block:has(.controls-panel) > .block-label {
-    font-size: 0.9rem !important; /* Larger for keyboard and controls, prevent overrides */
+    font-size: 0.7rem !important; /* Same as levels/lives, prevent media query overrides */
 }
 
 /* Legacy support - hide old separate rows */
