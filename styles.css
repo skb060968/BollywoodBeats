@@ -565,13 +565,14 @@ body {
     color: white;
 }
 
-/* Letter + Number Keyboard - Merged into 15×2 grid */
+/* Letter + Number Keyboard - Exactly like lives-panel structure */
 .keyboard-combined {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 0.2vw;
-    row-gap: 0.8vh; /* Match lives block row gap */
+    column-gap: 0.2vw;
+    row-gap: 0.8vh;
 }
 
 /* Legacy support - hide old separate rows */
@@ -579,19 +580,19 @@ body {
     display: none;
 }
 
-/* Number Grid - 2x2 - RESPONSIVE */
+/* Number Grid - RESPONSIVE */
 .number-grid {
     display: none;
 }
 
 .letter-btn {
-    width: min(52px, 3.5vw); /* Bigger than life-box */
-    height: min(52px, 5vh); /* Bigger than life-box */
+    width: min(42px, 2.8vw); /* Same as life-box */
+    height: min(42px, 4vh); /* Same as life-box */
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
-    border-radius: 6px; /* Square with rounded corners like life-box */
+    border-radius: 6px;
     color: white;
-    font-size: min(1.4rem, 2.2vh);
+    font-size: min(1.2rem, 1.8vh);
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -1136,16 +1137,17 @@ body {
         font-size: min(1.2rem, 1.8vh);
     }
     
-    /* Merged keyboard - 10×3 grid with bigger square keys */
+    /* Merged keyboard - Exactly like lives-panel */
     .keyboard-combined {
-        gap: 0.15vw;
-        row-gap: 0.6vh;
+        gap: 0.1vw;
+        column-gap: 0.1vw;
+        row-gap: 0.5vh;
     }
     
     .letter-btn {
-        width: min(42px, 2.8vw); /* Bigger square keys */
-        height: min(42px, 4.2vh); /* Bigger square keys */
-        font-size: min(1.2rem, 1.8vh);
+        width: min(34px, 2.3vw); /* Same as life-box */
+        height: min(34px, 3.5vh); /* Same as life-box */
+        font-size: min(1rem, 1.5vh);
         border-width: 2px;
     }
     
@@ -1333,16 +1335,17 @@ body {
         font-size: min(1.2rem, 1.9vh);
     }
     
-    /* Merged keyboard - 10×3 grid with bigger square keys */
+    /* Merged keyboard - Exactly like lives-panel but BIGGER (50px) */
     .keyboard-combined {
-        gap: 0.25vw;
-        row-gap: 0.6vh;
+        gap: 0.3vw;
+        column-gap: 0.3vw;
+        row-gap: 0.8vh;
     }
     
     .letter-btn {
-        width: min(50px, 3.5vw); /* 50px square keys for mobile */
-        height: min(50px, 5vh); /* 50px square keys for mobile */
-        font-size: min(1.4rem, 2vh);
+        width: 50px; /* Fixed 50px for mobile */
+        height: 50px; /* Fixed 50px for mobile */
+        font-size: min(1.3rem, 2vh);
         border-width: 2px;
     }
     
