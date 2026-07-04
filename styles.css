@@ -1424,29 +1424,7 @@ body {
     }
 }
 
-/* Very small phones in landscape */
-@media (max-width: 480px) and (orientation: landscape) {
-    .letter-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.9rem;
-        border-width: 2px;
-    }
-    
-    .phrase-tile {
-        width: 28px;
-        height: 36px;
-        font-size: 1.1rem;
-    }
-    
-    .phrase-grid {
-        gap: 5px;
-    }
-    
-    .word-container {
-        gap: 5px;
-    }
-}
+/* Very small phones in landscape - REMOVED to use unified mobile layout with 50px keys */
 
 
 /* ========== LOADING OVERLAY ========== */
