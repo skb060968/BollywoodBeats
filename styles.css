@@ -530,7 +530,7 @@ body {
 
 .level-dot {
     width: min(22px, 1.6vw); /* Reduced size to allow more gap visibility */
-    height: min(24px, 2.2vh); /* Keep same height to maintain block height */
+    height: min(26px, 2.5vh); /* Increased height to match keyboard block height */
     border-radius: 4px; /* Smaller radius like v1.13.4 */
     background: rgba(255, 255, 255, 0.3);
     border: 1px solid white; /* Thinner border like v1.13.4 */
