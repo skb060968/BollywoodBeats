@@ -705,7 +705,7 @@ body {
     border: 3px solid #FFD700;
     color: white;
     padding: 0;
-    font-size: 1.2rem;
+    font-size: 1.8rem; /* Increased from 1.2rem for larger gear icon */
     font-weight: bold;
     border-radius: 8px;
     cursor: pointer;
@@ -801,15 +801,15 @@ body {
 }
 
 .phrase-tile {
-    width: min(50px, 3.3vw);
-    height: min(60px, 5.5vh);
+    width: min(60px, 4vw); /* Increased from 50px/3.3vw */
+    height: min(70px, 6.5vh); /* Increased from 60px/5.5vh */
     background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
     border: 3px solid #FFEB3B;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: min(2rem, 3vh);
+    font-size: min(2.3rem, 3.5vh); /* Increased from 2rem/3vh */
     font-weight: bold;
     color: white;
     box-shadow: 
