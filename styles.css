@@ -1235,8 +1235,8 @@ body {
     }
     
     .level-dot {
-        width: min(18px, 1.2vw);
-        height: min(30px, 2.8vh) !important; /* Match base height */
+        width: 1.2vw; /* Pure viewport for high-res screens */
+        height: 2.8vh !important; /* Pure viewport for high-res screens */
     }
     
     /* Lives - scale with viewport */
@@ -1246,9 +1246,9 @@ body {
     }
     
     .life-box {
-        width: min(34px, 2.3vw);
-        height: min(34px, 3.5vh);
-        font-size: min(1.2rem, 1.8vh);
+        width: 2.3vw; /* Pure viewport for high-res screens */
+        height: 3.5vh; /* Pure viewport for high-res screens */
+        font-size: 1.8vh; /* Pure viewport for high-res screens */
     }
     
     /* Merged keyboard - Use base 45px size */
@@ -1258,29 +1258,35 @@ body {
         row-gap: 0.5vh;
     }
     
+    .letter-btn {
+        width: 2.8vw; /* Pure viewport for high-res screens */
+        height: 3.8vh; /* Pure viewport for high-res screens */
+        font-size: 1.8vh; /* Pure viewport for high-res screens */
+    }
+    
     /* Controls - scale with viewport */
     .mute-btn {
-        width: min(36px, 2.5vw);
-        height: min(36px, 3.6vh);
-        font-size: min(1.1rem, 1.8vh);
+        width: 2.5vw; /* Pure viewport for high-res screens */
+        height: 3.6vh; /* Pure viewport for high-res screens */
+        font-size: 1.8vh; /* Pure viewport for high-res screens */
         padding: 0.4vh;
     }
     
     .menu-btn-compact {
         padding: 0.5vh 1vw;
-        font-size: min(0.75rem, 1.2vh);
+        font-size: 1.2vh; /* Pure viewport for high-res screens */
     }
     
     .category-banner {
-        padding: 8px 15px;
+        padding: 0.8vh 1vw;
     }
     
     .category-banner span {
-        font-size: 1.3rem;
+        font-size: 1.8vh; /* Pure viewport for high-res screens */
     }
     
     .phrase-board {
-        padding: 10px;
+        padding: 1vh 1vw;
         min-height: 32vh;
         flex: 1;
         display: flex;
@@ -1288,24 +1294,24 @@ body {
     }
     
     .phrase-grid {
-        gap: 6px;
-        padding: 8px;
+        gap: 0.6vw;
+        padding: 0.8vh 0.8vw;
     }
     
     .word-container {
-        gap: 6px;
+        gap: 0.6vw;
     }
     
     /* Phrase tiles - scale based on available space */
     .phrase-tile {
-        width: min(45px, 3vw);
-        height: min(55px, 5.5vh);
-        font-size: min(1.7rem, 2.5vh);
+        width: 3vw; /* Pure viewport for high-res screens */
+        height: 5.5vh; /* Pure viewport for high-res screens */
+        font-size: 2.5vh; /* Pure viewport for high-res screens */
         border-width: 3px;
     }
     
     .phrase-tile.space {
-        width: min(20px, 1.5vw);
+        width: 1.5vw; /* Pure viewport for high-res screens */
     }
     
     .controls-panel {
