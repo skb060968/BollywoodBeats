@@ -530,7 +530,7 @@ body {
 
 .level-dot {
     width: min(22px, 1.6vw); /* Reduced size to allow more gap visibility */
-    height: min(26px, 2.5vh); /* Increased height to match keyboard block height */
+    height: min(30px, 2.8vh) !important; /* Increased height to match keyboard block - force override */
     border-radius: 4px; /* Smaller radius like v1.13.4 */
     background: rgba(255, 255, 255, 0.3);
     border: 1px solid white; /* Thinner border like v1.13.4 */
@@ -1236,7 +1236,7 @@ body {
     
     .level-dot {
         width: min(18px, 1.2vw);
-        height: min(20px, 2vh);
+        height: min(30px, 2.8vh) !important; /* Match base height */
     }
     
     /* Lives - scale with viewport */
@@ -1427,7 +1427,7 @@ body {
     
     .level-dot {
         width: min(20px, 1.4vw);
-        height: min(22px, 2.2vh);
+        height: min(30px, 2.8vh) !important; /* Match base height */
     }
     
     /* Lives - responsive sizing */
