@@ -1228,27 +1228,27 @@ body {
         white-space: nowrap;
     }
     
-    /* Levels - 2×5 grid */
+    /* Levels - 2×5 grid - INCREASED SIZE */
     .levels-dots {
-        column-gap: 0.1vw;
-        row-gap: 0.4vh;
+        column-gap: 0.3vw; /* Increased gap */
+        row-gap: 0.6vh;
     }
     
     .level-dot {
-        width: 1.2vw; /* Pure viewport for high-res screens */
-        height: 2.8vh !important; /* Pure viewport for high-res screens */
+        width: 2vw; /* Increased from 1.2vw */
+        height: 4.5vh !important; /* Increased from 2.8vh */
     }
     
-    /* Lives - scale with viewport */
+    /* Lives - scale with viewport - INCREASED SIZE */
     .lives-panel {
-        gap: 0.1vw;
-        row-gap: 0.5vh;
+        gap: 0.3vw; /* Increased gap */
+        row-gap: 0.8vh;
     }
     
     .life-box {
-        width: 2.3vw; /* Pure viewport for high-res screens */
-        height: 3.5vh; /* Pure viewport for high-res screens */
-        font-size: 1.8vh; /* Pure viewport for high-res screens */
+        width: 3.5vw; /* Increased from 2.3vw */
+        height: 5.5vh; /* Increased from 3.5vh */
+        font-size: 3vh; /* Increased from 1.8vh */
     }
     
     /* Merged keyboard - target 50vw x 30vh total size */
@@ -1264,12 +1264,16 @@ body {
         font-size: 3.5vh; /* Larger font for taller buttons */
     }
     
-    /* Controls - scale with viewport */
+    /* Controls - scale with viewport - INCREASED SIZE */
     .mute-btn {
-        width: 2.5vw; /* Pure viewport for high-res screens */
-        height: 3.6vh; /* Pure viewport for high-res screens */
-        font-size: 1.8vh; /* Pure viewport for high-res screens */
-        padding: 0.4vh;
+        width: 4vw; /* Increased from 2.5vw */
+        height: 6vh; /* Increased from 3.6vh */
+        font-size: 3vh; /* Increased from 1.8vh */
+        padding: 0.5vh;
+    }
+    
+    .settings-emoji {
+        font-size: 4vh; /* Add viewport-based size for media query */
     }
     
     .menu-btn-compact {
