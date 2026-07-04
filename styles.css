@@ -568,8 +568,8 @@ body {
 /* Letter + Number Keyboard - Merged into 15×2 grid */
 .keyboard-combined {
     display: grid;
-    grid-template-columns: repeat(15, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     gap: 0.2vw;
     row-gap: 0.8vh; /* Match lives block row gap */
 }
@@ -585,8 +585,8 @@ body {
 }
 
 .letter-btn {
-    width: 100%; /* Fill grid cell width */
-    height: min(42px, 4vh); /* Match life-box height for uniform block height */
+    width: min(42px, 2.8vw); /* Exact same as life-box */
+    height: min(42px, 4vh); /* Exact same as life-box */
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px; /* Square with rounded corners like life-box */
@@ -601,8 +601,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    aspect-ratio: 1; /* Keep buttons square */
-    justify-self: center; /* Center in grid cell */
 }
 
 .letter-btn:hover:not(:disabled) {
@@ -1167,14 +1165,15 @@ body {
         font-size: min(1.2rem, 1.8vh);
     }
     
-    /* Merged keyboard - 15×2 grid matching lives block height */
+    /* Merged keyboard - 10×3 grid with exact same size as lives */
     .keyboard-combined {
-        gap: 0.15vw;
+        gap: 0.1vw;
         row-gap: 0.5vh;
     }
     
     .letter-btn {
-        height: min(34px, 3.5vh); /* Match life-box height */
+        width: min(34px, 2.3vw); /* Exact same as life-box */
+        height: min(34px, 3.5vh); /* Exact same as life-box */
         font-size: min(1rem, 1.5vh);
         border-width: 2px;
     }
@@ -1363,14 +1362,15 @@ body {
         font-size: min(1.2rem, 1.9vh);
     }
     
-    /* Merged keyboard - BIGGER KEYS - 15×2 grid matching lives height */
+    /* Merged keyboard - 10×3 grid with exact same size as lives */
     .keyboard-combined {
         gap: 0.2vw;
         row-gap: 0.5vh;
     }
     
     .letter-btn {
-        height: min(32px, 3.2vh); /* Match life-box height */
+        width: min(32px, 2.3vw); /* Exact same as life-box */
+        height: min(32px, 3.2vh); /* Exact same as life-box */
         font-size: min(1rem, 1.6vh);
         border-width: 2px;
     }
