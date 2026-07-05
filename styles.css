@@ -1246,9 +1246,9 @@ body {
     }
     
     .life-box {
-        width: 5.3vw; /* Between 4.7vw and 5.9vw */
-        height: 8.5vh; /* Between 7.5vh and 9.5vh */
-        font-size: 4.8vh; /* Between 4.2vh and 5.4vh */
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
         background: linear-gradient(135deg, #555 0%, #333 100%);
         border: 2px solid #222;
         border-radius: 6px;
