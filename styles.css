@@ -1351,38 +1351,38 @@ body {
 
 /* Phone-specific query - shrink levels/lives block to match keyboard and controls height */
 @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-    /* Scale down level dots - moderate reduction for ~12vh total */
+    /* Scale down level dots - minimal reduction for ~20vh total */
     .level-dot {
-        width: min(16px, 1.2vw);
-        height: min(22px, 2vh) !important;
-        font-size: 0.7rem;
-        border-width: 1.5px;
+        width: min(20px, 1.5vw);
+        height: min(26px, 2.4vh) !important;
+        font-size: 0.85rem;
+        border-width: 2px;
     }
     
     .level-dot.completed::after {
-        font-size: 0.85rem;
+        font-size: 1.05rem;
     }
     
     /* Scale down levels grid gaps */
     .levels-dots {
-        column-gap: 0.4vw;
-        row-gap: 0.5vh;
-        padding: 0 0.2vw;
+        column-gap: 0.55vw;
+        row-gap: 0.7vh;
+        padding: 0 0.25vw;
     }
     
     /* Scale down lives boxes */
     .life-box {
-        width: min(28px, 1.8vw);
-        height: min(28px, 2.5vh);
-        font-size: min(1.1rem, 1.6vh);
-        border-width: 1.5px;
+        width: min(38px, 2.5vw);
+        height: min(38px, 3.6vh);
+        font-size: min(1.5rem, 2.2vh);
+        border-width: 2px;
     }
     
     /* Scale down lives grid gaps */
     .lives-panel {
-        gap: 0.15vw;
-        column-gap: 0.15vw;
-        row-gap: 0.5vh;
+        gap: 0.18vw;
+        column-gap: 0.18vw;
+        row-gap: 0.7vh;
     }
 }
 
