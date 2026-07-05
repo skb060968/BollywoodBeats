@@ -1349,8 +1349,8 @@ body {
     }
 }
 
-/* Small devices in landscape - shrink levels/lives block to match keyboard and controls height */
-@media (max-width: 767px) and (orientation: landscape) {
+/* Phone-specific query - shrink levels/lives block to match keyboard and controls height */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
     /* Scale down level dots - aggressive reduction */
     .level-dot {
         width: min(12px, 0.9vw);
