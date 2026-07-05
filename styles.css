@@ -1349,7 +1349,15 @@ body {
     }
 }
 
-/* Small phone media query removed - using base styles for smaller devices */
+/* Small devices in landscape - adjust levels/lives block height to match keyboard and controls */
+@media (max-width: 767px) and (orientation: landscape) {
+    .control-block.levels-lives-block {
+        min-height: 30vh;
+        padding: 2vh 0.2vw;
+        display: flex;
+        align-items: center;
+    }
+}
 
 
 /* ========== LOADING OVERLAY ========== */
