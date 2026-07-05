@@ -1351,38 +1351,38 @@ body {
 
 /* Phone-specific query - shrink levels/lives block to match keyboard and controls height */
 @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-    /* Scale down level dots - aggressive reduction */
+    /* Scale down level dots - moderate reduction for ~12vh total */
     .level-dot {
-        width: min(12px, 0.9vw);
-        height: min(16px, 1.5vh) !important;
-        font-size: 0.5rem;
-        border-width: 1px;
+        width: min(16px, 1.2vw);
+        height: min(22px, 2vh) !important;
+        font-size: 0.7rem;
+        border-width: 1.5px;
     }
     
     .level-dot.completed::after {
-        font-size: 0.65rem;
+        font-size: 0.85rem;
     }
     
     /* Scale down levels grid gaps */
     .levels-dots {
-        column-gap: 0.25vw;
-        row-gap: 0.3vh;
-        padding: 0 0.1vw;
+        column-gap: 0.4vw;
+        row-gap: 0.5vh;
+        padding: 0 0.2vw;
     }
     
     /* Scale down lives boxes */
     .life-box {
-        width: min(20px, 1.4vw);
-        height: min(20px, 1.8vh);
-        font-size: min(0.9rem, 1.2vh);
-        border-width: 1px;
+        width: min(28px, 1.8vw);
+        height: min(28px, 2.5vh);
+        font-size: min(1.1rem, 1.6vh);
+        border-width: 1.5px;
     }
     
     /* Scale down lives grid gaps */
     .lives-panel {
-        gap: 0.1vw;
-        column-gap: 0.1vw;
-        row-gap: 0.3vh;
+        gap: 0.15vw;
+        column-gap: 0.15vw;
+        row-gap: 0.5vh;
     }
 }
 
