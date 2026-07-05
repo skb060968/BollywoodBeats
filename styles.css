@@ -1298,7 +1298,7 @@ body {
     }
     
     .category-banner span {
-        font-size: 1.8vh; /* Pure viewport for high-res screens */
+        font-size: 2.5vh; /* Increased from 1.8vh for better visibility */
     }
     
     .phrase-board {
