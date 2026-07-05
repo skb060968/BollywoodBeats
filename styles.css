@@ -1228,27 +1228,27 @@ body {
         white-space: nowrap;
     }
     
-    /* Levels - 2×5 grid - INCREASED SIZE AGAIN */
+    /* Levels - 2×5 grid - INCREASED SIZE THIRD TIME */
     .levels-dots {
-        column-gap: 0.5vw; /* Increased again */
-        row-gap: 0.8vh;
+        column-gap: 0.7vw; /* Increased again */
+        row-gap: 1vh;
     }
     
     .level-dot {
-        width: 2.8vw; /* Was 1.2vw, then 2vw, now 2.8vw */
-        height: 6.2vh !important; /* Was 2.8vh, then 4.5vh, now 6.2vh */
+        width: 3.6vw; /* Was 2.8vw, now 3.6vw */
+        height: 7.9vh !important; /* Was 6.2vh, now 7.9vh */
     }
     
-    /* Lives - scale with viewport - INCREASED SIZE AGAIN */
+    /* Lives - scale with viewport - INCREASED SIZE THIRD TIME */
     .lives-panel {
-        gap: 0.5vw; /* Increased again */
-        row-gap: 1.1vh;
+        gap: 0.7vw; /* Increased again */
+        row-gap: 1.4vh;
     }
     
     .life-box {
-        width: 4.7vw; /* Was 2.3vw, then 3.5vw, now 4.7vw */
-        height: 7.5vh; /* Was 3.5vh, then 5.5vh, now 7.5vh */
-        font-size: 4.2vh; /* Was 1.8vh, then 3vh, now 4.2vh */
+        width: 5.9vw; /* Was 4.7vw, now 5.9vw */
+        height: 9.5vh; /* Was 7.5vh, now 9.5vh */
+        font-size: 5.4vh; /* Was 4.2vh, now 5.4vh */
     }
     
     /* Merged keyboard - target 50vw x 30vh total size */
@@ -1264,16 +1264,16 @@ body {
         font-size: 3.5vh; /* Larger font for taller buttons */
     }
     
-    /* Controls - scale with viewport - INCREASED SIZE AGAIN */
+    /* Controls - scale with viewport - INCREASED SIZE THIRD TIME */
     .mute-btn {
-        width: 5.5vw; /* Was 2.5vw, then 4vw, now 5.5vw */
-        height: 8.4vh; /* Was 3.6vh, then 6vh, now 8.4vh */
-        font-size: 4.2vh; /* Was 1.8vh, then 3vh, now 4.2vh */
-        padding: 0.6vh;
+        width: 7vw; /* Was 5.5vw, now 7vw */
+        height: 10.8vh; /* Was 8.4vh, now 10.8vh */
+        font-size: 5.4vh; /* Was 4.2vh, now 5.4vh */
+        padding: 0.7vh;
     }
     
     .settings-emoji {
-        font-size: 5.2vh; /* Was 4vh, now 5.2vh */
+        font-size: 6.4vh; /* Was 5.2vh, now 6.4vh */
     }
     
     .menu-btn-compact {
