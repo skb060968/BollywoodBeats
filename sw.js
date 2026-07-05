@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.13.42'; // Update this version when deploying changes
+const CACHE_VERSION = '1.13.43'; // Update this version when deploying changes
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
