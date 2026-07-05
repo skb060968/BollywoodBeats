@@ -1349,13 +1349,38 @@ body {
     }
 }
 
-/* Small devices in landscape - adjust levels/lives block height to match keyboard and controls */
+/* Small devices in landscape - shrink levels/lives block to match keyboard and controls height */
 @media (max-width: 767px) and (orientation: landscape) {
-    .control-block.levels-lives-block {
-        min-height: 30vh;
-        padding: 2vh 0.2vw;
-        display: flex;
-        align-items: center;
+    /* Scale down level dots */
+    .level-dot {
+        width: min(18px, 1.3vw);
+        height: min(24px, 2.2vh) !important;
+        font-size: 0.75rem;
+    }
+    
+    .level-dot.completed::after {
+        font-size: 1rem;
+    }
+    
+    /* Scale down levels grid gaps */
+    .levels-dots {
+        column-gap: 0.4vw;
+        row-gap: 0.6vh;
+        padding: 0 0.2vw;
+    }
+    
+    /* Scale down lives boxes */
+    .life-box {
+        width: min(32px, 2.2vw);
+        height: min(32px, 3vh);
+        font-size: min(1.3rem, 2vh);
+    }
+    
+    /* Scale down lives grid gaps */
+    .lives-panel {
+        gap: 0.15vw;
+        column-gap: 0.15vw;
+        row-gap: 0.6vh;
     }
 }
 
