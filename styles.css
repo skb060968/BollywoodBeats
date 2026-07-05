@@ -1228,27 +1228,27 @@ body {
         white-space: nowrap;
     }
     
-    /* Levels - 2×5 grid - INCREASED SIZE THIRD TIME */
+    /* Levels - 2×5 grid - OPTIMIZED SIZE */
     .levels-dots {
-        column-gap: 0.7vw; /* Increased again */
-        row-gap: 1vh;
+        column-gap: 0.6vw; /* Between 0.5vw and 0.7vw */
+        row-gap: 0.9vh; /* Between 0.8vh and 1vh */
     }
     
     .level-dot {
-        width: 3.6vw; /* Was 2.8vw, now 3.6vw */
-        height: 7.9vh !important; /* Was 6.2vh, now 7.9vh */
+        width: 3.2vw; /* Between 2.8vw and 3.6vw */
+        height: 7.05vh !important; /* Between 6.2vh and 7.9vh */
     }
     
-    /* Lives - scale with viewport - INCREASED SIZE THIRD TIME */
+    /* Lives - scale with viewport - OPTIMIZED SIZE */
     .lives-panel {
-        gap: 0.7vw; /* Increased again */
-        row-gap: 1.4vh;
+        gap: 0.6vw; /* Between 0.5vw and 0.7vw */
+        row-gap: 1.25vh; /* Between 1.1vh and 1.4vh */
     }
     
     .life-box {
-        width: 5.9vw; /* Was 4.7vw, now 5.9vw */
-        height: 9.5vh; /* Was 7.5vh, now 9.5vh */
-        font-size: 5.4vh; /* Was 4.2vh, now 5.4vh */
+        width: 5.3vw; /* Between 4.7vw and 5.9vw */
+        height: 8.5vh; /* Between 7.5vh and 9.5vh */
+        font-size: 4.8vh; /* Between 4.2vh and 5.4vh */
     }
     
     /* Merged keyboard - target 50vw x 30vh total size */
@@ -1264,16 +1264,16 @@ body {
         font-size: 3.5vh; /* Larger font for taller buttons */
     }
     
-    /* Controls - scale with viewport - INCREASED SIZE THIRD TIME */
+    /* Controls - scale with viewport - OPTIMIZED SIZE */
     .mute-btn {
-        width: 7vw; /* Was 5.5vw, now 7vw */
-        height: 10.8vh; /* Was 8.4vh, now 10.8vh */
-        font-size: 5.4vh; /* Was 4.2vh, now 5.4vh */
-        padding: 0.7vh;
+        width: 6.25vw; /* Between 5.5vw and 7vw */
+        height: 9.6vh; /* Between 8.4vh and 10.8vh */
+        font-size: 4.8vh; /* Between 4.2vh and 5.4vh */
+        padding: 0.65vh;
     }
     
     .settings-emoji {
-        font-size: 6.4vh; /* Was 5.2vh, now 6.4vh */
+        font-size: 5.8vh; /* Between 5.2vh and 6.4vh */
     }
     
     .menu-btn-compact {
