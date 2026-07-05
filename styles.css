@@ -533,15 +533,26 @@ body {
     height: min(30px, 2.8vh) !important; /* Increased height to match keyboard block - force override */
     border-radius: 4px; /* Smaller radius like v1.13.4 */
     background: rgba(255, 255, 255, 0.3);
-    border: 1px solid white; /* Thinner border like v1.13.4 */
+    border: 2px solid white; /* Match life-box border thickness */
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
     margin: auto; /* Center the dot within its grid cell */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
 }
 
 .level-dot.completed {
     background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
     border-color: #2E7D32;
     box-shadow: 0 2px 8px rgba(76,175,80,0.5);
+}
+
+.level-dot.completed::after {
+    content: '✓';
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
 .lives-panel {
