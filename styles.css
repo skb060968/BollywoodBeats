@@ -1325,7 +1325,7 @@ body {
         align-items: center;
         justify-content: space-evenly; /* Symmetric distribution */
         min-height: 30vh; /* Match keyboard block height */
-        padding: 2vh 0; /* Add vertical padding for symmetry */
+        padding: 2vh 3vw; /* Add horizontal padding to increase block width */
     }
     
     .letters-block {
