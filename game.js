@@ -1162,3 +1162,44 @@ async function resetToDefaultXML() {
     initializePresetFiles();
     checkXMLInfo();
 }
+
+
+// ========== VIEWPORT WIDTH DEBUG DISPLAY ==========
+function displayViewportWidth() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const phraseBoard = document.querySelector('.phrase-board');
+    
+    if (phraseBoard) {
+        // Remove any existing debug display
+        const existing = phraseBoard.querySelector('.viewport-debug');
+        if (existing) {
+            existing.remove();
+        }
+        
+        // Create new debug display
+        const debugDiv = document.createElement('div');
+        debugDiv.className = 'viewport-debug';
+        debugDiv.style.cssText = `
+            background: linear-gradient(135deg, #FF6B6B 0%, #D32F2F 100%);
+            color: white;
+            padding: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        `;
+        debugDiv.textContent = `Viewport: ${width}px × ${height}px`;
+        
+        phraseBoard.insertBefore(debugDiv, phraseBoard.firstChild);
+    }
+}
+
+// Display viewport width on load and resize
+window.addEventListener('DOMContentLoaded', displayViewportWidth);
+window.addEventListener('resize', displayViewportWidth);
+window.addEventListener('orientationchange', () => {
+    setTimeout(displayViewportWidth, 100);
+});
