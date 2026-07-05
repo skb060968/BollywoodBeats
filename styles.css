@@ -1351,38 +1351,38 @@ body {
 
 /* Phone-specific query - shrink levels/lives block to match keyboard and controls height */
 @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-    /* Scale UP level dots to target ~70vh total */
+    /* Scale UP level dots to target ~75vh total - BULLS EYE */
     .level-dot {
-        width: min(30px, 2.4vw);
-        height: min(50px, 4.5vh) !important;
-        font-size: 1.3rem;
+        width: min(31px, 2.5vw);
+        height: min(52px, 4.7vh) !important;
+        font-size: 1.35rem;
         border-width: 2px;
     }
     
     .level-dot.completed::after {
-        font-size: 1.8rem;
+        font-size: 1.85rem;
     }
     
-    /* Increase levels grid gaps more */
+    /* Increase levels grid gaps slightly more */
     .levels-dots {
-        column-gap: 1vw;
-        row-gap: 1.6vh;
-        padding: 0 0.5vw;
+        column-gap: 1.05vw;
+        row-gap: 1.7vh;
+        padding: 0 0.52vw;
     }
     
-    /* Scale UP lives boxes more */
+    /* Scale UP lives boxes slightly more */
     .life-box {
-        width: min(60px, 4vw);
-        height: min(60px, 6.5vh);
-        font-size: min(2.4rem, 3.8vh);
+        width: min(62px, 4.2vw);
+        height: min(62px, 6.8vh);
+        font-size: min(2.5rem, 4vh);
         border-width: 2px;
     }
     
-    /* Increase lives grid gaps more */
+    /* Increase lives grid gaps slightly more */
     .lives-panel {
-        gap: 0.4vw;
-        column-gap: 0.4vw;
-        row-gap: 1.6vh;
+        gap: 0.42vw;
+        column-gap: 0.42vw;
+        row-gap: 1.7vh;
     }
 }
 
