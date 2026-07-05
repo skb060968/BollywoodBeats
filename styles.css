@@ -1228,27 +1228,27 @@ body {
         white-space: nowrap;
     }
     
-    /* Levels - 2×5 grid - INCREASED SIZE */
+    /* Levels - 2×5 grid - INCREASED SIZE AGAIN */
     .levels-dots {
-        column-gap: 0.3vw; /* Increased gap */
-        row-gap: 0.6vh;
-    }
-    
-    .level-dot {
-        width: 2vw; /* Increased from 1.2vw */
-        height: 4.5vh !important; /* Increased from 2.8vh */
-    }
-    
-    /* Lives - scale with viewport - INCREASED SIZE */
-    .lives-panel {
-        gap: 0.3vw; /* Increased gap */
+        column-gap: 0.5vw; /* Increased again */
         row-gap: 0.8vh;
     }
     
+    .level-dot {
+        width: 2.8vw; /* Was 1.2vw, then 2vw, now 2.8vw */
+        height: 6.2vh !important; /* Was 2.8vh, then 4.5vh, now 6.2vh */
+    }
+    
+    /* Lives - scale with viewport - INCREASED SIZE AGAIN */
+    .lives-panel {
+        gap: 0.5vw; /* Increased again */
+        row-gap: 1.1vh;
+    }
+    
     .life-box {
-        width: 3.5vw; /* Increased from 2.3vw */
-        height: 5.5vh; /* Increased from 3.5vh */
-        font-size: 3vh; /* Increased from 1.8vh */
+        width: 4.7vw; /* Was 2.3vw, then 3.5vw, now 4.7vw */
+        height: 7.5vh; /* Was 3.5vh, then 5.5vh, now 7.5vh */
+        font-size: 4.2vh; /* Was 1.8vh, then 3vh, now 4.2vh */
     }
     
     /* Merged keyboard - target 50vw x 30vh total size */
@@ -1264,16 +1264,16 @@ body {
         font-size: 3.5vh; /* Larger font for taller buttons */
     }
     
-    /* Controls - scale with viewport - INCREASED SIZE */
+    /* Controls - scale with viewport - INCREASED SIZE AGAIN */
     .mute-btn {
-        width: 4vw; /* Increased from 2.5vw */
-        height: 6vh; /* Increased from 3.6vh */
-        font-size: 3vh; /* Increased from 1.8vh */
-        padding: 0.5vh;
+        width: 5.5vw; /* Was 2.5vw, then 4vw, now 5.5vw */
+        height: 8.4vh; /* Was 3.6vh, then 6vh, now 8.4vh */
+        font-size: 4.2vh; /* Was 1.8vh, then 3vh, now 4.2vh */
+        padding: 0.6vh;
     }
     
     .settings-emoji {
-        font-size: 4vh; /* Add viewport-based size for media query */
+        font-size: 5.2vh; /* Was 4vh, now 5.2vh */
     }
     
     .menu-btn-compact {
