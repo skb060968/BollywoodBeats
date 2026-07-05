@@ -1321,8 +1321,11 @@ body {
     .controls-panel {
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 2vh; /* Viewport-based gap for spacing */
         align-items: center;
+        justify-content: space-evenly; /* Symmetric distribution */
+        min-height: 30vh; /* Match keyboard block height */
+        padding: 2vh 0; /* Add vertical padding for symmetry */
     }
     
     .letters-block {
