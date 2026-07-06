@@ -695,19 +695,20 @@ body {
 /* Category Banner */
 .category-banner {
     background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
-    border: 4px solid #FFEB3B;
-    border-radius: 15px;
-    padding: clamp(0.3vh, 1vh, 2vh) clamp(0.8vw, 2vw, 3vw);
+    border: clamp(2px, 4px, 4px) solid #FFEB3B;
+    border-radius: clamp(8px, 15px, 20px);
+    padding: clamp(3px, 0.5vh, 1vh) clamp(8px, 1vw, 2vw);
     text-align: center;
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
 
 .category-banner span {
-    font-size: clamp(0.85rem, 2.5vh, 2.5rem);
+    font-size: clamp(0.75rem, 2vh, 2.2rem);
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     text-transform: uppercase;
+    line-height: 1.2;
 }
 
 /* Phrase Board */

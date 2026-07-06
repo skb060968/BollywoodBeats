@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.15.4'; // Game title bar now fully responsive - shrinks with viewport height
+const CACHE_VERSION = '1.15.5'; // Category banner responsive: font 0.75rem-2vh, padding 3px-0.5vh minimal
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
