@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.14.3'; // Character full width of left panel, keys height 6vh
+const CACHE_VERSION = '1.14.4'; // DEBUG: Added borders to left panel and character container
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
