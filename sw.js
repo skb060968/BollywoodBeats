@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.15.5'; // Category banner responsive: font 0.75rem-2vh, padding 3px-0.5vh minimal
+const CACHE_VERSION = '1.15.6'; // OnePlus 11R optimized: phrase tiles 18-22px min, gaps 0.2, borders/padding reduced
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
