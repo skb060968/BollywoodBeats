@@ -653,7 +653,7 @@ body {
 
 .letter-btn {
     width: clamp(35px, 4vw, 70px);
-    height: clamp(35px, 5vh, 70px);
+    height: clamp(45px, 6vh, 80px); /* Increased height from 5vh to 6vh */
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px;
@@ -1207,8 +1207,9 @@ body {
 /* ========== ENHANCED CHARACTER ANIMATIONS ========== */
 .character-container {
     position: relative;
-    width: clamp(120px, 20vw, 300px);
+    width: 100%; /* Full width of left panel */
     height: clamp(200px, 50vh, 500px);
+    max-width: 100%;
 }
 
 /* Image-based character (GIF/PNG/JPG) */
