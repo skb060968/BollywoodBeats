@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.14.5'; // Changed character object-fit to cover for full size display
+const CACHE_VERSION = '1.14.6'; // Removed debug borders - clean final layout
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
