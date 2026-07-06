@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.15.3'; // Aggressive status bar shrink: all elements reduced 20-40% to give phrase board more space
+const CACHE_VERSION = '1.15.4'; // Game title bar now fully responsive - shrinks with viewport height
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

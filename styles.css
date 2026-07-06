@@ -376,16 +376,17 @@ body {
 /* Game Title Bar */
 .game-title-bar {
     background: rgba(0,0,0,0.2);
-    border-radius: 10px;
-    padding: clamp(5px, 10px, 20px) clamp(10px, 20px, 40px);
+    border-radius: clamp(5px, 10px, 15px);
+    padding: clamp(3px, 0.5vh, 1vh) clamp(8px, 1vw, 2vw);
     text-align: center;
 }
 
 .game-title-bar h1 {
-    font-size: clamp(1.2rem, 2rem, 3rem);
+    font-size: clamp(0.9rem, 2vh, 2.5rem);
     color: #FFD700;
     margin: 0;
-    text-shadow: 3px 3px 0 #8B0000, 4px 4px 0 rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 0 #8B0000, 3px 3px 0 rgba(0,0,0,0.3);
+    line-height: 1.2;
 }
 
 /* Status Bar - Flexible responsive layout */
