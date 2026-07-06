@@ -534,15 +534,7 @@ body {
     gap: clamp(0.1vh, 0.3vh, 0.5vh);
 }
 
-/* Legacy support - hide old separate rows */
-.letter-row-compact {
-    display: none;
-}
-
-/* Number Grid - RESPONSIVE */
-.number-grid {
-    display: none;
-}
+/* Legacy keyboard layouts removed - using keyboard-combined grid only */
 
 .letter-btn {
     width: clamp(24px, 4vw, 70px);
@@ -1127,15 +1119,7 @@ body {
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)) grayscale(0.5) brightness(0.8);
 }
 
-/* SVG character (fallback) - rarely used */
-.character-svg {
-    width: 200px;
-    height: 300px;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-    transition: transform 0.3s ease;
-}
-
-/* Character States */
+/* Character States - Image-based animations */
 .character.idle {
     animation: breathe 3s ease-in-out infinite;
 }
@@ -1150,14 +1134,6 @@ body {
 
 .character.celebrate {
     animation: celebrateSpin 1.5s ease-out;
-}
-
-.character.sad .mouth {
-    d: path("M 85 130 Q 100 120, 115 130");
-}
-
-.character.celebrate .mouth {
-    d: path("M 80 120 Q 100 140, 120 120");
 }
 
 @keyframes breathe {
@@ -1198,62 +1174,16 @@ body {
     100% { transform: scale(1) rotate(0deg); }
 }
 
-/* Eye animations */
-.character.correct .pupil {
-    animation: blinkHappy 0.3s ease;
-}
-
-.character.correct .eyes {
-    animation: eyesWide 0.5s ease;
-}
-
-.character.wrong .pupil {
-    animation: pupilSad 0.5s ease;
-}
-
-.character.wrong .eyes {
-    animation: eyeShake 0.5s ease;
-}
-
-.character.celebrate .eyes {
-    animation: eyesCelebrate 1s ease;
-}
-
-@keyframes blinkHappy {
-    0%, 100% { transform: scaleY(1); }
-    50% { transform: scaleY(0.2); }
-}
-
-@keyframes eyesWide {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-}
-
-@keyframes pupilSad {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(0, 3px); }
-}
-
-@keyframes eyeShake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    50% { transform: translateX(4px); }
-    75% { transform: translateX(-4px); }
-}
-
-@keyframes eyesCelebrate {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    25% { transform: scale(1.2) rotate(-5deg); }
-    50% { transform: scale(1.3) rotate(5deg); }
-    75% { transform: scale(1.2) rotate(-5deg); }
-}
-
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.2); }
 }
 
 @keyframes loseLife {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}e {
     0% { transform: scale(1); }
     50% { transform: scale(1.3) rotate(10deg); }
     100% { transform: scale(1) rotate(0deg); }
@@ -1309,43 +1239,7 @@ body {
     text-shadow: 0 0 20px #FFD700;
 }
 
-.gameover-btn {
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    margin: 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-weight: bold;
-}
-
-.gameover-btn.primary {
-    background: #FFD700;
-    color: #8B0000;
-}
-
-.gameover-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.gameover-btn span {
-    margin-right: 10px;
-}
-
 /* ========== ENHANCED LETTER BUTTON ANIMATIONS ========== */
-.letter-btn {
-    transition: all 0.2s ease;
-}
-
-.letter-btn:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
 .letter-btn.correct {
     animation: correctPulse 0.5s ease;
 }
@@ -1364,4 +1258,3 @@ body {
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
 }
-
