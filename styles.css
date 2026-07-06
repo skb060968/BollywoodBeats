@@ -307,15 +307,17 @@ body {
     color: #FF6600;
 }
 
-/* GAME SCREEN - Universal Responsive Layout */
+/* GAME SCREEN - Universal Responsive Layout with height-first scaling */
 .game-layout {
     display: grid;
     grid-template-columns: 18% 82%;
-    width: 100vw;
+    width: min(100vw, calc(100vh * 2.5)); /* Width limited by height aspect ratio */
     height: 100vh;
+    max-height: 100vh;
     background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
     overflow: hidden;
     gap: 0;
+    margin: 0 auto; /* Center if narrower than viewport */
 }
 
 /* LEFT PANEL - Character & Score */

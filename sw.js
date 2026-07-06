@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.15.0'; // Reduced all clamp() minimums for phone compatibility (708-808px)
+const CACHE_VERSION = '1.15.1'; // Height-first scaling: width constrained by viewport height aspect ratio
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
