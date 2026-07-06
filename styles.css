@@ -367,8 +367,8 @@ body {
 .right-panel {
     display: flex;
     flex-direction: column;
-    padding: 15px;
-    gap: 12px;
+    padding: clamp(8px, 15px, 25px);
+    gap: clamp(6px, 12px, 20px);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -377,12 +377,12 @@ body {
 .game-title-bar {
     background: rgba(0,0,0,0.2);
     border-radius: 10px;
-    padding: 10px 20px;
+    padding: clamp(5px, 10px, 20px) clamp(10px, 20px, 40px);
     text-align: center;
 }
 
 .game-title-bar h1 {
-    font-size: 2rem;
+    font-size: clamp(1.2rem, 2rem, 3rem);
     color: #FFD700;
     margin: 0;
     text-shadow: 3px 3px 0 #8B0000, 4px 4px 0 rgba(0,0,0,0.3);
@@ -394,8 +394,8 @@ body {
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: stretch;
-    gap: clamp(0.3vw, 0.5vw, 1vw);
-    padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.5vw, 1vw, 2vw);
+    gap: clamp(0.2vw, 0.5vw, 1vw);
+    padding: clamp(0.3vh, 0.8vh, 1.5vh) clamp(0.3vw, 1vw, 2vw);
     background: rgba(0,0,0,0.1);
     border-radius: 10px;
 }
@@ -405,8 +405,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(0.2vh, 0.3vh, 0.5vh);
-    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.3vw, 0.5vw, 0.8vw);
+    gap: clamp(0.1vh, 0.3vh, 0.5vh);
+    padding: clamp(0.2vh, 0.5vh, 1vh) clamp(0.2vw, 0.5vw, 0.8vw);
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 215, 0, 0.4);
     border-radius: 8px;
@@ -417,25 +417,25 @@ body {
 .control-block.levels-lives-block {
     flex: 0 0 auto;
     min-width: fit-content;
-    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.5vw, 0.8vw, 1.2vw);
+    padding: clamp(0.2vh, 0.5vh, 1vh) clamp(0.3vw, 0.8vw, 1.2vw);
 }
 
 /* Keyboard Block - Maximum width (takes most space for 30 keys) */
 .control-block.keyboard-block {
     flex: 1 1 auto;
     min-width: 0;
-    padding: clamp(0.2vh, 0.3vh, 0.5vh) clamp(0.2vw, 0.3vw, 0.5vw); /* Reduced padding for bigger keys */
+    padding: clamp(0.15vh, 0.3vh, 0.5vh) clamp(0.15vw, 0.3vw, 0.5vw); /* Reduced padding for bigger keys */
 }
 
 /* Controls Block - Minimum width (only 2 icons, should be compact) */
 .control-block:has(.controls-panel) {
     flex: 0 0 auto;
     min-width: fit-content;
-    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.8vw, 1.2vw, 1.5vw);
+    padding: clamp(0.2vh, 0.5vh, 1vh) clamp(0.5vw, 1.2vw, 1.5vw);
 }
 
 .block-label {
-    font-size: clamp(0.5rem, 0.8vw, 1rem);
+    font-size: clamp(0.4rem, 0.8vw, 1rem);
     color: #FFD700;
     font-weight: bold;
     text-align: center;
@@ -448,14 +448,14 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    column-gap: clamp(0.3vw, 0.5vw, 0.8vw);
-    row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
+    column-gap: clamp(0.2vw, 0.5vw, 0.8vw);
+    row-gap: clamp(0.3vh, 0.8vh, 1.2vh);
     padding: 0;
 }
 
 .level-dot {
-    width: clamp(15px, 2.5vw, 40px);
-    height: clamp(20px, 4vh, 50px);
+    width: clamp(12px, 2.5vw, 40px);
+    height: clamp(16px, 4vh, 50px);
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
@@ -464,7 +464,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.6rem, 1.5vh, 1.2rem);
+    font-size: clamp(0.5rem, 1.5vh, 1.2rem);
 }
 
 .level-dot.completed {
@@ -485,20 +485,20 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    column-gap: clamp(0.3vw, 0.5vw, 0.8vw);
-    row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
+    column-gap: clamp(0.2vw, 0.5vw, 0.8vw);
+    row-gap: clamp(0.3vh, 0.8vh, 1.2vh);
 }
 
 .life-box {
-    width: clamp(25px, 3vw, 50px);
-    height: clamp(25px, 4vh, 50px);
+    width: clamp(20px, 3vw, 50px);
+    height: clamp(20px, 4vh, 50px);
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(0.9rem, 2vh, 1.5rem);
+    font-size: clamp(0.8rem, 2vh, 1.5rem);
     color: #999;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
@@ -514,15 +514,15 @@ body {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    column-gap: clamp(0.3vw, 0.5vw, 1vw);
-    row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
+    column-gap: clamp(0.2vw, 0.5vw, 1vw);
+    row-gap: clamp(0.3vh, 0.8vh, 1.2vh);
 }
 
 /* Levels and Lives stacked together */
 .levels-lives-stack {
     display: flex;
     flex-direction: column;
-    gap: clamp(0.3vh, 0.5vh, 0.8vh);
+    gap: clamp(0.2vh, 0.5vh, 0.8vh);
 }
 
 .levels-section,
@@ -530,7 +530,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(0.2vh, 0.3vh, 0.5vh);
+    gap: clamp(0.1vh, 0.3vh, 0.5vh);
 }
 
 /* Legacy support - hide old separate rows */
@@ -544,13 +544,13 @@ body {
 }
 
 .letter-btn {
-    width: clamp(28px, 4vw, 70px);
-    height: clamp(35px, 6vh, 80px);
+    width: clamp(24px, 4vw, 70px);
+    height: clamp(28px, 6vh, 80px);
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px;
     color: white;
-    font-size: clamp(0.9rem, 3vh, 2.5rem);
+    font-size: clamp(0.8rem, 3vh, 2.5rem);
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -609,15 +609,15 @@ body {
 .controls-panel {
     display: flex;
     flex-direction: column;
-    gap: clamp(1vh, 2vh, 3vh);
+    gap: clamp(0.8vh, 2vh, 3vh);
     align-items: center;
     justify-content: space-evenly;
-    padding: clamp(0.5vh, 1vh, 2vh) 0;
+    padding: clamp(0.3vh, 1vh, 2vh) 0;
     min-height: fit-content;
 }
 
 .mute-emoji {
-    font-size: clamp(1.2rem, 4vh, 3rem);
+    font-size: clamp(1rem, 4vh, 3rem);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -637,7 +637,7 @@ body {
 }
 
 .settings-emoji {
-    font-size: clamp(1.2rem, 4vh, 3rem);
+    font-size: clamp(1rem, 4vh, 3rem);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -696,13 +696,13 @@ body {
     background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
     border: 4px solid #FFEB3B;
     border-radius: 15px;
-    padding: clamp(0.5vh, 1vh, 2vh) clamp(1vw, 2vw, 3vw);
+    padding: clamp(0.3vh, 1vh, 2vh) clamp(0.8vw, 2vw, 3vw);
     text-align: center;
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
 
 .category-banner span {
-    font-size: clamp(1rem, 2.5vh, 2.5rem);
+    font-size: clamp(0.85rem, 2.5vh, 2.5rem);
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
