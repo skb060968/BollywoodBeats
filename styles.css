@@ -331,7 +331,7 @@ body {
 .score-panel {
     background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
     border-radius: 8px;
-    padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(1vw, 1.5vw, 2vw);
+    padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.8vw, 1.5vw, 2vw);
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -340,12 +340,12 @@ body {
     gap: clamp(1px, 0.2vh, 5px);
     border: 3px solid #FFD700;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    min-width: clamp(100px, 12vw, 180px);
-    max-width: clamp(120px, 15vw, 200px);
+    min-width: clamp(80px, 12vw, 180px);
+    max-width: clamp(100px, 15vw, 200px);
 }
 
 .score-label {
-    font-size: clamp(0.7rem, 1.2vh, 1.2rem);
+    font-size: clamp(0.6rem, 1.2vh, 1.2rem);
     color: white;
     font-weight: bold;
     margin: 0;
@@ -353,7 +353,7 @@ body {
 }
 
 .score-value {
-    font-size: clamp(1.2rem, 2.5vh, 2.5rem);
+    font-size: clamp(1rem, 2.5vh, 2.5rem);
     color: #FFD700;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
@@ -452,8 +452,8 @@ body {
 }
 
 .level-dot {
-    width: clamp(20px, 2.5vw, 40px);
-    height: clamp(25px, 4vh, 50px);
+    width: clamp(15px, 2.5vw, 40px);
+    height: clamp(20px, 4vh, 50px);
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
@@ -462,7 +462,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.8rem, 1.5vh, 1.2rem);
+    font-size: clamp(0.6rem, 1.5vh, 1.2rem);
 }
 
 .level-dot.completed {
@@ -488,15 +488,15 @@ body {
 }
 
 .life-box {
-    width: clamp(30px, 3vw, 50px);
-    height: clamp(30px, 4vh, 50px);
+    width: clamp(25px, 3vw, 50px);
+    height: clamp(25px, 4vh, 50px);
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(1rem, 2vh, 1.5rem);
+    font-size: clamp(0.9rem, 2vh, 1.5rem);
     color: #999;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
@@ -542,13 +542,13 @@ body {
 }
 
 .letter-btn {
-    width: clamp(35px, 4vw, 70px);
-    height: clamp(45px, 6vh, 80px); /* Increased height from 5vh to 6vh */
+    width: clamp(28px, 4vw, 70px);
+    height: clamp(35px, 6vh, 80px);
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px;
     color: white;
-    font-size: clamp(1rem, 3vh, 2.5rem);
+    font-size: clamp(0.9rem, 3vh, 2.5rem);
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -615,7 +615,7 @@ body {
 }
 
 .mute-emoji {
-    font-size: clamp(1.5rem, 4vh, 3rem);
+    font-size: clamp(1.2rem, 4vh, 3rem);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -635,7 +635,7 @@ body {
 }
 
 .settings-emoji {
-    font-size: clamp(1.5rem, 4vh, 3rem);
+    font-size: clamp(1.2rem, 4vh, 3rem);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -700,7 +700,7 @@ body {
 }
 
 .category-banner span {
-    font-size: clamp(1.2rem, 2.5vh, 2.5rem);
+    font-size: clamp(1rem, 2.5vh, 2.5rem);
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -755,15 +755,15 @@ body {
 }
 
 .phrase-tile {
-    width: clamp(40px, 3vw, 70px);
-    height: clamp(50px, 5vh, 80px);
+    width: clamp(30px, 3vw, 70px);
+    height: clamp(38px, 5vh, 80px);
     background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
     border: 3px solid #FFEB3B;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(1.2rem, 3vh, 2.6rem);
+    font-size: clamp(1rem, 3vh, 2.6rem);
     font-weight: bold;
     color: white;
     box-shadow: 
@@ -776,27 +776,27 @@ body {
 
 /* Responsive tile sizing for different phrase lengths */
 .phrase-grid.short-phrase .phrase-tile {
-    width: clamp(50px, 4.5vw, 80px);
-    height: clamp(60px, 7vh, 90px);
-    font-size: clamp(1.5rem, 3.8vh, 3rem);
+    width: clamp(38px, 4.5vw, 80px);
+    height: clamp(48px, 7vh, 90px);
+    font-size: clamp(1.3rem, 3.8vh, 3rem);
 }
 
 .phrase-grid.medium-phrase .phrase-tile {
-    width: clamp(40px, 3.5vw, 70px);
-    height: clamp(50px, 6vh, 80px);
-    font-size: clamp(1.2rem, 3.2vh, 2.6rem);
+    width: clamp(32px, 3.5vw, 70px);
+    height: clamp(40px, 6vh, 80px);
+    font-size: clamp(1rem, 3.2vh, 2.6rem);
 }
 
 .phrase-grid.long-phrase .phrase-tile {
-    width: clamp(35px, 3vw, 60px);
-    height: clamp(45px, 5vh, 70px);
-    font-size: clamp(1rem, 2.8vh, 2.2rem);
+    width: clamp(28px, 3vw, 60px);
+    height: clamp(36px, 5vh, 70px);
+    font-size: clamp(0.9rem, 2.8vh, 2.2rem);
 }
 
 .phrase-grid.very-long-phrase .phrase-tile {
-    width: clamp(30px, 2.5vw, 50px);
-    height: clamp(40px, 4.5vh, 60px);
-    font-size: clamp(0.9rem, 2.5vh, 1.8rem);
+    width: clamp(24px, 2.5vw, 50px);
+    height: clamp(32px, 4.5vh, 60px);
+    font-size: clamp(0.8rem, 2.5vh, 1.8rem);
 }
 
 .phrase-tile.revealed {
@@ -1098,7 +1098,7 @@ body {
 .character-container {
     position: relative;
     width: 100%; /* Full width of left panel */
-    height: clamp(200px, 50vh, 500px);
+    height: clamp(150px, 50vh, 500px);
     max-width: 100%;
 }
 

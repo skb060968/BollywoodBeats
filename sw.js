@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.14.7'; // Cleaned up duplications and stale code from old versions
+const CACHE_VERSION = '1.15.0'; // Reduced all clamp() minimums for phone compatibility (708-808px)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
