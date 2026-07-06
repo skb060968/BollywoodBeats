@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.13.76'; // Reverted to stable version
+const CACHE_VERSION = '1.14.0'; // Universal responsive CSS - clamp() based, no media queries
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

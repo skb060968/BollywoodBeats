@@ -1,25 +1,23 @@
+/* ==================== UNIVERSAL RESPONSIVE DESIGN ==================== */
+/* Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Desktop zoom fix - better fit at 100% */
-html {
-    zoom: 0.9;
-}
-
-@media (max-width: 768px) {
-    html {
-        zoom: 1; /* Reset zoom on mobile */
-    }
+html, body {
+    height: 100%;
+    width: 100%;
+    font-family: 'Arial Black', 'Arial Bold', sans-serif;
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
+    overflow: hidden;
 }
 
 body {
-    font-family: 'Arial Black', 'Arial Bold', sans-serif;
-    background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
-    min-height: 100vh;
-    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Rotate Message - Better detection */
@@ -309,14 +307,15 @@ body {
     color: #FF6600;
 }
 
-/* GAME SCREEN - Bollywood Style */
+/* GAME SCREEN - Universal Responsive Layout */
 .game-layout {
+    display: grid;
+    grid-template-columns: 18% 82%;
     width: 100vw;
     height: 100vh;
-    display: grid;
-    grid-template-columns: minmax(250px, 22%) 1fr;
     background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
     overflow: hidden;
+    gap: 0;
 }
 
 /* LEFT PANEL - Character & Score */
@@ -419,21 +418,21 @@ body {
 .score-panel {
     background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
     border-radius: 8px;
-    padding: 8px 20px;
+    padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(1vw, 1.5vw, 2vw);
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: clamp(1px, 0.2vh, 5px);
     border: 3px solid #FFD700;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    min-width: 120px;
-    max-width: 180px;
+    min-width: clamp(100px, 12vw, 180px);
+    max-width: clamp(120px, 15vw, 200px);
 }
 
 .score-label {
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 1.2vh, 1.2rem);
     color: white;
     font-weight: bold;
     margin: 0;
@@ -441,7 +440,7 @@ body {
 }
 
 .score-value {
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 2.5vh, 2.5rem);
     color: #FFD700;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
@@ -474,30 +473,40 @@ body {
     text-shadow: 3px 3px 0 #8B0000, 4px 4px 0 rgba(0,0,0,0.3);
 }
 
-/* Status Bar - Horizontal Layout - RESPONSIVE */
+/* Status Bar - Flexible responsive layout */
 .status-bar {
     display: flex;
-    align-items: center;
-    gap: 0.4vw;
-    padding: 0.8vh 1vw;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: clamp(0.3vw, 0.5vw, 1vw);
+    padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.5vw, 1vw, 2vw);
     background: rgba(0,0,0,0.1);
     border-radius: 10px;
-    flex-wrap: nowrap;
 }
 
-/* Control Blocks - Visual Separation - RESPONSIVE */
+/* Control Blocks - Flexible sizing */
 .control-block {
+    flex: 1 1 30%;
+    min-width: clamp(100px, 15vw, 200px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.3vh;
-    padding: 0.5vh 0.3vw;
+    gap: clamp(0.2vh, 0.3vh, 0.5vh);
+    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.2vw, 0.3vw, 0.5vw);
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 215, 0, 0.4);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    flex-shrink: 0;
-    min-width: fit-content;
+}
+
+.block-label {
+    font-size: clamp(0.5rem, 0.8vw, 1rem);
+    color: #FFD700;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    white-space: nowrap;
 }
 
 .keyboard-block {
@@ -510,7 +519,7 @@ body {
 
 /* Block Labels - Centered - RESPONSIVE */
 .block-label {
-    font-size: 0.5rem; /* Smaller uniform size for all blocks */
+    font-size: clamp(0.5rem, 0.8vw, 1rem);
     color: #FFD700;
     font-weight: bold;
     text-align: center;
@@ -523,23 +532,23 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    column-gap: 0.6vw; /* Increased gap for better spacing */
-    row-gap: 0.8vh; /* Increased row gap */
-    padding: 0 0.3vw; /* Add horizontal padding to prevent edge crowding */
+    column-gap: clamp(0.3vw, 0.6vw, 1vw);
+    row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
+    padding: 0 0.3vw;
 }
 
 .level-dot {
-    width: min(22px, 1.6vw); /* Reduced size to allow more gap visibility */
-    height: min(30px, 2.8vh) !important; /* Increased height to match keyboard block - force override */
-    border-radius: 4px; /* Smaller radius like v1.13.4 */
+    width: clamp(20px, 2.5vw, 40px);
+    height: clamp(25px, 4vh, 50px);
+    border-radius: 4px;
     background: rgba(255, 255, 255, 0.3);
-    border: 2px solid white; /* Match life-box border thickness */
+    border: 2px solid white;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-    margin: auto; /* Center the dot within its grid cell */
+    margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 1.5vh, 1.2rem);
 }
 
 .level-dot.completed {
@@ -560,21 +569,20 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 0.2vw;
-    column-gap: 0.2vw;
-    row-gap: 0.8vh;
+    column-gap: clamp(0.3vw, 0.5vw, 1vw);
+    row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
 }
 
 .life-box {
-    width: min(42px, 2.8vw);
-    height: min(42px, 4vh);
+    width: clamp(30px, 3vw, 50px);
+    height: clamp(30px, 4vh, 50px);
     background: rgba(255, 255, 255, 0.3);
     border: 2px solid white;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: min(1.7rem, 2.5vh);
+    font-size: clamp(1rem, 2vh, 1.5rem);
     color: #999;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
@@ -590,9 +598,8 @@ body {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 0.2vw;
-    column-gap: 0.2vw;
-    row-gap: 0.8vh;
+    column-gap: clamp(0.3vw, 0.5vw, 1vw);
+    row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
 }
 
 /* Levels and Lives stacked together */
@@ -640,13 +647,13 @@ body {
 }
 
 .letter-btn {
-    width: 40px; /* Fixed 40px for ALL devices */
-    height: 40px; /* Fixed 40px for ALL devices */
+    width: clamp(35px, 4vw, 70px);
+    height: clamp(35px, 5vh, 70px);
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;
     border-radius: 6px;
     color: white;
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3vh, 2.5rem);
     font-weight: bold;
     cursor: pointer;
     box-shadow: 
@@ -705,15 +712,15 @@ body {
 .controls-panel {
     display: flex;
     flex-direction: column;
-    gap: 18px; /* Fixed pixel gap for visibility */
+    gap: clamp(1vh, 2vh, 3vh);
     align-items: center;
-    justify-content: space-evenly; /* Symmetric vertical distribution */
-    padding: 1vh 0;
-    min-height: 120px; /* Match the height of keyboard block */
+    justify-content: space-evenly;
+    padding: clamp(0.5vh, 1vh, 2vh) 0;
+    min-height: fit-content;
 }
 
 .mute-emoji {
-    font-size: 2.5rem; /* Same as settings-emoji */
+    font-size: clamp(1.5rem, 4vh, 3rem);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -733,7 +740,7 @@ body {
 }
 
 .settings-emoji {
-    font-size: 2.5rem; /* Large emoji without button constraints */
+    font-size: clamp(1.5rem, 4vh, 3rem);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -792,13 +799,13 @@ body {
     background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
     border: 4px solid #FFEB3B;
     border-radius: 15px;
-    padding: 15px 30px;
+    padding: clamp(0.5vh, 1vh, 2vh) clamp(1vw, 2vw, 3vw);
     text-align: center;
     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
 
 .category-banner span {
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 2.5vh, 2.5rem);
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -811,7 +818,7 @@ body {
     background: linear-gradient(135deg, #FFB74D 0%, #FF9800 100%);
     border: 5px solid #FFD700;
     border-radius: 20px;
-    padding: 20px;
+    padding: clamp(1vh, 2vh, 3vh) clamp(1vw, 2vw, 3vw);
     box-shadow: 
         0 8px 20px rgba(0,0,0,0.3),
         inset 0 3px 8px rgba(0,0,0,0.1);
@@ -840,28 +847,28 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
-    gap: 0.7vw;
+    gap: clamp(0.4vw, 0.7vw, 1vw);
     height: 100%;
-    padding: 1.5vh 1vw;
+    padding: clamp(0.5vh, 1.5vh, 2.5vh) clamp(0.5vw, 1vw, 2vw);
 }
 
 /* Word Container - Prevents word splitting */
 .word-container {
     display: flex;
-    gap: 0.7vw;
+    gap: clamp(0.4vw, 0.7vw, 1vw);
     flex-wrap: nowrap;
 }
 
 .phrase-tile {
-    width: min(60px, 4vw);
-    height: min(70px, 6.5vh);
+    width: clamp(40px, 3vw, 70px);
+    height: clamp(50px, 5vh, 80px);
     background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
     border: 3px solid #FFEB3B;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: min(2.3rem, 3.5vh);
+    font-size: clamp(1.2rem, 3vh, 2.6rem);
     font-weight: bold;
     color: white;
     box-shadow: 
@@ -874,27 +881,27 @@ body {
 
 /* Responsive tile sizing for different phrase lengths */
 .phrase-grid.short-phrase .phrase-tile {
-    width: min(70px, 4.5vw);
-    height: min(80px, 7vh);
-    font-size: min(2.6rem, 3.8vh);
+    width: clamp(50px, 4.5vw, 80px);
+    height: clamp(60px, 7vh, 90px);
+    font-size: clamp(1.5rem, 3.8vh, 3rem);
 }
 
 .phrase-grid.medium-phrase .phrase-tile {
-    width: min(60px, 4vw);
-    height: min(70px, 6.5vh);
-    font-size: min(2.3rem, 3.5vh);
+    width: clamp(40px, 3.5vw, 70px);
+    height: clamp(50px, 6vh, 80px);
+    font-size: clamp(1.2rem, 3.2vh, 2.6rem);
 }
 
 .phrase-grid.long-phrase .phrase-tile {
-    width: min(50px, 3.3vw);
-    height: min(60px, 5.5vh);
-    font-size: min(2rem, 3vh);
+    width: clamp(35px, 3vw, 60px);
+    height: clamp(45px, 5vh, 70px);
+    font-size: clamp(1rem, 2.8vh, 2.2rem);
 }
 
 .phrase-grid.very-long-phrase .phrase-tile {
-    width: min(42px, 2.8vw);
-    height: min(52px, 4.8vh);
-    font-size: min(1.7rem, 2.5vh);
+    width: clamp(30px, 2.5vw, 50px);
+    height: clamp(40px, 4.5vh, 60px);
+    font-size: clamp(0.9rem, 2.5vh, 1.8rem);
 }
 
 .phrase-tile.revealed {
@@ -916,7 +923,7 @@ body {
 }
 
 .phrase-tile.space {
-    width: 20px;
+    width: clamp(15px, 1.5vw, 30px);
     background: transparent;
     border: none;
     box-shadow: none;
@@ -1149,243 +1156,9 @@ body {
     }
 }
 
-/* ========== RESPONSIVE DESIGN - PERCENTAGE BASED ========== */
-
-/* Phones, Tablets, Desktops, and TVs - 768px and wider (all landscape devices except small phones) */
-@media (min-width: 768px) and (orientation: landscape) {
-    html {
-        zoom: 1.0;
-    }
-    
-    body {
-        overflow: hidden;
-    }
-    
-    .game-layout {
-        grid-template-columns: 18% 82%;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-    }
-    
-    .left-panel {
-        padding: 8px 10px 8px 0;
-        gap: 8px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .character-container {
-        width: 100%;
-        height: auto;
-        max-height: 75vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .character-image {
-        width: 100%;
-        height: 100%;
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
-    
-    /* Move score back to left panel (below character) */
-    .score-panel {
-        position: relative;
-        padding: 5px 15px;
-        min-width: 100px;
-    }
-    
-    .score-label {
-        font-size: 0.75rem;
-    }
-    
-    .score-value {
-        font-size: 1.4rem;
-    }
-    
-    .right-panel {
-        padding: 8px 12px;
-        gap: 6px;
-        overflow: hidden;
-        background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
-    }
-    
-    .game-title-bar {
-        padding: 6px 12px;
-    }
-    
-    .game-title-bar h1 {
-        font-size: 1.4rem;
-    }
-    
-    /* Status bar elements - scale based on available width */
-    .status-bar {
-        padding: 0.5vh 0.5vw;
-        gap: 0.3vw;
-        flex-wrap: nowrap;
-        overflow: visible;
-    }
-    
-    .control-block {
-        padding: 0.3vh 0.2vw;
-        gap: 0.2vh;
-        min-width: fit-content;
-    }
-    
-    .block-label {
-        font-size: min(0.55rem, 1vh);
-        white-space: nowrap;
-    }
-    
-    /* Levels - 2×5 grid - OPTIMIZED SIZE */
-    .levels-dots {
-        column-gap: 0.6vw; /* Between 0.5vw and 0.7vw */
-        row-gap: 0.9vh; /* Between 0.8vh and 1vh */
-    }
-    
-    .level-dot {
-        width: 3.2vw; /* Between 2.8vw and 3.6vw */
-        height: 7.05vh !important; /* Between 6.2vh and 7.9vh */
-    }
-    
-    /* Lives - scale with viewport - OPTIMIZED SIZE */
-    .lives-panel {
-        gap: 0.6vw; /* Between 0.5vw and 0.7vw */
-        row-gap: 1.25vh; /* Between 1.1vh and 1.4vh */
-    }
-    
-    .life-box {
-        width: 40px;
-        height: 40px;
-        font-size: 1.5rem;
-    }
-    
-    /* Merged keyboard - target 50vw x 30vh total size */
-    .keyboard-combined {
-        gap: 0.5vw;
-        column-gap: 0.5vw;
-        row-gap: 1.3vh;
-    }
-    
-    .letter-btn {
-        width: 4.55vw; /* Calculated for 50vw total width */
-        height: 9.1vh; /* Calculated for 30vh total height */
-        font-size: 3.5vh; /* Larger font for taller buttons */
-    }
-    
-    /* Controls - scale with viewport - OPTIMIZED SIZE */
-    .mute-emoji {
-        font-size: 4.8vh; /* Same as settings adjusted for viewport */
-    }
-    
-    .settings-emoji {
-        font-size: 5.8vh; /* Between 5.2vh and 6.4vh */
-    }
-    
-    .menu-btn-compact {
-        padding: 0.5vh 1vw;
-        font-size: 1.2vh; /* Pure viewport for high-res screens */
-    }
-    
-    .category-banner {
-        padding: 0.8vh 1vw;
-    }
-    
-    .category-banner span {
-        font-size: 2.5vh; /* Increased from 1.8vh for better visibility */
-    }
-    
-    .phrase-board {
-        padding: 1vh 1vw;
-        min-height: 32vh;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .phrase-grid {
-        gap: 0.6vw;
-        padding: 0.8vh 0.8vw;
-    }
-    
-    .word-container {
-        gap: 0.6vw;
-    }
-    
-    /* Phrase tiles - scale based on available space */
-    .phrase-tile {
-        width: 3vw; /* Pure viewport for high-res screens */
-        height: 5.5vh; /* Pure viewport for high-res screens */
-        font-size: 2.5vh; /* Pure viewport for high-res screens */
-        border-width: 3px;
-    }
-    
-    .phrase-tile.space {
-        width: 1.5vw; /* Pure viewport for high-res screens */
-    }
-    
-    .controls-panel {
-        display: flex;
-        flex-direction: column;
-        gap: 2vh; /* Viewport-based gap for spacing */
-        align-items: center;
-        justify-content: space-evenly; /* Symmetric distribution */
-        min-height: 30vh; /* Match keyboard block height */
-        padding: 2vh 1.5vw; /* Reduced horizontal padding to 1.5vw each side */
-    }
-    
-    .letters-block {
-        padding: 4px 2px;
-    }
-    
-    .keyboard-block {
-        flex-shrink: 0;
-    }
-}
-
-/* Phone-specific query - shrink levels/lives block to match keyboard and controls height */
-@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-    /* Scale UP level dots to target ~75vh total - BULLS EYE */
-    .level-dot {
-        width: min(31px, 2.5vw);
-        height: min(52px, 4.7vh) !important;
-        font-size: 1.35rem;
-        border-width: 2px;
-    }
-    
-    .level-dot.completed::after {
-        font-size: 1.85rem;
-    }
-    
-    /* Increase levels grid gaps slightly more */
-    .levels-dots {
-        column-gap: 1.05vw;
-        row-gap: 1.7vh;
-        padding: 0 0.52vw;
-    }
-    
-    /* Scale UP lives boxes slightly more */
-    .life-box {
-        width: min(62px, 4.2vw);
-        height: min(62px, 6.8vh);
-        font-size: min(2.5rem, 4vh);
-        border-width: 2px;
-    }
-    
-    /* Increase lives grid gaps slightly more */
-    .lives-panel {
-        gap: 0.42vw;
-        column-gap: 0.42vw;
-        row-gap: 1.7vh;
-    }
-}
-
+/* ========== UNIVERSAL RESPONSIVE - NO MEDIA QUERIES ========== */
+/* All sizing now uses clamp() and flexible units for universal scaling */
+/* This single design works on ALL devices - phones, tablets, desktops, TVs */
 
 /* ========== LOADING OVERLAY ========== */
 .loading-overlay {
@@ -1429,8 +1202,8 @@ body {
 /* ========== ENHANCED CHARACTER ANIMATIONS ========== */
 .character-container {
     position: relative;
-    width: 500px;
-    height: 670px;
+    width: clamp(100px, 15vw, 200px);
+    height: clamp(150px, 25vh, 300px);
 }
 
 /* Image-based character (GIF/PNG/JPG) */
@@ -1438,8 +1211,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 500px;
-    height: 670px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
     transition: opacity 0.3s ease;
