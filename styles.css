@@ -297,12 +297,12 @@ body {
     font-size: 1.2rem;
 }
 
-.score-rank {
+.score-item .score-rank {
     font-weight: bold;
     color: #0066CC;
 }
 
-.score-value {
+.score-item .score-value {
     font-weight: bold;
     color: #FF6600;
 }
@@ -346,7 +346,7 @@ body {
     max-width: clamp(100px, 15vw, 200px);
 }
 
-.score-label {
+.score-panel .score-label {
     font-size: clamp(0.6rem, 1.2vh, 1.2rem);
     color: white;
     font-weight: bold;
@@ -354,7 +354,7 @@ body {
     line-height: 1;
 }
 
-.score-value {
+.score-panel .score-value {
     font-size: clamp(1rem, 2.5vh, 2.5rem);
     color: #FFD700;
     font-weight: bold;
@@ -1221,35 +1221,9 @@ body {
     opacity: 0.9;
 }
 
-.score-label {
-    font-size: 1.2rem;
-    color: #FFD700;
-    margin-bottom: 10px;
-}
-
 .final-score .score-value {
     font-size: 3rem;
     color: white;
     font-weight: bold;
     text-shadow: 0 0 20px #FFD700;
-}
-
-/* ========== ENHANCED LETTER BUTTON ANIMATIONS ========== */
-.letter-btn.correct {
-    animation: correctPulse 0.5s ease;
-}
-
-.letter-btn.wrong {
-    animation: wrongShake 0.5s ease;
-}
-
-@keyframes correctPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); box-shadow: 0 0 20px #4CAF50; }
-}
-
-@keyframes wrongShake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
 }

@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.15.9'; // FINAL v2: Fixed malformed character-image block, removed duplicate loseLife fragment, 1255 lines (113 lines cleaned)
+const CACHE_VERSION = '1.16.0-PRODUCTION'; // VERIFIED CLEAN: 1229 lines (139 removed), all duplicates eliminated, selectors properly scoped
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
