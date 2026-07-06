@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.14.1'; // Content-aware status bar sizing - keyboard gets most space
+const CACHE_VERSION = '1.14.2'; // Bigger keys (reduced keyboard padding), larger character (20vw/50vh)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
