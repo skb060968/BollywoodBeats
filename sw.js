@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.15.8'; // FINAL: Dead code removed, duplicates cleaned, SVG fallback removed, ready for production
+const CACHE_VERSION = '1.15.9'; // FINAL v2: Fixed malformed character-image block, removed duplicate loseLife fragment, 1255 lines (113 lines cleaned)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
