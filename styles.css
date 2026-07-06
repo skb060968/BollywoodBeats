@@ -476,7 +476,7 @@ body {
 /* Status Bar - Flexible responsive layout */
 .status-bar {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-between;
     align-items: stretch;
     gap: clamp(0.3vw, 0.5vw, 1vw);
@@ -485,19 +485,37 @@ body {
     border-radius: 10px;
 }
 
-/* Control Blocks - Flexible sizing */
+/* Control Blocks - Content-appropriate sizing */
 .control-block {
-    flex: 1 1 30%;
-    min-width: clamp(100px, 15vw, 200px);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: clamp(0.2vh, 0.3vh, 0.5vh);
-    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.2vw, 0.3vw, 0.5vw);
+    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.3vw, 0.5vw, 0.8vw);
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 215, 0, 0.4);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Lives/Levels Block - Minimum width (compact, fits content) */
+.control-block.levels-lives-block {
+    flex: 0 0 auto;
+    min-width: fit-content;
+    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.5vw, 0.8vw, 1.2vw);
+}
+
+/* Keyboard Block - Maximum width (takes most space for 30 keys) */
+.control-block.keyboard-block {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Controls Block - Minimum width (only 2 icons, should be compact) */
+.control-block:has(.controls-panel) {
+    flex: 0 0 auto;
+    min-width: fit-content;
+    padding: clamp(0.3vh, 0.5vh, 1vh) clamp(0.8vw, 1.2vw, 1.5vw);
 }
 
 .block-label {
@@ -509,13 +527,7 @@ body {
     white-space: nowrap;
 }
 
-.keyboard-block {
-    margin-left: 0.15vw;
-}
-
-.keyboard-block:last-of-type {
-    margin-right: 0.15vw;
-}
+/* Remove old keyboard-block margins - not needed with new flex sizing */
 
 /* Block Labels - Centered - RESPONSIVE */
 .block-label {
@@ -532,9 +544,9 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    column-gap: clamp(0.3vw, 0.6vw, 1vw);
+    column-gap: clamp(0.3vw, 0.5vw, 0.8vw);
     row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
-    padding: 0 0.3vw;
+    padding: 0;
 }
 
 .level-dot {
@@ -569,7 +581,7 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    column-gap: clamp(0.3vw, 0.5vw, 1vw);
+    column-gap: clamp(0.3vw, 0.5vw, 0.8vw);
     row-gap: clamp(0.5vh, 0.8vh, 1.2vh);
 }
 
@@ -603,14 +615,10 @@ body {
 }
 
 /* Levels and Lives stacked together */
-.levels-lives-block {
-    padding: 0.5vh 0.3vw;
-}
-
 .levels-lives-stack {
     display: flex;
     flex-direction: column;
-    gap: 0.5vh;
+    gap: clamp(0.3vh, 0.5vh, 0.8vh);
 }
 
 .levels-section,
@@ -618,11 +626,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.2vh;
-}
-
-.lives-section {
-    padding-top: 1.2vh; /* Add padding above lives label to increase block height */
+    gap: clamp(0.2vh, 0.3vh, 0.5vh);
 }
 
 .levels-section .block-label,
@@ -630,10 +634,10 @@ body {
     font-size: 0.5rem; /* Same as base */
 }
 
-/* Keyboard and Controls block labels - same size as all blocks, immune to media query overrides */
-.keyboard-block .block-label,
-.control-block:has(.controls-panel) > .block-label {
-    font-size: 0.5rem !important; /* Same uniform size, prevent media query overrides */
+/* Levels section and Lives section labels - same as all blocks */
+.levels-section .block-label,
+.lives-section .block-label {
+    font-size: clamp(0.5rem, 0.8vw, 1rem);
 }
 
 /* Legacy support - hide old separate rows */
