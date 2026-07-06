@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.14.6'; // Removed debug borders - clean final layout
+const CACHE_VERSION = '1.14.7'; // Cleaned up duplications and stale code from old versions
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
