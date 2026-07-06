@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.15.1'; // Height-first scaling: width constrained by viewport height aspect ratio
+const CACHE_VERSION = '1.15.2'; // Phrase tiles shrink proportionally - reduced minimums by 25-40%
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

@@ -744,28 +744,28 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
-    gap: clamp(0.4vw, 0.7vw, 1vw);
+    gap: clamp(0.3vw, 0.7vw, 1vw);
     height: 100%;
-    padding: clamp(0.5vh, 1.5vh, 2.5vh) clamp(0.5vw, 1vw, 2vw);
+    padding: clamp(0.3vh, 1.5vh, 2.5vh) clamp(0.3vw, 1vw, 2vw);
 }
 
 /* Word Container - Prevents word splitting */
 .word-container {
     display: flex;
-    gap: clamp(0.4vw, 0.7vw, 1vw);
+    gap: clamp(0.3vw, 0.7vw, 1vw);
     flex-wrap: nowrap;
 }
 
 .phrase-tile {
-    width: clamp(30px, 3vw, 70px);
-    height: clamp(38px, 5vh, 80px);
+    width: clamp(22px, 3vw, 70px);
+    height: clamp(28px, 5vh, 80px);
     background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
     border: 3px solid #FFEB3B;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(1rem, 3vh, 2.6rem);
+    font-size: clamp(0.8rem, 3vh, 2.6rem);
     font-weight: bold;
     color: white;
     box-shadow: 
@@ -778,27 +778,27 @@ body {
 
 /* Responsive tile sizing for different phrase lengths */
 .phrase-grid.short-phrase .phrase-tile {
-    width: clamp(38px, 4.5vw, 80px);
-    height: clamp(48px, 7vh, 90px);
-    font-size: clamp(1.3rem, 3.8vh, 3rem);
+    width: clamp(28px, 4.5vw, 80px);
+    height: clamp(36px, 7vh, 90px);
+    font-size: clamp(1rem, 3.8vh, 3rem);
 }
 
 .phrase-grid.medium-phrase .phrase-tile {
-    width: clamp(32px, 3.5vw, 70px);
-    height: clamp(40px, 6vh, 80px);
-    font-size: clamp(1rem, 3.2vh, 2.6rem);
+    width: clamp(24px, 3.5vw, 70px);
+    height: clamp(30px, 6vh, 80px);
+    font-size: clamp(0.85rem, 3.2vh, 2.6rem);
 }
 
 .phrase-grid.long-phrase .phrase-tile {
-    width: clamp(28px, 3vw, 60px);
-    height: clamp(36px, 5vh, 70px);
-    font-size: clamp(0.9rem, 2.8vh, 2.2rem);
+    width: clamp(20px, 3vw, 60px);
+    height: clamp(26px, 5vh, 70px);
+    font-size: clamp(0.75rem, 2.8vh, 2.2rem);
 }
 
 .phrase-grid.very-long-phrase .phrase-tile {
-    width: clamp(24px, 2.5vw, 50px);
-    height: clamp(32px, 4.5vh, 60px);
-    font-size: clamp(0.8rem, 2.5vh, 1.8rem);
+    width: clamp(18px, 2.5vw, 50px);
+    height: clamp(24px, 4.5vh, 60px);
+    font-size: clamp(0.65rem, 2.5vh, 1.8rem);
 }
 
 .phrase-tile.revealed {
@@ -820,7 +820,7 @@ body {
 }
 
 .phrase-tile.space {
-    width: clamp(15px, 1.5vw, 30px);
+    width: clamp(10px, 1.5vw, 30px);
     background: transparent;
     border: none;
     box-shadow: none;
