@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.20.6'; // Increased lifeline label font, more compact bulb spacing
+const CACHE_VERSION = '1.20.7'; // Full-width left panel blocks, smaller bulbs, minimal gaps for OnePlus 11R
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
