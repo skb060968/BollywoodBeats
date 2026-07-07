@@ -92,21 +92,24 @@ body {
     align-items: center;
 }
 
-/* Menu Screen */
+/* Menu Screen - Responsive for all devices */
 .menu-container {
     text-align: center;
     position: relative;
     z-index: 10;
+    padding: clamp(10px, 2vh, 30px) clamp(10px, 2vw, 30px);
+    max-width: 90vw;
 }
 
 .game-title h1 {
-    font-size: 4rem;
+    font-size: clamp(1.8rem, 8vw, 4rem);
     color: #FFD700;
     text-shadow: 
-        4px 4px 0 #8B0000,
-        6px 6px 0 rgba(0,0,0,0.3);
-    margin-bottom: 10px;
+        clamp(2px, 0.5vw, 4px) clamp(2px, 0.5vw, 4px) 0 #8B0000,
+        clamp(3px, 0.8vw, 6px) clamp(3px, 0.8vw, 6px) 0 rgba(0,0,0,0.3);
+    margin-bottom: clamp(5px, 1vh, 10px);
     animation: titlePulse 2s ease-in-out infinite;
+    line-height: 1.2;
 }
 
 @keyframes titlePulse {
@@ -115,34 +118,37 @@ body {
 }
 
 .subtitle {
-    font-size: 1.5rem;
+    font-size: clamp(0.8rem, 3vw, 1.5rem);
     color: #fff;
-    margin-bottom: 50px;
+    margin-bottom: clamp(15px, 3vh, 50px);
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    line-height: 1.3;
 }
 
 .menu-buttons {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: clamp(10px, 2vh, 20px);
     align-items: center;
 }
 
 .menu-btn {
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
-    border: 4px solid #FFD700;
-    padding: 20px 50px;
-    font-size: 1.3rem;
+    border: clamp(2px, 0.5vw, 4px) solid #FFD700;
+    padding: clamp(10px, 2vh, 20px) clamp(20px, 5vw, 50px);
+    font-size: clamp(0.9rem, 3vw, 1.3rem);
     font-weight: bold;
     color: white;
-    border-radius: 50px;
+    border-radius: clamp(25px, 8vw, 50px);
     cursor: pointer;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 clamp(4px, 1vh, 8px) clamp(8px, 2vh, 15px) rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 15px;
-    min-width: 300px;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 15px);
+    min-width: clamp(200px, 40vw, 300px);
+    width: fit-content;
 }
 
 .menu-btn.primary {
@@ -151,11 +157,11 @@ body {
 
 .menu-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 clamp(6px, 1.5vh, 12px) clamp(10px, 2.5vh, 20px) rgba(0,0,0,0.4);
 }
 
 .btn-icon {
-    font-size: 1.8rem;
+    font-size: clamp(1rem, 4vw, 1.8rem);
 }
 
 .film-reel-decoration {
@@ -185,12 +191,12 @@ body {
 .left-reel { left: 50px; }
 .right-reel { right: 50px; }
 
-/* Category, Instructions, High Scores Screens - Compact Layout */
+/* Category, Instructions, High Scores Screens - Responsive */
 .category-container, .instructions-container, .highscores-container {
     background: rgba(255,255,255,0.95);
-    padding: 20px 30px;
-    border-radius: 15px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: clamp(10px, 2vh, 20px) clamp(15px, 3vw, 30px);
+    border-radius: clamp(10px, 2vw, 15px);
+    box-shadow: 0 clamp(10px, 3vh, 20px) clamp(30px, 8vh, 60px) rgba(0,0,0,0.3);
     max-width: 90vw;
     max-height: 85vh;
     width: 100%;
@@ -201,50 +207,51 @@ body {
 
 .category-container h2, .instructions-container h2, .highscores-container h2 {
     color: #0066CC;
-    font-size: 1.6rem;
-    margin-bottom: 15px;
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    margin-bottom: clamp(8px, 2vh, 15px);
     text-align: center;
+    line-height: 1.3;
 }
 
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 30vw, 200px), 1fr));
+    gap: clamp(10px, 2vw, 15px);
+    margin-bottom: clamp(15px, 3vh, 30px);
 }
 
 .category-btn {
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     color: white;
-    border: 3px solid #FFD700;
-    padding: 25px 20px;
-    font-size: 1.1rem;
+    border: clamp(2px, 0.5vw, 3px) solid #FFD700;
+    padding: clamp(15px, 3vh, 25px) clamp(10px, 2vw, 20px);
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
     font-weight: bold;
-    border-radius: 15px;
+    border-radius: clamp(10px, 2vw, 15px);
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 clamp(3px, 1vh, 5px) clamp(10px, 2vh, 15px) rgba(0,0,0,0.2);
     transition: all 0.3s ease;
 }
 
 .category-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 clamp(5px, 1.5vh, 8px) clamp(15px, 3vh, 20px) rgba(0,0,0,0.3);
 }
 
 .back-btn {
     background: #6c757d;
     color: white;
     border: none;
-    padding: 10px 25px;
-    font-size: 0.95rem;
+    padding: clamp(8px, 1.5vh, 10px) clamp(15px, 3vw, 25px);
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
     font-weight: bold;
-    border-radius: 20px;
+    border-radius: clamp(15px, 3vw, 20px);
     cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 clamp(2px, 0.5vh, 3px) clamp(5px, 1vh, 10px) rgba(0,0,0,0.2);
     transition: all 0.3s ease;
     display: block;
-    margin: 10px auto 0;
-    min-width: 150px;
+    margin: clamp(5px, 1vh, 10px) auto 0;
+    min-width: clamp(120px, 25vw, 150px);
     flex-shrink: 0;
 }
 
@@ -254,29 +261,29 @@ body {
 }
 
 .instructions-content {
-    margin-bottom: 12px;
+    margin-bottom: clamp(8px, 1.5vh, 12px);
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 40vw, 300px), 1fr));
+    gap: clamp(8px, 1.5vh, 10px);
 }
 
 .instruction-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    gap: clamp(8px, 1.5vw, 10px);
+    padding: clamp(8px, 1.5vh, 10px) clamp(10px, 2vw, 12px);
     margin-bottom: 0;
     background: #f8f9fa;
-    border-radius: 8px;
+    border-radius: clamp(6px, 1vw, 8px);
 }
 
 .inst-icon {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 3vw, 1.3rem);
     flex-shrink: 0;
 }
 
 .instruction-item p {
-    font-size: 0.85rem;
+    font-size: clamp(0.7rem, 2.5vw, 0.85rem);
     color: #222;
     margin: 0;
     line-height: 1.3;

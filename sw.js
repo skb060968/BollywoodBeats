@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.16.0-PRODUCTION'; // VERIFIED CLEAN: 1229 lines (139 removed), all duplicates eliminated, selectors properly scoped
+const CACHE_VERSION = '1.17.0'; // Made menu/landing screens responsive with clamp() for phones (OnePlus 11R 708×314px)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
