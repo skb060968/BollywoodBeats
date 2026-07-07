@@ -346,6 +346,53 @@ body {
     line-height: 1;
 }
 
+/* Timer Container - Hourglass Display */
+.timer-container {
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
+    border-radius: 8px;
+    padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.8vw, 1.5vw, 2vw);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1px, 0.2vh, 5px);
+    border: 3px solid #FFD700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    min-width: clamp(80px, 12vw, 180px);
+    max-width: clamp(100px, 15vw, 200px);
+    margin-bottom: clamp(8px, 1.5vh, 15px);
+}
+
+.hourglass-icon {
+    font-size: clamp(1.5rem, 3vh, 2.5rem);
+    animation: flip 2s ease-in-out infinite;
+}
+
+@keyframes flip {
+    0%, 40%, 100% { transform: rotateZ(0deg); }
+    45%, 95% { transform: rotateZ(180deg); }
+}
+
+.timer-display {
+    font-size: clamp(1rem, 2.2vh, 2rem);
+    color: white;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    line-height: 1;
+}
+
+.timer-display.warning {
+    color: #FF6B6B;
+    animation: timerPulse 1s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
 /* RIGHT PANEL - Game Area */
 .right-panel {
     display: flex;

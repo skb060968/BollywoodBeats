@@ -14,7 +14,11 @@ let gameState = {
     maxWrongGuesses: 6,
     currentLevel: 1,
     maxLevels: 10,
-    score: 0
+    score: 0,
+    // Timer state
+    timeRemaining: 600, // 10 minutes in seconds
+    timerInterval: null,
+    gameStartTime: null
 };
 
 // ========== CHARACTER MANAGER ==========
@@ -131,6 +135,80 @@ const CharacterManager = (() => {
         setIdle,
         setSad,
         removeSad
+    };
+})();
+
+// ========== TIMER MANAGER ==========
+const TimerManager = (() => {
+    function startTimer() {
+        // Clear any existing timer
+        if (gameState.timerInterval) {
+            clearInterval(gameState.timerInterval);
+        }
+        
+        // Start countdown
+        gameState.timerInterval = setInterval(() => {
+            gameState.timeRemaining--;
+            updateTimerDisplay();
+            
+            // Check if time is up
+            if (gameState.timeRemaining <= 0) {
+                stopTimer();
+                timeUp();
+            }
+        }, 1000);
+        
+        // Initial display update
+        updateTimerDisplay();
+    }
+    
+    function stopTimer() {
+        if (gameState.timerInterval) {
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = null;
+        }
+    }
+    
+    function updateTimerDisplay() {
+        const minutes = Math.floor(gameState.timeRemaining / 60);
+        const seconds = gameState.timeRemaining % 60;
+        
+        const minutesElement = document.getElementById('timerMinutes');
+        const secondsElement = document.getElementById('timerSeconds');
+        const timerDisplay = document.querySelector('.timer-display');
+        
+        if (minutesElement) {
+            minutesElement.textContent = String(minutes).padStart(2, '0');
+        }
+        if (secondsElement) {
+            secondsElement.textContent = String(seconds).padStart(2, '0');
+        }
+        
+        // Add warning style when under 1 minute
+        if (timerDisplay) {
+            if (gameState.timeRemaining <= 60) {
+                timerDisplay.classList.add('warning');
+            } else {
+                timerDisplay.classList.remove('warning');
+            }
+        }
+    }
+    
+    function timeUp() {
+        // Stop background music
+        AudioManager.stopBackgroundMusic();
+        
+        // Play time up sound (wrong sound as fallback)
+        AudioManager.playEffect('wrong');
+        
+        // Show game over with time up message
+        showGameOverTime();
+    }
+    
+    return {
+        startTimer,
+        stopTimer,
+        updateTimerDisplay
     };
 })();
 
@@ -502,9 +580,17 @@ async function startGame() {
         gameState.currentPhraseIndex = 0;
         gameState.score = 0;
         
+        // Initialize timer
+        gameState.timeRemaining = 600; // 10 minutes
+        gameState.gameStartTime = Date.now();
+        
         hideLoading();
         startLevel();
         showScreen('gameScreen');
+        
+        // Start the timer
+        TimerManager.startTimer();
+        
         AudioManager.startBackgroundMusic(0.15);
         
     } catch (error) {
@@ -737,6 +823,9 @@ function checkLose() {
 }
 
 function gameWon() {
+    // Stop timer
+    TimerManager.stopTimer();
+    
     AudioManager.stopBackgroundMusic();
     AudioManager.playSound('win');
     
@@ -759,6 +848,9 @@ function gameWon() {
 }
 
 function gameLost() {
+    // Stop timer
+    TimerManager.stopTimer();
+    
     AudioManager.stopBackgroundMusic();
     
     const gameOverContent = document.getElementById('gameOverContent');
@@ -781,8 +873,33 @@ function gameLost() {
     showScreen('gameOverScreen');
 }
 
+function showGameOverTime() {
+    // Show game over with time up message
+    const gameOverContent = document.getElementById('gameOverContent');
+    gameOverContent.innerHTML = `
+        <h2 class="lose">⏰ Time's Up!</h2>
+        <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">The phrase was:</p>
+        <div class="revealed-phrase">${gameState.currentPhrase}</div>
+        <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">Levels Completed: ${gameState.currentLevel - 1} of ${gameState.maxLevels}</p>
+        <div class="final-score">Final Score: <span style="color: #0066CC;">${gameState.score}</span></div>
+        <div class="gameover-buttons">
+            <button class="gameover-btn primary" onclick="startGame()">
+                <span>🔄</span> Try Again
+            </button>
+            <button class="gameover-btn" onclick="showMenu()">
+                <span>🏠</span> Main Menu
+            </button>
+        </div>
+    `;
+    
+    showScreen('gameOverScreen');
+}
+
 function quitGame() {
     if (confirm('Are you sure you want to quit the current game?')) {
+        // Stop timer
+        TimerManager.stopTimer();
+        
         AudioManager.stopBackgroundMusic();
         showMenu();
     }

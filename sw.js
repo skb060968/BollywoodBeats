@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.17.1'; // Removed high score CSS remnants (not used in current version)
+const CACHE_VERSION = '1.18.0'; // Added 10-minute hourglass timer feature - game ends when time runs out
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
