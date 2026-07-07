@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.18.0'; // Added 10-minute hourglass timer feature - game ends when time runs out
+const CACHE_VERSION = '1.18.1'; // Fixed timer visibility - adjusted character height and left panel spacing to show hourglass timer
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

@@ -309,8 +309,8 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0 20px;
-    gap: 0;
+    padding: clamp(5px, 1vh, 15px) clamp(5px, 1vw, 20px);
+    gap: clamp(8px, 1.5vh, 15px);
 }
 
 .score-panel {
@@ -327,6 +327,7 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     min-width: clamp(80px, 12vw, 180px);
     max-width: clamp(100px, 15vw, 200px);
+    flex-shrink: 0;
 }
 
 .score-panel .score-label {
@@ -361,7 +362,7 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     min-width: clamp(80px, 12vw, 180px);
     max-width: clamp(100px, 15vw, 200px);
-    margin-bottom: clamp(8px, 1.5vh, 15px);
+    flex-shrink: 0;
 }
 
 .hourglass-icon {
@@ -1124,8 +1125,9 @@ body {
 .character-container {
     position: relative;
     width: 100%; /* Full width of left panel */
-    height: clamp(150px, 50vh, 500px);
+    height: clamp(120px, 35vh, 350px); /* Reduced to make room for timer */
     max-width: 100%;
+    flex-shrink: 0;
 }
 
 /* Image-based character (GIF/PNG/JPG) */
