@@ -19,7 +19,10 @@ let gameState = {
     timeRemaining: 600, // 10 minutes in seconds (default)
     timerDuration: 600, // Store selected duration
     timerInterval: null,
-    gameStartTime: null
+    gameStartTime: null,
+    // Lifeline state
+    lifelinesRemaining: 3, // 3 lifelines for entire game
+    lifelinesUsed: [false, false, false] // Track which bulbs are used
 };
 
 // ========== CHARACTER MANAGER ==========
@@ -200,7 +203,7 @@ const TimerManager = (() => {
         AudioManager.stopBackgroundMusic();
         
         // Play time up sound (wrong sound as fallback)
-        AudioManager.playEffect('wrong');
+        AudioManager.playSound('wrong');
         
         // Show game over with time up message
         showGameOverTime();
@@ -264,6 +267,7 @@ const AudioManager = (() => {
 
     const MUTE_KEY = 'bollywood_wordly_muted';
     let backgroundMusic = null;
+    let currentSoundEffect = null; // Track current playing sound effect
     let speechSynthesis = window.speechSynthesis;
 
     function isMuted() {
@@ -282,6 +286,7 @@ const AudioManager = (() => {
         
         if (muted) {
             pauseBackgroundMusic();
+            stopSoundEffects();
             // Cancel any ongoing speech
             if (speechSynthesis) {
                 speechSynthesis.cancel();
@@ -297,6 +302,16 @@ const AudioManager = (() => {
         return next;
     }
 
+    function stopSoundEffects() {
+        if (currentSoundEffect) {
+            try {
+                currentSoundEffect.pause();
+                currentSoundEffect.currentTime = 0;
+                currentSoundEffect = null;
+            } catch (_) {}
+        }
+    }
+
     function playSound(name, volume = 1.0) {
         if (isMuted()) return;
         
@@ -304,8 +319,20 @@ const AudioManager = (() => {
         if (!url) return;
         
         try {
+            // Stop any currently playing sound effect
+            stopSoundEffects();
+            
             const audio = new Audio(url);
             audio.volume = volume;
+            currentSoundEffect = audio;
+            
+            // Clear reference when sound ends
+            audio.onended = () => {
+                if (currentSoundEffect === audio) {
+                    currentSoundEffect = null;
+                }
+            };
+            
             audio.play().catch(() => {});
         } catch (_) {}
     }
@@ -425,6 +452,7 @@ const AudioManager = (() => {
         isMuted,
         startBackgroundMusic,
         stopBackgroundMusic,
+        stopSoundEffects,
     };
 })();
 
@@ -438,6 +466,12 @@ function showScreen(screenId) {
 
 function showMenu() {
     AudioManager.stopBackgroundMusic();
+    
+    // Cancel any pending speech
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    
     showScreen('menuScreen');
 }
 
@@ -635,6 +669,10 @@ async function startGame() {
         gameState.timeRemaining = gameState.timerDuration;
         gameState.gameStartTime = Date.now();
         
+        // Reset lifelines for new game
+        gameState.lifelinesRemaining = 3;
+        gameState.lifelinesUsed = [false, false, false];
+        
         hideLoading();
         startLevel();
         showScreen('gameScreen');
@@ -655,12 +693,21 @@ function startLevel() {
     gameState.revealedLetters = new Set();
     gameState.wrongGuesses = 0;
     
+    // Cancel any pending speech from previous level
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    
+    // Stop any playing sound effects (like win.mp3 from previous level)
+    AudioManager.stopSoundEffects();
+    
     // Get the current phrase from the 10 selected phrases
     const phraseData = gameState.gamePhrases[gameState.currentPhraseIndex];
     gameState.currentPhrase = phraseData.text.toUpperCase();
     gameState.currentCategory = phraseData.category;
     
     updateGameUI();
+    updateLifelineUI();
     createKeyboard();
     displayPhrase();
 }
@@ -877,6 +924,11 @@ function gameWon() {
     // Stop timer
     TimerManager.stopTimer();
     
+    // Cancel any pending speech
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    
     AudioManager.stopBackgroundMusic();
     AudioManager.playSound('win');
     
@@ -902,6 +954,11 @@ function gameLost() {
     // Stop timer
     TimerManager.stopTimer();
     
+    // Cancel any pending speech
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    
     AudioManager.stopBackgroundMusic();
     
     const gameOverContent = document.getElementById('gameOverContent');
@@ -925,6 +982,11 @@ function gameLost() {
 }
 
 function showGameOverTime() {
+    // Cancel any pending speech
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    
     // Show game over with time up message
     const gameOverContent = document.getElementById('gameOverContent');
     gameOverContent.innerHTML = `
@@ -944,6 +1006,92 @@ function showGameOverTime() {
     `;
     
     showScreen('gameOverScreen');
+}
+
+// ========== LIFELINE SYSTEM ==========
+function updateLifelineUI() {
+    const bulbs = document.querySelectorAll('.lifeline-bulb');
+    bulbs.forEach((bulb, index) => {
+        if (gameState.lifelinesUsed[index]) {
+            bulb.classList.remove('active');
+            bulb.classList.add('used');
+        } else {
+            bulb.classList.add('active');
+            bulb.classList.remove('used');
+        }
+    });
+}
+
+function useLifeline(bulbIndex) {
+    // Check if already used
+    if (gameState.lifelinesUsed[bulbIndex]) {
+        return;
+    }
+    
+    // Check if any lifelines remaining
+    if (gameState.lifelinesRemaining <= 0) {
+        return;
+    }
+    
+    // Get all unrevealed letters from current phrase
+    const allLetters = gameState.currentPhrase.match(/[A-Z0-9]/g) || [];
+    const unrevealedLetters = allLetters.filter(letter => !gameState.revealedLetters.has(letter));
+    
+    // Remove duplicates
+    const uniqueUnrevealed = [...new Set(unrevealedLetters)];
+    
+    if (uniqueUnrevealed.length === 0) {
+        // No letters to reveal
+        return;
+    }
+    
+    // Pick a random unrevealed letter
+    const randomLetter = uniqueUnrevealed[Math.floor(Math.random() * uniqueUnrevealed.length)];
+    
+    // Mark this lifeline as used
+    gameState.lifelinesUsed[bulbIndex] = true;
+    gameState.lifelinesRemaining--;
+    
+    // Update lifeline UI
+    updateLifelineUI();
+    
+    // Reveal the letter in phrase
+    gameState.revealedLetters.add(randomLetter);
+    
+    // Update phrase tiles
+    const grid = document.getElementById('phraseGrid');
+    const tiles = grid.querySelectorAll('.phrase-tile');
+    tiles.forEach(tile => {
+        if (tile.dataset.letter === randomLetter) {
+            tile.textContent = randomLetter;
+            tile.classList.add('revealed');
+        }
+    });
+    
+    // Mark letter as correct in keyboard
+    const keyboard = document.getElementById('keyboardCombined');
+    const buttons = keyboard.querySelectorAll('.letter-btn');
+    buttons.forEach(btn => {
+        if (btn.textContent === randomLetter && !btn.disabled) {
+            btn.disabled = true;
+            btn.classList.add('correct');
+        }
+    });
+    
+    // Check if this will complete the phrase
+    const requiredLetters = new Set(gameState.currentPhrase.match(/[A-Z0-9]/g));
+    const allRevealed = [...requiredLetters].every(letter => gameState.revealedLetters.has(letter));
+    
+    if (allRevealed) {
+        // Lifeline completed the phrase - skip correct sound, go straight to win celebration
+        CharacterManager.playAnimation('celebrate', 2000);
+        checkWin();
+    } else {
+        // Normal lifeline - play correct sound and animation
+        AudioManager.playSound('correct');
+        setTimeout(() => AudioManager.playRandomEncourage(), 200);
+        CharacterManager.playAnimation('correct', 800);
+    }
 }
 
 function quitGame() {

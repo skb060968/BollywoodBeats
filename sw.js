@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.19.0'; // Timer above character, hourglass icon in controls with dropdown to set duration (10/15/20/30 min)
+const CACHE_VERSION = '1.20.4'; // Fixed timer typo (playEffect→playSound) + lifeline audio overlap when completing phrase
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

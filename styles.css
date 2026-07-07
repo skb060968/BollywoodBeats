@@ -365,6 +365,63 @@ body {
     flex-shrink: 0;
 }
 
+/* Lifeline Container - Matches Timer/Score Panel Style */
+.lifeline-container {
+    background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+    border-radius: 8px;
+    padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.8vw, 1.5vw, 2vw);
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(5px, 1vw, 10px);
+    border: 3px solid #FFD700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    min-width: clamp(80px, 12vw, 180px);
+    max-width: clamp(100px, 15vw, 200px);
+    flex-shrink: 0;
+}
+
+.lifeline-label {
+    font-size: clamp(0.5rem, 1vh, 1rem);
+    color: white;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.lifeline-bulbs {
+    display: flex;
+    gap: clamp(3px, 0.5vw, 8px);
+    align-items: center;
+}
+
+.lifeline-bulb {
+    font-size: clamp(1.2rem, 2.5vh, 2rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    line-height: 1;
+}
+
+.lifeline-bulb.active {
+    filter: brightness(1.5) drop-shadow(0 0 8px rgba(255, 235, 59, 0.8));
+    animation: bulbGlow 2s ease-in-out infinite;
+}
+
+.lifeline-bulb.used {
+    opacity: 0.3;
+    filter: grayscale(100%) brightness(0.5);
+    cursor: not-allowed;
+}
+
+@keyframes bulbGlow {
+    0%, 100% { filter: brightness(1.5) drop-shadow(0 0 8px rgba(255, 235, 59, 0.8)); }
+    50% { filter: brightness(1.8) drop-shadow(0 0 12px rgba(255, 235, 59, 1)); }
+}
+
 .timer-label {
     font-size: clamp(0.6rem, 1.2vh, 1.2rem);
     color: white;
