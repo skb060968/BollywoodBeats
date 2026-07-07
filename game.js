@@ -16,7 +16,8 @@ let gameState = {
     maxLevels: 10,
     score: 0,
     // Timer state
-    timeRemaining: 600, // 10 minutes in seconds
+    timeRemaining: 600, // 10 minutes in seconds (default)
+    timerDuration: 600, // Store selected duration
     timerInterval: null,
     gameStartTime: null
 };
@@ -447,6 +448,56 @@ function showInstructions() {
 function showSettings() {
     // Pause game but don't stop music
     showScreen('settingsScreen');
+}
+
+// ========== TIMER SETTINGS ==========
+function showTimerSettings() {
+    const dropdown = document.getElementById('timerSettingsDropdown');
+    dropdown.style.display = 'block';
+    
+    // Close on outside click
+    setTimeout(() => {
+        document.addEventListener('click', closeTimerSettingsOnOutsideClick);
+    }, 100);
+}
+
+function closeTimerSettingsOnOutsideClick(event) {
+    const dropdown = document.getElementById('timerSettingsDropdown');
+    const timerIcon = document.querySelector('.timer-settings-emoji');
+    
+    if (dropdown && !dropdown.contains(event.target) && event.target !== timerIcon) {
+        dropdown.style.display = 'none';
+        document.removeEventListener('click', closeTimerSettingsOnOutsideClick);
+    }
+}
+
+function setTimerDuration(seconds) {
+    gameState.timerDuration = seconds;
+    gameState.timeRemaining = seconds;
+    
+    // Update display
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    document.getElementById('timerMinutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('timerSeconds').textContent = String(secs).padStart(2, '0');
+    
+    // Close dropdown
+    document.getElementById('timerSettingsDropdown').style.display = 'none';
+    document.removeEventListener('click', closeTimerSettingsOnOutsideClick);
+    
+    // Show confirmation
+    const timerDisplay = document.querySelector('.timer-display');
+    if (timerDisplay) {
+        timerDisplay.style.animation = 'timerPulse 0.5s ease-in-out 2';
+        setTimeout(() => {
+            timerDisplay.style.animation = '';
+        }, 1000);
+    }
+}
+
+function showSettings() {
+    // Pause game but don't stop music
+    showScreen('settingsScreen');
     // Initialize preset file buttons
     initializePresetFiles();
     // Don't load XML info automatically - only show after user action
@@ -580,8 +631,8 @@ async function startGame() {
         gameState.currentPhraseIndex = 0;
         gameState.score = 0;
         
-        // Initialize timer
-        gameState.timeRemaining = 600; // 10 minutes
+        // Initialize timer with selected duration
+        gameState.timeRemaining = gameState.timerDuration;
         gameState.gameStartTime = Date.now();
         
         hideLoading();

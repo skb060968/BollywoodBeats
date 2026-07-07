@@ -80,6 +80,14 @@
         <div class="game-layout">
             <!-- Left Panel - Character & Score -->
             <div class="left-panel">
+                <!-- Timer Display (Above Character) -->
+                <div class="timer-container">
+                    <div class="timer-label">TIMER</div>
+                    <div class="timer-display">
+                        <span id="timerMinutes">10</span>:<span id="timerSeconds">00</span>
+                    </div>
+                </div>
+                
                 <div class="character-container">
                     <!-- Static character image (shows most of the time) -->
                     <img id="characterStatic" class="character-image idle" src="./images/character-idle.gif" alt="Game Character">
@@ -125,15 +133,7 @@
                     </div>
                 </div>
                 
-                <!-- Timer Display -->
-                <div class="timer-container">
-                    <div class="timer-label">TIMER</div>
-                    <div class="timer-display">
-                        <span id="timerMinutes">10</span>:<span id="timerSeconds">00</span>
-                    </div>
-                </div>
-                
-                <!-- Score Display -->
+                <!-- Score Display (Below Character) -->
                 <div class="score-panel">
                     <div class="score-label">SCORE</div>
                     <div id="scoreDisplay" class="score-value">0</div>
@@ -169,8 +169,28 @@
                         <div class="block-label">CONTROLS</div>
                         <div class="controls-panel">
                             <span class="mute-emoji" id="muteBtn">🔊</span>
+                            <span class="timer-settings-emoji" onclick="showTimerSettings()">⏳</span>
                             <span class="settings-emoji" onclick="showSettings()">⚙️</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Timer Settings Dropdown -->
+                <div id="timerSettingsDropdown" class="timer-settings-dropdown" style="display: none;">
+                    <div class="timer-settings-content">
+                        <h3>⏳ Set Timer</h3>
+                        <button class="timer-option-btn" onclick="setTimerDuration(600)">
+                            <span>⏱️</span> 10 Minutes
+                        </button>
+                        <button class="timer-option-btn" onclick="setTimerDuration(900)">
+                            <span>⏱️</span> 15 Minutes
+                        </button>
+                        <button class="timer-option-btn" onclick="setTimerDuration(1200)">
+                            <span>⏱️</span> 20 Minutes
+                        </button>
+                        <button class="timer-option-btn" onclick="setTimerDuration(1800)">
+                            <span>⏱️</span> 30 Minutes
+                        </button>
                     </div>
                 </div>
 

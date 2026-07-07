@@ -679,6 +679,75 @@ body {
     transform: scale(1.05) rotate(45deg);
 }
 
+.timer-settings-emoji {
+    font-size: clamp(1rem, 4vh, 3rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.timer-settings-emoji:hover {
+    transform: scale(1.15);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+}
+
+.timer-settings-emoji:active {
+    transform: scale(1.05);
+}
+
+/* Timer Settings Dropdown */
+.timer-settings-dropdown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: clamp(10px, 2vw, 15px);
+    padding: clamp(15px, 3vh, 25px) clamp(20px, 3vw, 30px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    min-width: clamp(200px, 30vw, 300px);
+}
+
+.timer-settings-content h3 {
+    color: #0066CC;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    margin-bottom: clamp(10px, 2vh, 15px);
+    text-align: center;
+}
+
+.timer-option-btn {
+    background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
+    border: clamp(2px, 0.3vw, 3px) solid #FFD700;
+    color: white;
+    padding: clamp(10px, 2vh, 15px) clamp(15px, 3vw, 20px);
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-weight: bold;
+    border-radius: clamp(8px, 1.5vw, 12px);
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 10px);
+    justify-content: center;
+    margin-bottom: clamp(8px, 1.5vh, 10px);
+    width: 100%;
+}
+
+.timer-option-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.timer-option-btn span {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+}
+
 .menu-btn-compact {
     background: linear-gradient(135deg, #0099FF 0%, #0066CC 100%);
     border: 3px solid #FFD700;

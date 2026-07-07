@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.18.2'; // Redesigned timer to match score panel - inline layout with TIMER label and time value, placed below character
+const CACHE_VERSION = '1.19.0'; // Timer above character, hourglass icon in controls with dropdown to set duration (10/15/20/30 min)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
