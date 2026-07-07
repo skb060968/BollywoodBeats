@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.20.7'; // Full-width left panel blocks, smaller bulbs, minimal gaps for OnePlus 11R
+const CACHE_VERSION = '1.20.8'; // Timer warning: white color + speech "Hurry up! Only 1 minute remaining"
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

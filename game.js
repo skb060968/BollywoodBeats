@@ -144,16 +144,30 @@ const CharacterManager = (() => {
 
 // ========== TIMER MANAGER ==========
 const TimerManager = (() => {
+    let oneMinuteWarningGiven = false; // Track if warning was already given
+    
     function startTimer() {
         // Clear any existing timer
         if (gameState.timerInterval) {
             clearInterval(gameState.timerInterval);
         }
         
+        // Reset warning flag for new game
+        oneMinuteWarningGiven = false;
+        
         // Start countdown
         gameState.timerInterval = setInterval(() => {
             gameState.timeRemaining--;
             updateTimerDisplay();
+            
+            // Check for 1-minute warning
+            if (gameState.timeRemaining === 60 && !oneMinuteWarningGiven) {
+                oneMinuteWarningGiven = true;
+                // Play warning speech
+                setTimeout(() => {
+                    AudioManager.playWarning();
+                }, 100);
+            }
             
             // Check if time is up
             if (gameState.timeRemaining <= 0) {
@@ -384,6 +398,10 @@ const AudioManager = (() => {
         speak(phrase, 1.15, 1.3); // Very excited voice
     }
 
+    function playWarning() {
+        speak("Hurry up! Only 1 minute remaining", 1.1, 1.0); // Clear urgent voice
+    }
+
     function startBackgroundMusic(volume = 0.15) {
         if (isMuted()) return;
         
@@ -448,6 +466,7 @@ const AudioManager = (() => {
         playRandomEncourage,
         playRandomDisappoint,
         playRandomLevelComplete,
+        playWarning,
         toggleMute,
         isMuted,
         startBackgroundMusic,
