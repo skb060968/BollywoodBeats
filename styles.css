@@ -367,7 +367,7 @@ body {
 
 /* Lifeline Container - Matches Timer/Score Panel Style */
 .lifeline-container {
-    background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
     border-radius: 8px;
     padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.8vw, 1.5vw, 2vw);
     text-align: center;
@@ -375,7 +375,7 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: clamp(5px, 1vw, 10px);
+    gap: clamp(2px, 0.3vw, 5px);
     border: 3px solid #FFD700;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     min-width: clamp(80px, 12vw, 180px);
@@ -394,7 +394,7 @@ body {
 
 .lifeline-bulbs {
     display: flex;
-    gap: clamp(3px, 0.5vw, 8px);
+    gap: clamp(2px, 0.3vw, 5px);
     align-items: center;
 }
 

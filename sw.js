@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.20.4'; // Fixed timer typo (playEffect→playSound) + lifeline audio overlap when completing phrase
+const CACHE_VERSION = '1.20.5'; // Polished lifeline UI: orange gradient, minimal gaps, 20min default timer
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

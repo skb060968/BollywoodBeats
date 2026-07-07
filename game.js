@@ -16,8 +16,8 @@ let gameState = {
     maxLevels: 10,
     score: 0,
     // Timer state
-    timeRemaining: 600, // 10 minutes in seconds (default)
-    timerDuration: 600, // Store selected duration
+    timeRemaining: 1200, // 20 minutes in seconds (default)
+    timerDuration: 1200, // Store selected duration (default 20 min)
     timerInterval: null,
     gameStartTime: null,
     // Lifeline state
