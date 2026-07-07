@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.17.0'; // Made menu/landing screens responsive with clamp() for phones (OnePlus 11R 708×314px)
+const CACHE_VERSION = '1.17.1'; // Removed high score CSS remnants (not used in current version)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
