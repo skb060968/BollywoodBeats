@@ -384,7 +384,7 @@ body {
 }
 
 .lifeline-label {
-    font-size: clamp(0.5rem, 1vh, 1rem);
+    font-size: clamp(0.6rem, 1.2vh, 1.2rem);
     color: white;
     font-weight: bold;
     margin: 0;
@@ -394,7 +394,7 @@ body {
 
 .lifeline-bulbs {
     display: flex;
-    gap: clamp(2px, 0.3vw, 5px);
+    gap: clamp(1px, 0.2vw, 3px);
     align-items: center;
 }
 
