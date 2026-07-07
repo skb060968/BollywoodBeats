@@ -347,17 +347,17 @@ body {
     line-height: 1;
 }
 
-/* Timer Container - Hourglass Display */
+/* Timer Container - Matches Score Panel Style */
 .timer-container {
     background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
     border-radius: 8px;
     padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.8vw, 1.5vw, 2vw);
     text-align: center;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: clamp(1px, 0.2vh, 5px);
+    justify-content: space-between;
+    gap: clamp(5px, 1vw, 10px);
     border: 3px solid #FFD700;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     min-width: clamp(80px, 12vw, 180px);
@@ -365,23 +365,22 @@ body {
     flex-shrink: 0;
 }
 
-.hourglass-icon {
-    font-size: clamp(1.5rem, 3vh, 2.5rem);
-    animation: flip 2s ease-in-out infinite;
-}
-
-@keyframes flip {
-    0%, 40%, 100% { transform: rotateZ(0deg); }
-    45%, 95% { transform: rotateZ(180deg); }
+.timer-label {
+    font-size: clamp(0.6rem, 1.2vh, 1.2rem);
+    color: white;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1;
 }
 
 .timer-display {
-    font-size: clamp(1rem, 2.2vh, 2rem);
-    color: white;
+    font-size: clamp(1rem, 2.5vh, 2.5rem);
+    color: #FFD700;
     font-weight: bold;
     font-family: 'Courier New', monospace;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     line-height: 1;
+    margin: 0;
 }
 
 .timer-display.warning {
@@ -1125,7 +1124,7 @@ body {
 .character-container {
     position: relative;
     width: 100%; /* Full width of left panel */
-    height: clamp(120px, 35vh, 350px); /* Reduced to make room for timer */
+    height: clamp(150px, 50vh, 500px);
     max-width: 100%;
     flex-shrink: 0;
 }

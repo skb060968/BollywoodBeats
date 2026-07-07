@@ -80,14 +80,6 @@
         <div class="game-layout">
             <!-- Left Panel - Character & Score -->
             <div class="left-panel">
-                <!-- Timer Display (Hourglass) -->
-                <div class="timer-container">
-                    <div class="hourglass-icon">⏳</div>
-                    <div class="timer-display">
-                        <span id="timerMinutes">10</span>:<span id="timerSeconds">00</span>
-                    </div>
-                </div>
-                
                 <div class="character-container">
                     <!-- Static character image (shows most of the time) -->
                     <img id="characterStatic" class="character-image idle" src="./images/character-idle.gif" alt="Game Character">
@@ -132,6 +124,16 @@
                         </svg>
                     </div>
                 </div>
+                
+                <!-- Timer Display -->
+                <div class="timer-container">
+                    <div class="timer-label">TIMER</div>
+                    <div class="timer-display">
+                        <span id="timerMinutes">10</span>:<span id="timerSeconds">00</span>
+                    </div>
+                </div>
+                
+                <!-- Score Display -->
                 <div class="score-panel">
                     <div class="score-label">SCORE</div>
                     <div id="scoreDisplay" class="score-value">0</div>

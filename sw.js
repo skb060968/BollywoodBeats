@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.18.1'; // Fixed timer visibility - adjusted character height and left panel spacing to show hourglass timer
+const CACHE_VERSION = '1.18.2'; // Redesigned timer to match score panel - inline layout with TIMER label and time value, placed below character
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
