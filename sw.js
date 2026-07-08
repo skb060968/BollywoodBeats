@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.20.8'; // Timer warning: white color + speech "Hurry up! Only 1 minute remaining"
+const CACHE_VERSION = '1.21.0'; // Updated Movies list: 223 titles (3 Idiots format + Border 2, Alpha, Dhamaal 4)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
