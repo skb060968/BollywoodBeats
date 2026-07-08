@@ -4,7 +4,6 @@
       <phrase>Sholay</phrase>
       <phrase>Three Idiots</phrase>
       <phrase>Dangal</phrase>
-      <phrase>Gadar</phrase>
       <phrase>Kabhi Khushi Kabhie Gham</phrase>
       <phrase>Bajrangi Bhaijaan</phrase>
       <phrase>Zindagi Na Milegi Dobara</phrase>
