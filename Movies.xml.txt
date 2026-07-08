@@ -2,7 +2,7 @@
     <category name="FILMS">
       <phrase>Dilwale Dulhania Le Jayenge</phrase>
       <phrase>Sholay</phrase>
-      <phrase>Three Idiots</phrase>
+      <phrase>3 Idiots</phrase>
       <phrase>Dangal</phrase>
       <phrase>Kabhi Khushi Kabhie Gham</phrase>
       <phrase>Bajrangi Bhaijaan</phrase>
@@ -220,5 +220,8 @@
       <phrase>Article 370</phrase>
       <phrase>Maidaan</phrase>
       <phrase>Bhool Bhulaiyaa 3</phrase>
+      <phrase>Border 2</phrase>
+      <phrase>Alpha</phrase>
+      <phrase>Dhamaal 4</phrase>
     </category>
 </bollywood_phrases>
