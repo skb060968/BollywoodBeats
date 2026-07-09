@@ -167,4 +167,233 @@
       <phrase>Rajinikanth</phrase>
       <phrase>Madhavan</phrase>
       </category>
+    <category name="FILMS">
+      <phrase>Dilwale Dulhania Le Jayenge</phrase>
+      <phrase>Sholay</phrase>
+      <phrase>3 Idiots</phrase>
+      <phrase>Dangal</phrase>
+      <phrase>Kabhi Khushi Kabhie Gham</phrase>
+      <phrase>Bajrangi Bhaijaan</phrase>
+      <phrase>Zindagi Na Milegi Dobara</phrase>
+      <phrase>Dil Chahta Hai</phrase>
+      <phrase>Lagaan</phrase>
+      <phrase>Kuch Kuch Hota Hai</phrase>
+      <phrase>Chennai Express</phrase>
+      <phrase>Gadar 2</phrase>
+      <phrase>Sultan</phrase>
+      <phrase>Gully Boy</phrase>
+      <phrase>Baahubali</phrase>
+      <phrase>Jab We Met</phrase>
+      <phrase>Taare Zameen Par</phrase>
+      <phrase>Rang De Basanti</phrase>
+      <phrase>Krrish</phrase>
+      <phrase>Om Shanti Om</phrase>
+      <phrase>Devdas</phrase>
+      <phrase>Kal Ho Naa Ho</phrase>
+      <phrase>Chak De India</phrase>
+      <phrase>Barfi</phrase>
+      <phrase>Yeh Jawaani Hai Deewani</phrase>
+      <phrase>Drishyam</phrase>
+      <phrase>Dabangg</phrase>
+      <phrase>Pathaan</phrase>
+      <phrase>Jawan</phrase>
+      <phrase>Animal</phrase>
+      <phrase>Dunki</phrase>
+      <phrase>Krrish 3</phrase>
+      <phrase>Rocky Aur Rani Kii Prem Kahaani</phrase>
+      <phrase>Housefull 4</phrase>
+      <phrase>Chhaava</phrase>
+      <phrase>Singham Again</phrase>
+      <phrase>Bade Miyan Chote Miyan</phrase>
+      <phrase>Teri Baaton Mein Aisa Uljha Jiya</phrase>
+      <phrase>Raid 2</phrase>
+      <phrase>Bholaa</phrase>
+      <phrase>K G F Chapter 1</phrase>
+      <phrase>Thamma</phrase>
+      <phrase>Sky Force</phrase>
+      <phrase>Azaad</phrase>
+      <phrase>The Diplomat</phrase>
+      <phrase>Jewel Thief</phrase>
+      <phrase>Kaalidhar Laapata</phrase>
+      <phrase>Tanvi the Great</phrase>
+      <phrase>Son of Sardaar</phrase>
+      <phrase>Baaghi 4</phrase>
+      <phrase>Tehran</phrase>
+      <phrase>Sunny Sanskari Ki Tulsi Kumari</phrase>
+      <phrase>Ek Deewane Ki Deewaniyat</phrase>
+      <phrase>The Taj Story</phrase>
+      <phrase>Single Salma</phrase>
+      <phrase>Zanjeer</phrase>
+      <phrase>Yaadon Ki Baaraat</phrase>
+      <phrase>Bobby</phrase>
+      <phrase>Roti Kapda Aur Makaan</phrase>
+      <phrase>Chor Machaye Shor</phrase>
+      <phrase>Roti</phrase>
+      <phrase>Parvarish</phrase>
+      <phrase>Tezaab</phrase>
+      <phrase>Qayamat Se Qayamat Tak</phrase>
+      <phrase>Chandni</phrase>
+      <phrase>Maine Pyar Kiya</phrase>
+      <phrase>Ghayal</phrase>
+      <phrase>Saudagar</phrase>
+      <phrase>Phool Aur Kaante</phrase>
+      <phrase>Dil Hai Ki Manta Nahin</phrase>
+      <phrase>Beta</phrase>
+      <phrase>Jo Jeeta Wohi Sikandar</phrase>
+      <phrase>Tirangaa</phrase>
+      <phrase>Andaz Apna Apna</phrase>
+      <phrase>Karan Arjun</phrase>
+      <phrase>Barsaat</phrase>
+      <phrase>Dil To Pagal Hai</phrase>
+      <phrase>Virasat</phrase>
+      <phrase>Pardes</phrase>
+      <phrase>Border</phrase>
+      <phrase>Pyaar Kiya To Darna Kya</phrase>
+      <phrase>Soldier</phrase>
+      <phrase>Jab Pyaar Kisise Hota Hai</phrase>
+      <phrase>Biwi No. 1</phrase>
+      <phrase>Hum Dil De Chuke Sanam</phrase>
+      <phrase>Haseena Maan Jaayegi</phrase>
+      <phrase>Taal</phrase>
+      <phrase>Hum Saath-Saath Hain</phrase>
+      <phrase>Kaho Naa... Pyaar Hai</phrase>
+      <phrase>Hera Pheri</phrase>
+      <phrase>Mission Kashmir</phrase>
+      <phrase>Mohabbatein</phrase>
+      <phrase>Gadar: Ek Prem Katha</phrase>
+      <phrase>Indian</phrase>
+      <phrase>Om Jai Jagadish</phrase>
+      <phrase>Munna Bhai M.B.B.S.</phrase>
+      <phrase>Main Hoon Na</phrase>
+      <phrase>Veer-Zaara</phrase>
+      <phrase>Dhoom</phrase>
+      <phrase>No Entry</phrase>
+      <phrase>Bunty Aur Babli</phrase>
+      <phrase>Salaam Namaste</phrase>
+      <phrase>Lage Raho Munna Bhai</phrase>
+      <phrase>Don</phrase>
+      <phrase>Dhoom 2</phrase>
+      <phrase>Khosla Ka Ghosla</phrase>
+      <phrase>Fanaa</phrase>
+      <phrase>Kabhi Alvida Naa Kehna</phrase>
+      <phrase>Bhool Bhulaiyaa</phrase>
+      <phrase>Welcome</phrase>
+      <phrase>Race</phrase>
+      <phrase>Jodhaa Akbar</phrase>
+      <phrase>Ghajini</phrase>
+      <phrase>Singh Is Kinng</phrase>
+      <phrase>Rab Ne Bana Di Jodi</phrase>
+      <phrase>Golmaal 3</phrase>
+      <phrase>Ready</phrase>
+      <phrase>Bodyguard</phrase>
+      <phrase>Ek Tha Tiger</phrase>
+      <phrase>Raaz 3</phrase>
+      <phrase>Jab Tak Hai Jaan</phrase>
+      <phrase>Dhoom 3</phrase>
+      <phrase>Kick</phrase>
+      <phrase>Happy New Year</phrase>
+      <phrase>PK</phrase>
+      <phrase>Tanu Weds Manu Returns</phrase>
+      <phrase>Dilwale</phrase>
+      <phrase>Airlift</phrase>
+      <phrase>Toilet: Ek Prem Katha</phrase>
+      <phrase>Golmaal Again</phrase>
+      <phrase>Tiger Zinda Hai</phrase>
+      <phrase>Pad Man</phrase>
+      <phrase>Sanju</phrase>
+      <phrase>Race 3</phrase>
+      <phrase>Raid</phrase>
+      <phrase>Stree</phrase>
+      <phrase>Badhaai Ho</phrase>
+      <phrase>Uri: The Surgical Strike</phrase>
+      <phrase>Total Dhamaal</phrase>
+      <phrase>Kabir Singh</phrase>
+      <phrase>The Kashmir Files</phrase>
+      <phrase>Gangubai Kathiawadi</phrase>
+      <phrase>Bhool Bhulaiyaa 2</phrase>
+      <phrase>Drishyam 2</phrase>
+      <phrase>Tu Jhoothi Main Makkaar</phrase>
+      <phrase>Fighter</phrase>
+      <phrase>Crew</phrase>
+      <phrase>Shaitaan</phrase>
+      <phrase>Stree 2</phrase>
+      <phrase>Deewaar</phrase>
+      <phrase>Amar Akbar Anthony</phrase>
+      <phrase>Muqaddar Ka Sikandar</phrase>
+      <phrase>Trishul</phrase>
+      <phrase>Satyam Shivam Sundaram</phrase>
+      <phrase>Sargam</phrase>
+      <phrase>Qurbani</phrase>
+      <phrase>Kranti</phrase>
+      <phrase>Naseeb</phrase>
+      <phrase>Disco Dancer</phrase>
+      <phrase>Coolie</phrase>
+      <phrase>Hero</phrase>
+      <phrase>Betaab</phrase>
+      <phrase>Ram Teri Ganga Maili</phrase>
+      <phrase>Prem Rog</phrase>
+      <phrase>Sohni Mahiwal</phrase>
+      <phrase>Aakhree Raasta</phrase>
+      <phrase>Chameli Ki Shaadi</phrase>
+      <phrase>Mr. India</phrase>
+      <phrase>Dil</phrase>
+      <phrase>Saajan</phrase>
+      <phrase>Khal Nayak</phrase>
+      <phrase>Baazigar</phrase>
+      <phrase>Hum Aapke Hain Koun..!</phrase>
+      <phrase>Coolie No. 1</phrase>
+      <phrase>Raja Hindustani</phrase>
+      <phrase>Pyaar To Hona Hi Tha</phrase>
+      <phrase>Badal</phrase>
+      <phrase>Koi... Mil Gaya</phrase>
+      <phrase>Ra.One</phrase>
+      <phrase>Prem Ratan Dhan Payo</phrase>
+      <phrase>Padmaavat</phrase>
+      <phrase>Article 370</phrase>
+      <phrase>Bhool Bhulaiyaa 3</phrase>
+      <phrase>Border 2</phrase>
+      <phrase>Alpha</phrase>
+      <phrase>Dhamaal 4</phrase>
+    </category>
+    <category name="PLAYBACK SINGERS">
+      <phrase>Lata Mangeshkar</phrase>
+      <phrase>Asha Bhosle</phrase>
+      <phrase>Kishore Kumar</phrase>
+      <phrase>Mohammed Rafi</phrase>
+      <phrase>Mukesh</phrase>
+      <phrase>Manna Dey</phrase>
+      <phrase>Talat Mahmood</phrase>
+      <phrase>Hemant Kumar</phrase>
+      <phrase>Geeta Dutt</phrase>
+      <phrase>Suraiya</phrase>
+      <phrase>Shamshad Begum</phrase>
+      <phrase>S D Burman</phrase>
+      <phrase>Mahendra Kapoor</phrase>
+      <phrase>Udit Narayan</phrase>
+      <phrase>Kumar Sanu</phrase>
+      <phrase>Alka Yagnik</phrase>
+      <phrase>Kavita Krishnamurthy</phrase>
+      <phrase>Sadhana Sargam</phrase>
+      <phrase>Anuradha Paudwal</phrase>
+      <phrase>Sonu Nigam</phrase>
+      <phrase>Shaan</phrase>
+      <phrase>Shreya Ghoshal</phrase>
+      <phrase>Sunidhi Chauhan</phrase>
+      <phrase>Arijit Singh</phrase>
+      <phrase>Neha Kakkar</phrase>
+      <phrase>Atif Aslam</phrase>
+      <phrase>Mohit Chauhan</phrase>
+      <phrase>Rahat Fateh Ali Khan</phrase>
+      <phrase>Armaan Malik</phrase>
+      <phrase>Jubin Nautiyal</phrase>
+      <phrase>Hariharan</phrase>
+      <phrase>Kailash Kher</phrase>
+      <phrase>Sukhwinder Singh</phrase>
+      <phrase>Mika Singh</phrase>
+      <phrase>Badshah</phrase>
+      <phrase>Guru Randhawa</phrase>
+      <phrase>Diljit Dosanjh</phrase>
+      <phrase>B Praak</phrase>
+      <phrase>Palak Muchhal</phrase>
+    </category>
 </bollywood_phrases>

@@ -38,7 +38,6 @@
       <phrase>Singham Again</phrase>
       <phrase>Bade Miyan Chote Miyan</phrase>
       <phrase>Teri Baaton Mein Aisa Uljha Jiya</phrase>
-      <phrase>Yodha</phrase>
       <phrase>Raid 2</phrase>
       <phrase>Bholaa</phrase>
       <phrase>K G F Chapter 1</phrase>
@@ -56,17 +55,13 @@
       <phrase>Ek Deewane Ki Deewaniyat</phrase>
       <phrase>The Taj Story</phrase>
       <phrase>Single Salma</phrase>
-      <phrase>Tere Ishk Mein</phrase>
       <phrase>Zanjeer</phrase>
       <phrase>Yaadon Ki Baaraat</phrase>
       <phrase>Bobby</phrase>
       <phrase>Roti Kapda Aur Makaan</phrase>
       <phrase>Chor Machaye Shor</phrase>
       <phrase>Roti</phrase>
-      <phrase>Sanyasi</phrase>
-      <phrase>Dharam Veer</phrase>
       <phrase>Parvarish</phrase>
-      <phrase>Muqaddar Ka Faisla</phrase>
       <phrase>Tezaab</phrase>
       <phrase>Qayamat Se Qayamat Tak</phrase>
       <phrase>Chandni</phrase>
@@ -75,12 +70,9 @@
       <phrase>Saudagar</phrase>
       <phrase>Phool Aur Kaante</phrase>
       <phrase>Dil Hai Ki Manta Nahin</phrase>
-      <phrase>Henna</phrase>
       <phrase>Beta</phrase>
-      <phrase>Khiladi</phrase>
       <phrase>Jo Jeeta Wohi Sikandar</phrase>
       <phrase>Tirangaa</phrase>
-      <phrase>Anjaam</phrase>
       <phrase>Andaz Apna Apna</phrase>
       <phrase>Karan Arjun</phrase>
       <phrase>Barsaat</phrase>
@@ -88,39 +80,28 @@
       <phrase>Virasat</phrase>
       <phrase>Pardes</phrase>
       <phrase>Border</phrase>
-      <phrase>Ishq</phrase>
       <phrase>Pyaar Kiya To Darna Kya</phrase>
       <phrase>Soldier</phrase>
-      <phrase>Satya</phrase>
       <phrase>Jab Pyaar Kisise Hota Hai</phrase>
       <phrase>Biwi No. 1</phrase>
       <phrase>Hum Dil De Chuke Sanam</phrase>
-      <phrase>Sarfarosh</phrase>
       <phrase>Haseena Maan Jaayegi</phrase>
       <phrase>Taal</phrase>
       <phrase>Hum Saath-Saath Hain</phrase>
-      <phrase>Baadshah</phrase>
       <phrase>Kaho Naa... Pyaar Hai</phrase>
       <phrase>Hera Pheri</phrase>
       <phrase>Mission Kashmir</phrase>
       <phrase>Mohabbatein</phrase>
-      <phrase>Refugee</phrase>
       <phrase>Gadar: Ek Prem Katha</phrase>
-      <phrase>Lajja</phrase>
       <phrase>Indian</phrase>
-      <phrase>Aankhen</phrase>
-      <phrase>Raaz</phrase>
-      <phrase>Saathiya</phrase>
       <phrase>Om Jai Jagadish</phrase>
       <phrase>Munna Bhai M.B.B.S.</phrase>
       <phrase>Main Hoon Na</phrase>
       <phrase>Veer-Zaara</phrase>
       <phrase>Dhoom</phrase>
-      <phrase>Hulchul</phrase>
       <phrase>No Entry</phrase>
       <phrase>Bunty Aur Babli</phrase>
       <phrase>Salaam Namaste</phrase>
-      <phrase>Black</phrase>
       <phrase>Lage Raho Munna Bhai</phrase>
       <phrase>Don</phrase>
       <phrase>Dhoom 2</phrase>
@@ -147,7 +128,6 @@
       <phrase>Tanu Weds Manu Returns</phrase>
       <phrase>Dilwale</phrase>
       <phrase>Airlift</phrase>
-      <phrase>Kaabil</phrase>
       <phrase>Toilet: Ek Prem Katha</phrase>
       <phrase>Golmaal Again</phrase>
       <phrase>Tiger Zinda Hai</phrase>
@@ -160,22 +140,15 @@
       <phrase>Uri: The Surgical Strike</phrase>
       <phrase>Total Dhamaal</phrase>
       <phrase>Kabir Singh</phrase>
-      <phrase>War</phrase>
-      <phrase>Bala</phrase>
-      <phrase>Tanhaji</phrase>
-      <phrase>Shershaah</phrase>
-      <phrase>Sooryavanshi</phrase>
       <phrase>The Kashmir Files</phrase>
       <phrase>Gangubai Kathiawadi</phrase>
       <phrase>Bhool Bhulaiyaa 2</phrase>
       <phrase>Drishyam 2</phrase>
       <phrase>Tu Jhoothi Main Makkaar</phrase>
       <phrase>Fighter</phrase>
-      <phrase>Munjya</phrase>
       <phrase>Crew</phrase>
       <phrase>Shaitaan</phrase>
       <phrase>Stree 2</phrase>
-      <phrase>Company</phrase>
       <phrase>Deewaar</phrase>
       <phrase>Amar Akbar Anthony</phrase>
       <phrase>Muqaddar Ka Sikandar</phrase>
@@ -183,7 +156,6 @@
       <phrase>Satyam Shivam Sundaram</phrase>
       <phrase>Sargam</phrase>
       <phrase>Qurbani</phrase>
-      <phrase>Aasha</phrase>
       <phrase>Kranti</phrase>
       <phrase>Naseeb</phrase>
       <phrase>Disco Dancer</phrase>
@@ -191,17 +163,11 @@
       <phrase>Hero</phrase>
       <phrase>Betaab</phrase>
       <phrase>Ram Teri Ganga Maili</phrase>
-      <phrase>Naam</phrase>
-      <phrase>Vidhaata</phrase>
-      <phrase>Shakti</phrase>
       <phrase>Prem Rog</phrase>
       <phrase>Sohni Mahiwal</phrase>
-      <phrase>Meri Jung</phrase>
       <phrase>Aakhree Raasta</phrase>
       <phrase>Chameli Ki Shaadi</phrase>
-      <phrase>Karma</phrase>
       <phrase>Mr. India</phrase>
-      <phrase>Hukumat</phrase>
       <phrase>Dil</phrase>
       <phrase>Saajan</phrase>
       <phrase>Khal Nayak</phrase>
@@ -209,8 +175,6 @@
       <phrase>Hum Aapke Hain Koun..!</phrase>
       <phrase>Coolie No. 1</phrase>
       <phrase>Raja Hindustani</phrase>
-      <phrase>Agni Sakshi</phrase>
-      <phrase>Gupt</phrase>
       <phrase>Pyaar To Hona Hi Tha</phrase>
       <phrase>Badal</phrase>
       <phrase>Koi... Mil Gaya</phrase>
@@ -218,7 +182,6 @@
       <phrase>Prem Ratan Dhan Payo</phrase>
       <phrase>Padmaavat</phrase>
       <phrase>Article 370</phrase>
-      <phrase>Maidaan</phrase>
       <phrase>Bhool Bhulaiyaa 3</phrase>
       <phrase>Border 2</phrase>
       <phrase>Alpha</phrase>

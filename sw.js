@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.21.0'; // Updated Movies list: 223 titles (3 Idiots format + Border 2, Alpha, Dhamaal 4)
+const CACHE_VERSION = '1.22.0'; // Reorganized: Master Bollywood.xml (all phrases) + 3 themed files (Stars, Movies, Singers)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -6,6 +6,7 @@ const urlsToCache = [
   '/styles.css',
   '/game.js',
   '/Bollywood.xml.txt',
+  '/BollywoodStars.xml.txt',
   '/Movies.xml.txt',
   '/Singers.xml.txt',
   '/manifest.json'

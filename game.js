@@ -1150,7 +1150,7 @@ let currentXMLFileName = 'Bollywood.xml.txt';
 
 // Define available preset files
 const PRESET_FILES = [
-    { name: 'Bollywood.xml.txt', label: '🎭 Actors & Stars', description: 'Heroes, Heroines & South Stars' },
+    { name: 'BollywoodStars.xml.txt', label: '⭐ Bollywood Stars', description: 'Heroes, Heroines & South Stars' },
     { name: 'Movies.xml.txt', label: '🎬 Bollywood Movies', description: 'Classic & Modern Films' },
     { name: 'Singers.xml.txt', label: '🎤 Playback Singers', description: 'Legendary & Current Singers' },
 ];
