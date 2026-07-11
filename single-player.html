@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF8C00">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="screen-orientation" content="landscape">
+    <title>Bollywood Beats - Guess the Phrase!</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+</head>
+<body>
+    <!-- Rotate Screen Message (Portrait Mode Only) -->
+    <div id="rotateMessage" class="rotate-message">
+        <div class="rotate-content">
+            <div class="rotate-icon">📱 ↻</div>
+            <h2>Please Rotate Your Device</h2>
+            <p>This game is best played in landscape mode</p>
+        </div>
+    </div>
+
+    <!-- Main Menu Screen -->
+    <div id="menuScreen" class="screen active">
+        <div class="menu-container">
+            <div class="game-title">
+                <h1>🎬 BOLLYWOOD BEATS 🎵</h1>
+                <p class="subtitle">Guess the Phrase!</p>
+            </div>
+            
+            <div class="menu-buttons">
+                <button class="menu-btn primary" onclick="startGame()">
+                    <span class="btn-icon">🎮</span>
+                    <span>Start Game</span>
+                </button>
+                <button class="menu-btn" onclick="showInstructions()">
+                    <span class="btn-icon">📖</span>
+                    <span>How to Play</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Screen -->
+    <div id="instructionsScreen" class="screen">
+        <div class="instructions-container">
+            <h2>How to Play</h2>
+            <div class="instructions-content">
+                <div class="instruction-item">
+                    <span class="inst-icon">🎯</span>
+                    <p>Guess the phrase by selecting letters</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">❤️</span>
+                    <p>You have 6 lives - wrong guesses lose a life</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">💡</span>
+                    <p>Use 3 lifeline bulbs to reveal random letters</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">⏳</span>
+                    <p>Beat the timer - choose 10, 15, 20, or 30 minutes</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">🎬</span>
+                    <p>Watch the character react to your guesses!</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">🏆</span>
+                    <p>Complete 10 levels to win the game</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">⭐</span>
+                    <p>Earn bonus points for saving lives!</p>
+                </div>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Game Screen - Bollywood Style -->
+    <div id="gameScreen" class="screen">
+        <div class="game-layout">
+            <!-- Left Panel - Character & Score -->
+            <div class="left-panel">
+                <!-- Timer Display (Above Character) -->
+                <div class="timer-container">
+                    <div class="timer-label">TIMER</div>
+                    <div class="timer-display">
+                        <span id="timerMinutes">20</span>:<span id="timerSeconds">00</span>
+                    </div>
+                </div>
+                
+                <!-- Lifeline Display -->
+                <div class="lifeline-container">
+                    <div class="lifeline-label">LIFELINE</div>
+                    <div class="lifeline-bulbs" id="lifelineBulbs">
+                        <span class="lifeline-bulb active" onclick="useLifeline(0)">💡</span>
+                        <span class="lifeline-bulb active" onclick="useLifeline(1)">💡</span>
+                        <span class="lifeline-bulb active" onclick="useLifeline(2)">💡</span>
+                    </div>
+                </div>
+                
+                <div class="character-container">
+                    <!-- Static character image (shows most of the time) -->
+                    <img id="characterStatic" class="character-image idle" src="./images/character-idle.gif" alt="Game Character">
+                    
+                    <!-- Animated GIF (loads only during animations) -->
+                    <img id="characterAnimated" class="character-image" src="" alt="Game Character" style="display: none;">
+                    
+                    <!-- Fallback SVG character (hidden by default, shown if images fail to load) -->
+                    <div id="characterAnimation" class="character idle" style="display: none;">
+                        <!-- Bollywood Character SVG -->
+                        <svg class="character-svg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Body -->
+                            <ellipse class="body" cx="100" cy="200" rx="60" ry="80" fill="#FFD700"/>
+                            
+                            <!-- Head -->
+                            <circle class="head" cx="100" cy="100" r="50" fill="#FDB462"/>
+                            
+                            <!-- Hair -->
+                            <path class="hair" d="M 60 80 Q 50 50, 60 40 Q 80 30, 100 35 Q 120 30, 140 40 Q 150 50, 140 80" fill="#2C1810"/>
+                            
+                            <!-- Eyes -->
+                            <g class="eyes">
+                                <ellipse class="eye-white left-eye" cx="85" cy="95" rx="12" ry="15" fill="white"/>
+                                <ellipse class="eye-white right-eye" cx="115" cy="95" rx="12" ry="15" fill="white"/>
+                                <circle class="pupil left-pupil" cx="85" cy="97" r="6" fill="#2C1810"/>
+                                <circle class="pupil right-pupil" cx="115" cy="97" r="6" fill="#2C1810"/>
+                            </g>
+                            
+                            <!-- Nose -->
+                            <path class="nose" d="M 100 105 L 95 115 L 105 115 Z" fill="#E09655"/>
+                            
+                            <!-- Mouth -->
+                            <path class="mouth" d="M 85 120 Q 100 130, 115 120" stroke="#8B4513" stroke-width="3" fill="none"/>
+                            
+                            <!-- Arms -->
+                            <ellipse class="arm left-arm" cx="50" cy="180" rx="15" ry="50" fill="#FDB462" transform="rotate(-20 50 180)"/>
+                            <ellipse class="arm right-arm" cx="150" cy="180" rx="15" ry="50" fill="#FDB462" transform="rotate(20 150 180)"/>
+                            
+                            <!-- Film Reel Accessory -->
+                            <circle class="accessory" cx="100" cy="40" r="8" fill="#FF6B6B"/>
+                            <circle class="accessory" cx="100" cy="40" r="5" fill="#FFD700"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Score Display (Below Character) -->
+                <div class="score-panel">
+                    <div class="score-label">SCORE</div>
+                    <div id="scoreDisplay" class="score-value">0</div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Game Area -->
+            <div class="right-panel">
+                <!-- Game Title -->
+                <div class="game-title-bar">
+                    <h1>🎬 BOLLYWOOD BEATS 🎵</h1>
+                </div>
+
+                <!-- Top Status Bar -->
+                <div class="status-bar">
+                    <div class="control-block levels-lives-block">
+                        <div class="levels-lives-stack">
+                            <div class="levels-section">
+                                <div class="block-label">LEVELS</div>
+                                <div class="levels-dots" id="levelsDots"></div>
+                            </div>
+                            <div class="lives-section">
+                                <div class="block-label">LIVES</div>
+                                <div class="lives-panel" id="livesPanel"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-block keyboard-block">
+                        <div class="block-label">KEYBOARD</div>
+                        <div class="keyboard-combined" id="keyboardCombined"></div>
+                    </div>
+                    <div class="control-block">
+                        <div class="block-label">CONTROLS</div>
+                        <div class="controls-panel">
+                            <span class="mute-emoji" id="muteBtn">🔊</span>
+                            <span class="timer-settings-emoji" onclick="showTimerSettings()">⏳</span>
+                            <span class="settings-emoji" onclick="showSettings()">⚙️</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timer Settings Dropdown -->
+                <div id="timerSettingsDropdown" class="timer-settings-dropdown" style="display: none;">
+                    <div class="timer-settings-content">
+                        <h3>⏳ Set Timer</h3>
+                        <button class="timer-option-btn" onclick="setTimerDuration(600)">
+                            <span>⏱️</span> 10 Minutes
+                        </button>
+                        <button class="timer-option-btn" onclick="setTimerDuration(900)">
+                            <span>⏱️</span> 15 Minutes
+                        </button>
+                        <button class="timer-option-btn" onclick="setTimerDuration(1200)">
+                            <span>⏱️</span> 20 Minutes
+                        </button>
+                        <button class="timer-option-btn" onclick="setTimerDuration(1800)">
+                            <span>⏱️</span> 30 Minutes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Banner -->
+                <div class="category-banner">
+                    <span id="categoryText">CATEGORY</span>
+                </div>
+
+                <!-- Phrase Board -->
+                <div class="phrase-board">
+                    <div class="phrase-grid" id="phraseGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="screen">
+        <div class="gameover-container">
+            <div id="gameOverContent"></div>
+        </div>
+    </div>
+
+    <!-- Settings Menu Screen -->
+    <div id="settingsScreen" class="screen">
+        <div class="settings-container">
+            <h2>⚙️ Game Settings</h2>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <h3>🎬 Built-in Phrase Files</h3>
+                    <div class="preset-files-compact" id="presetFileButtons">
+                        <!-- Preset files will be populated here -->
+                    </div>
+                </div>
+                <div class="setting-item" id="fileManagementSection">
+                    <h3>📄 Phrase File Management (Desktop Only)</h3>
+                    <div class="setting-buttons">
+                        <button class="setting-btn" onclick="validateXMLFile()">
+                            <span>✅</span> Validate XML File
+                        </button>
+                        <button class="setting-btn" onclick="loadCustomXML()">
+                            <span>📂</span> Load Custom XML
+                        </button>
+                        <button class="setting-btn" onclick="resetToDefaultXML()">
+                            <span>🔄</span> Reset to Default
+                        </button>
+                    </div>
+                </div>
+                <div class="setting-item" id="fileInfoSection" style="display: none;">
+                    <h3>ℹ️ Current File Info</h3>
+                    <div id="xmlInfo" class="xml-info">
+                        <p><strong>File:</strong> <span id="currentFile">Bollywood.xml.txt</span></p>
+                        <p><strong>Status:</strong> <span id="xmlStatus">Not checked</span></p>
+                        <p><strong>Total Phrases:</strong> <span id="totalPhrases">-</span></p>
+                        <p><strong>Categories:</strong> <span id="totalCategories">-</span></p>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Hidden File Input for Custom XML -->
+    <input type="file" id="customXMLInput" accept=".xml,.txt" style="display: none;">
+    
+    <!-- Hidden File Input for XML Validation -->
+    <input type="file" id="validateXMLInput" accept=".xml,.txt" style="display: none;">
+
+    <script src="game.js"></script>
+    
+    <!-- Update Toast Notification -->
+    <div id="updateToast" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; padding: 15px 25px; border-radius: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 10001; font-family: 'Arial Black', sans-serif; text-align: center; min-width: 300px;">
+        <div style="font-size: 1.1rem; margin-bottom: 8px;">🎉 New Update Available!</div>
+        <div style="font-size: 0.9rem; margin-bottom: 12px; opacity: 0.9;">Refresh to get the latest version</div>
+        <button onclick="reloadForUpdate()" style="background: white; color: #388E3C; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">Reload Now</button>
+        <button onclick="dismissUpdate()" style="background: transparent; color: white; border: 2px solid white; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 0.9rem;">Later</button>
+    </div>
+    
+    <script>
+        // Update notification functions
+        function reloadForUpdate() {
+            window.location.reload();
+        }
+        
+        function dismissUpdate() {
+            document.getElementById('updateToast').style.display = 'none';
+        }
+        
+        function showUpdateToast() {
+            const toast = document.getElementById('updateToast');
+            toast.style.display = 'block';
+            toast.style.animation = 'slideUp 0.4s ease-out';
+        }
+        
+        // Register Service Worker for PWA with update detection
+        if ('serviceWorker' in navigator) {
+            let refreshing = false;
+            
+            // Detect controller change and reload
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                refreshing = true;
+                console.log('[App] Controller changed, reloading...');
+            });
+            
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker registered:', registration);
+                        
+                        // Check for updates periodically (every 5 minutes)
+                        setInterval(() => {
+                            registration.update();
+                        }, 5 * 60 * 1000);
+                        
+                        // Listen for waiting service worker
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('[App] New service worker found');
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('[App] New service worker installed, update available');
+                                    showUpdateToast();
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+                
+                // Listen for messages from service worker
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                        console.log(`[App] Update available: ${event.data.version}`);
+                        showUpdateToast();
+                    }
+                });
+            });
+        }
+    </script>
+    
+    <style>
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</body>
+</html>

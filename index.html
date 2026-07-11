@@ -8,11 +8,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="screen-orientation" content="landscape">
-    <title>Bollywood Beats - Guess the Phrase!</title>
+    <title>Bollywood Beats - Multiplayer</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="multiplayer-styles.css">
+    <link rel="stylesheet" href="app-banner.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
-    <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
     <!-- Rotate Screen Message (Portrait Mode Only) -->
@@ -29,13 +29,17 @@
         <div class="menu-container">
             <div class="game-title">
                 <h1>🎬 BOLLYWOOD BEATS 🎵</h1>
-                <p class="subtitle">Guess the Phrase!</p>
+                <p class="subtitle">Multiplayer Mode - Guess Together!</p>
             </div>
             
             <div class="menu-buttons">
-                <button class="menu-btn primary" onclick="startGame()">
+                <button class="menu-btn primary" onclick="showCreateRoom()">
                     <span class="btn-icon">🎮</span>
-                    <span>Start Game</span>
+                    <span>Create Room</span>
+                </button>
+                <button class="menu-btn" onclick="showJoinRoom()">
+                    <span class="btn-icon">🚪</span>
+                    <span>Join Room</span>
                 </button>
                 <button class="menu-btn" onclick="showInstructions()">
                     <span class="btn-icon">📖</span>
@@ -45,45 +49,98 @@
         </div>
     </div>
 
+    <!-- Create Room Screen -->
+    <div id="createRoomScreen" class="screen">
+        <div class="lobby-container">
+            <h2>Create Room</h2>
+            <div class="input-group">
+                <label for="hostNameInput">Your Name:</label>
+                <input type="text" id="hostNameInput" maxlength="15" placeholder="Enter your name">
+            </div>
+            <button class="menu-btn primary" onclick="createRoom()">Create Room</button>
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+        </div>
+    </div>
+
+    <!-- Join Room Screen -->
+    <div id="joinRoomScreen" class="screen">
+        <div class="lobby-container">
+            <h2>Join Room</h2>
+            <div class="input-group">
+                <label for="playerNameInput">Your Name:</label>
+                <input type="text" id="playerNameInput" maxlength="15" placeholder="Enter your name">
+            </div>
+            <div class="input-group">
+                <label for="roomCodeInput">Room Code:</label>
+                <input type="text" id="roomCodeInput" maxlength="4" placeholder="ABCD" style="text-transform: uppercase;">
+            </div>
+            <button class="menu-btn primary" onclick="joinRoom()">Join Room</button>
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+        </div>
+    </div>
+
+    <!-- Lobby Screen (Waiting for Players) -->
+    <div id="lobbyScreen" class="screen">
+        <div class="lobby-container">
+            <h2>Waiting for Players</h2>
+            <div class="room-code-display">
+                <div class="room-code-label">Room Code:</div>
+                <div class="room-code-value" id="lobbyRoomCode">----</div>
+            </div>
+            <div class="players-list" id="playersList">
+                <!-- Players will be populated here -->
+            </div>
+            <div class="lobby-actions">
+                <button id="shareRoomBtn" class="menu-btn secondary">📋 Share Code</button>
+                <button id="qrCodeBtn" class="menu-btn secondary">📱 QR Code</button>
+                <button id="startGameBtn" class="menu-btn primary" onclick="startMultiplayerGame()" style="display: none;">
+                    <span class="btn-icon">▶️</span>
+                    <span>Start Game</span>
+                </button>
+                <button class="menu-btn danger" onclick="leaveLobby()">Leave Room</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Instructions Screen -->
     <div id="instructionsScreen" class="screen">
         <div class="instructions-container">
-            <h2>How to Play</h2>
+            <h2>How to Play - Multiplayer</h2>
             <div class="instructions-content">
                 <div class="instruction-item">
                     <span class="inst-icon">🎯</span>
-                    <p>Guess the phrase by selecting letters</p>
+                    <p><strong>Create or Join a room</strong> using a 4-character code</p>
                 </div>
                 <div class="instruction-item">
-                    <span class="inst-icon">❤️</span>
-                    <p>You have 6 lives - wrong guesses lose a life</p>
+                    <span class="inst-icon">👥</span>
+                    <p><strong>Play together</strong> - anyone can guess letters</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">🔄</span>
+                    <p><strong>Real-time sync</strong> - see all guesses instantly</p>
                 </div>
                 <div class="instruction-item">
                     <span class="inst-icon">💡</span>
-                    <p>Use 3 lifeline bulbs to reveal random letters</p>
+                    <p><strong>Shared lifelines</strong> - 3 hints for the whole team</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">❤️</span>
+                    <p><strong>6 lives total</strong> - work together to save them</p>
                 </div>
                 <div class="instruction-item">
                     <span class="inst-icon">⏳</span>
-                    <p>Beat the timer - choose 10, 15, 20, or 30 minutes</p>
-                </div>
-                <div class="instruction-item">
-                    <span class="inst-icon">🎬</span>
-                    <p>Watch the character react to your guesses!</p>
+                    <p><strong>Beat the timer</strong> - host can set duration</p>
                 </div>
                 <div class="instruction-item">
                     <span class="inst-icon">🏆</span>
-                    <p>Complete 10 levels to win the game</p>
-                </div>
-                <div class="instruction-item">
-                    <span class="inst-icon">⭐</span>
-                    <p>Earn bonus points for saving lives!</p>
+                    <p><strong>Complete 10 levels</strong> to win as a team!</p>
                 </div>
             </div>
             <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
         </div>
     </div>
 
-    <!-- Game Screen - Bollywood Style -->
+    <!-- Game Screen (same as single player but with multiplayer sync) -->
     <div id="gameScreen" class="screen">
         <div class="game-layout">
             <!-- Left Panel - Character & Score -->
@@ -107,47 +164,10 @@
                 </div>
                 
                 <div class="character-container">
-                    <!-- Static character image (shows most of the time) -->
                     <img id="characterStatic" class="character-image idle" src="./images/character-idle.gif" alt="Game Character">
-                    
-                    <!-- Animated GIF (loads only during animations) -->
                     <img id="characterAnimated" class="character-image" src="" alt="Game Character" style="display: none;">
-                    
-                    <!-- Fallback SVG character (hidden by default, shown if images fail to load) -->
                     <div id="characterAnimation" class="character idle" style="display: none;">
-                        <!-- Bollywood Character SVG -->
-                        <svg class="character-svg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Body -->
-                            <ellipse class="body" cx="100" cy="200" rx="60" ry="80" fill="#FFD700"/>
-                            
-                            <!-- Head -->
-                            <circle class="head" cx="100" cy="100" r="50" fill="#FDB462"/>
-                            
-                            <!-- Hair -->
-                            <path class="hair" d="M 60 80 Q 50 50, 60 40 Q 80 30, 100 35 Q 120 30, 140 40 Q 150 50, 140 80" fill="#2C1810"/>
-                            
-                            <!-- Eyes -->
-                            <g class="eyes">
-                                <ellipse class="eye-white left-eye" cx="85" cy="95" rx="12" ry="15" fill="white"/>
-                                <ellipse class="eye-white right-eye" cx="115" cy="95" rx="12" ry="15" fill="white"/>
-                                <circle class="pupil left-pupil" cx="85" cy="97" r="6" fill="#2C1810"/>
-                                <circle class="pupil right-pupil" cx="115" cy="97" r="6" fill="#2C1810"/>
-                            </g>
-                            
-                            <!-- Nose -->
-                            <path class="nose" d="M 100 105 L 95 115 L 105 115 Z" fill="#E09655"/>
-                            
-                            <!-- Mouth -->
-                            <path class="mouth" d="M 85 120 Q 100 130, 115 120" stroke="#8B4513" stroke-width="3" fill="none"/>
-                            
-                            <!-- Arms -->
-                            <ellipse class="arm left-arm" cx="50" cy="180" rx="15" ry="50" fill="#FDB462" transform="rotate(-20 50 180)"/>
-                            <ellipse class="arm right-arm" cx="150" cy="180" rx="15" ry="50" fill="#FDB462" transform="rotate(20 150 180)"/>
-                            
-                            <!-- Film Reel Accessory -->
-                            <circle class="accessory" cx="100" cy="40" r="8" fill="#FF6B6B"/>
-                            <circle class="accessory" cx="100" cy="40" r="5" fill="#FFD700"/>
-                        </svg>
+                        <!-- SVG fallback (same as single player) -->
                     </div>
                 </div>
                 
@@ -187,28 +207,8 @@
                         <div class="block-label">CONTROLS</div>
                         <div class="controls-panel">
                             <span class="mute-emoji" id="muteBtn">🔊</span>
-                            <span class="timer-settings-emoji" onclick="showTimerSettings()">⏳</span>
-                            <span class="settings-emoji" onclick="showSettings()">⚙️</span>
+                            <span class="quit-emoji" onclick="quitGame()">❌</span>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Timer Settings Dropdown -->
-                <div id="timerSettingsDropdown" class="timer-settings-dropdown" style="display: none;">
-                    <div class="timer-settings-content">
-                        <h3>⏳ Set Timer</h3>
-                        <button class="timer-option-btn" onclick="setTimerDuration(600)">
-                            <span>⏱️</span> 10 Minutes
-                        </button>
-                        <button class="timer-option-btn" onclick="setTimerDuration(900)">
-                            <span>⏱️</span> 15 Minutes
-                        </button>
-                        <button class="timer-option-btn" onclick="setTimerDuration(1200)">
-                            <span>⏱️</span> 20 Minutes
-                        </button>
-                        <button class="timer-option-btn" onclick="setTimerDuration(1800)">
-                            <span>⏱️</span> 30 Minutes
-                        </button>
                     </div>
                 </div>
 
@@ -232,45 +232,6 @@
         </div>
     </div>
 
-    <!-- Settings Menu Screen -->
-    <div id="settingsScreen" class="screen">
-        <div class="settings-container">
-            <h2>⚙️ Game Settings</h2>
-            <div class="settings-content">
-                <div class="setting-item">
-                    <h3>🎬 Built-in Phrase Files</h3>
-                    <div class="preset-files-compact" id="presetFileButtons">
-                        <!-- Preset files will be populated here -->
-                    </div>
-                </div>
-                <div class="setting-item" id="fileManagementSection">
-                    <h3>📄 Phrase File Management (Desktop Only)</h3>
-                    <div class="setting-buttons">
-                        <button class="setting-btn" onclick="validateXMLFile()">
-                            <span>✅</span> Validate XML File
-                        </button>
-                        <button class="setting-btn" onclick="loadCustomXML()">
-                            <span>📂</span> Load Custom XML
-                        </button>
-                        <button class="setting-btn" onclick="resetToDefaultXML()">
-                            <span>🔄</span> Reset to Default
-                        </button>
-                    </div>
-                </div>
-                <div class="setting-item" id="fileInfoSection" style="display: none;">
-                    <h3>ℹ️ Current File Info</h3>
-                    <div id="xmlInfo" class="xml-info">
-                        <p><strong>File:</strong> <span id="currentFile">Bollywood.xml.txt</span></p>
-                        <p><strong>Status:</strong> <span id="xmlStatus">Not checked</span></p>
-                        <p><strong>Total Phrases:</strong> <span id="totalPhrases">-</span></p>
-                        <p><strong>Categories:</strong> <span id="totalCategories">-</span></p>
-                    </div>
-                </div>
-            </div>
-            <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
-        </div>
-    </div>
-
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="loading-content">
@@ -279,98 +240,9 @@
         </div>
     </div>
 
-    <!-- Hidden File Input for Custom XML -->
-    <input type="file" id="customXMLInput" accept=".xml,.txt" style="display: none;">
-    
-    <!-- Hidden File Input for XML Validation -->
-    <input type="file" id="validateXMLInput" accept=".xml,.txt" style="display: none;">
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="toast-notification" style="display: none;"></div>
 
-    <script src="game.js"></script>
-    
-    <!-- Update Toast Notification -->
-    <div id="updateToast" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; padding: 15px 25px; border-radius: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 10001; font-family: 'Arial Black', sans-serif; text-align: center; min-width: 300px;">
-        <div style="font-size: 1.1rem; margin-bottom: 8px;">🎉 New Update Available!</div>
-        <div style="font-size: 0.9rem; margin-bottom: 12px; opacity: 0.9;">Refresh to get the latest version</div>
-        <button onclick="reloadForUpdate()" style="background: white; color: #388E3C; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">Reload Now</button>
-        <button onclick="dismissUpdate()" style="background: transparent; color: white; border: 2px solid white; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 0.9rem;">Later</button>
-    </div>
-    
-    <script>
-        // Update notification functions
-        function reloadForUpdate() {
-            window.location.reload();
-        }
-        
-        function dismissUpdate() {
-            document.getElementById('updateToast').style.display = 'none';
-        }
-        
-        function showUpdateToast() {
-            const toast = document.getElementById('updateToast');
-            toast.style.display = 'block';
-            toast.style.animation = 'slideUp 0.4s ease-out';
-        }
-        
-        // Register Service Worker for PWA with update detection
-        if ('serviceWorker' in navigator) {
-            let refreshing = false;
-            
-            // Detect controller change and reload
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (refreshing) return;
-                refreshing = true;
-                console.log('[App] Controller changed, reloading...');
-            });
-            
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('✅ Service Worker registered:', registration);
-                        
-                        // Check for updates periodically (every 5 minutes)
-                        setInterval(() => {
-                            registration.update();
-                        }, 5 * 60 * 1000);
-                        
-                        // Listen for waiting service worker
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            console.log('[App] New service worker found');
-                            
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    console.log('[App] New service worker installed, update available');
-                                    showUpdateToast();
-                                }
-                            });
-                        });
-                    })
-                    .catch((error) => {
-                        console.log('❌ Service Worker registration failed:', error);
-                    });
-                
-                // Listen for messages from service worker
-                navigator.serviceWorker.addEventListener('message', (event) => {
-                    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
-                        console.log(`[App] Update available: ${event.data.version}`);
-                        showUpdateToast();
-                    }
-                });
-            });
-        }
-    </script>
-    
-    <style>
-        @keyframes slideUp {
-            from {
-                transform: translateX(-50%) translateY(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
-        }
-    </style>
+    <script type="module" src="multiplayer-game.js"></script>
 </body>
 </html>

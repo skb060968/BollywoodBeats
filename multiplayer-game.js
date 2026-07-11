@@ -220,11 +220,11 @@ function showLobby() {
     const qrBtn = document.getElementById('qrCodeBtn');
     
     if (shareBtn) {
-        shareBtn.onclick = createShareHandler(roomCode, 'Bollywood Beats', 'multiplayer.html');
+        shareBtn.onclick = createShareHandler(roomCode, 'Bollywood Beats', '');
     }
     
     if (qrBtn) {
-        qrBtn.onclick = () => showQRCode(roomCode, 'Bollywood Beats', 'multiplayer.html');
+        qrBtn.onclick = () => showQRCode(roomCode, 'Bollywood Beats', '');
     }
 }
 
@@ -916,7 +916,7 @@ async function restoreSession() {
         roomInputId: 'roomCodeInput',
         joinScreenId: 'joinRoomScreen',
         gameName: 'Bollywood Beats',
-        htmlFile: 'multiplayer.html'
+        htmlFile: ''
     });
     
     // If deep link present, show join screen and return
