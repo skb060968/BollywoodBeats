@@ -453,25 +453,20 @@ function startTimer() {
         clearInterval(timerInterval);
     }
     
-    // Start countdown (only on host device, who syncs to Firebase)
-    if (isHost) {
-        timerInterval = setInterval(async () => {
-            gameState.timeRemaining--;
-            updateTimerDisplay();
-            
-            // Sync to Firebase every 5 seconds to avoid too many writes
-            if (gameState.timeRemaining % 5 === 0) {
-                await writeGameState(roomCode, serializeGameState(gameState));
+    // Start countdown on ALL devices (local countdown, no Firebase sync needed)
+    timerInterval = setInterval(() => {
+        gameState.timeRemaining--;
+        updateTimerDisplay();
+        
+        // Check if time's up (only host ends the game)
+        if (gameState.timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            if (isHost) {
+                gameLost();
             }
-            
-            // Check if time's up
-            if (gameState.timeRemaining <= 0) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                await gameLost();
-            }
-        }, 1000);
-    }
+        }
+    }, 1000);
 }
 
 function stopTimer() {
