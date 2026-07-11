@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.29.0'; // Fixed update toast detection - SW waits for user confirmation
+const CACHE_VERSION = '1.30.0'; // Fixed level progression - update UI after nextLevel
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',

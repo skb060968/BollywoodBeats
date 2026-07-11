@@ -663,15 +663,21 @@ function checkWin() {
     const requiredLetters = new Set(gameState.currentPhrase.match(/[A-Z0-9]/g));
     const allRevealed = [...requiredLetters].every(letter => gameState.revealedLetters.has(letter));
     
+    console.log('[CheckWin] Required:', requiredLetters.size, 'Revealed:', gameState.revealedLetters.size, 'AllRevealed:', allRevealed, 'IsHost:', isHost);
+    
     if (allRevealed && isHost) {
         // Only host advances to next level
         const bonusPoints = (gameState.maxWrongGuesses - gameState.wrongGuesses) * 100;
         gameState.score += 500 + bonusPoints;
         
+        console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
+        
         setTimeout(async () => {
             if (gameState.currentLevel >= gameState.maxLevels) {
+                console.log('[CheckWin] All levels complete! Showing game won');
                 await gameWon();
             } else {
+                console.log('[CheckWin] Moving to next level');
                 await nextLevel();
             }
         }, 2000);
@@ -689,6 +695,8 @@ function checkLose() {
 async function nextLevel() {
     if (!isHost) return;
     
+    console.log('[NextLevel] Moving to next level...');
+    
     gameState.currentLevel++;
     gameState.currentPhraseIndex++;
     gameState.revealedLetters = new Set();
@@ -698,6 +706,8 @@ async function nextLevel() {
     gameState.currentPhrase = phraseData.text.toUpperCase();
     gameState.currentCategory = phraseData.category;
     
+    console.log('[NextLevel] New level:', gameState.currentLevel, 'Phrase:', gameState.currentPhrase);
+    
     // Add punctuation to revealed letters
     for (let char of gameState.currentPhrase) {
         if (!/[A-Z0-9]/.test(char)) {
@@ -705,7 +715,13 @@ async function nextLevel() {
         }
     }
     
+    // Write to Firebase
     await writeGameState(roomCode, serializeGameState(gameState));
+    
+    // Update local UI immediately for host
+    updateGameUI();
+    displayPhrase();
+    createKeyboard();
 }
 
 async function gameWon() {
