@@ -665,22 +665,28 @@ function checkWin() {
     
     console.log('[CheckWin] Required:', requiredLetters.size, 'Revealed:', gameState.revealedLetters.size, 'AllRevealed:', allRevealed, 'IsHost:', isHost);
     
-    if (allRevealed && isHost) {
-        // Only host advances to next level
-        const bonusPoints = (gameState.maxWrongGuesses - gameState.wrongGuesses) * 100;
-        gameState.score += 500 + bonusPoints;
+    if (allRevealed) {
+        // Level complete - anyone can trigger, but only host writes to Firebase
         
-        console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
-        
-        setTimeout(async () => {
-            if (gameState.currentLevel >= gameState.maxLevels) {
-                console.log('[CheckWin] All levels complete! Showing game won');
-                await gameWon();
-            } else {
-                console.log('[CheckWin] Moving to next level');
-                await nextLevel();
-            }
-        }, 2000);
+        if (isHost) {
+            const bonusPoints = (gameState.maxWrongGuesses - gameState.wrongGuesses) * 100;
+            gameState.score += 500 + bonusPoints;
+            
+            console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
+            
+            setTimeout(async () => {
+                if (gameState.currentLevel >= gameState.maxLevels) {
+                    console.log('[CheckWin] All levels complete! Showing game won');
+                    await gameWon();
+                } else {
+                    console.log('[CheckWin] Moving to next level');
+                    await nextLevel();
+                }
+            }, 2000);
+        } else {
+            // Non-host just celebrates
+            console.log('[CheckWin] Level complete! Waiting for host to advance...');
+        }
     }
 }
 

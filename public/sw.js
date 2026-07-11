@@ -1,35 +1,35 @@
-const CACHE_VERSION = '1.30.0'; // Fixed level progression - update UI after nextLevel
+const CACHE_VERSION = '1.31.0'; // Fixed SW cache for Vite build
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
+
+// Only cache static assets that don't change - Vite handles JS/CSS with hashed names
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/single-player.html',
-  '/styles.css',
-  '/game.js',
-  '/multiplayer-styles.css',
-  '/multiplayer-game.js',
-  '/firebase-config.js',
-  '/firebase-sync.js',
-  '/deep-link-handler.js',
-  '/app-banner.css',
-  '/platform-ui.js',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
   '/Bollywood.xml.txt',
   '/BollywoodStars.xml.txt',
   '/Movies.xml.txt',
-  '/Singers.xml.txt',
-  '/manifest.json'
+  '/Singers.xml.txt'
 ];
 
-// Install event - cache resources
+// Install event - cache static resources only
 self.addEventListener('install', (event) => {
   console.log(`[SW] Installing version ${CACHE_VERSION}`);
-  // Don't skip waiting automatically - let the page control it
   
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[SW] Caching app shell');
-        return cache.addAll(urlsToCache);
+        console.log('[SW] Caching static assets');
+        // Cache each file individually and ignore errors
+        return Promise.allSettled(
+          urlsToCache.map(url => 
+            cache.add(url).catch(err => {
+              console.warn(`[SW] Failed to cache ${url}:`, err);
+              return null;
+            })
+          )
+        );
       })
   );
 });
