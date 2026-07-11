@@ -380,14 +380,18 @@ window.startMultiplayerGame = async function() {
 function serializeGameState(state) {
     return {
         ...state,
-        revealedLetters: Array.from(state.revealedLetters),
+        gamePhrases: JSON.stringify(state.gamePhrases), // Convert array to JSON string
+        revealedLetters: JSON.stringify(Array.from(state.revealedLetters)), // Convert to JSON string
+        lifelinesUsed: JSON.stringify(state.lifelinesUsed), // Convert to JSON string
     };
 }
 
 function deserializeGameState(firebaseState) {
     return {
         ...firebaseState,
-        revealedLetters: new Set(firebaseState.revealedLetters || []),
+        gamePhrases: JSON.parse(firebaseState.gamePhrases || '[]'), // Parse JSON string back to array
+        revealedLetters: new Set(JSON.parse(firebaseState.revealedLetters || '[]')), // Parse and convert to Set
+        lifelinesUsed: JSON.parse(firebaseState.lifelinesUsed || '[false,false,false]'), // Parse JSON string back to array
     };
 }
 
