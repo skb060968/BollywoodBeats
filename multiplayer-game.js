@@ -12,6 +12,7 @@ import {
   endGame as firebaseEndGame,
   deleteRoom,
   setupDisconnectHandler,
+  removePlayer as firebaseRemovePlayer,
 } from './firebase-sync.js';
 
 // ========== GAME STATE ==========
@@ -253,6 +254,16 @@ function updatePlayersList(players) {
             playerDiv.appendChild(badge);
         }
         
+        // Show remove button for host (but not for themselves)
+        if (isHost && key !== 'player_0') {
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-player-btn';
+            removeBtn.textContent = '✕';
+            removeBtn.title = 'Remove player';
+            removeBtn.onclick = () => removePlayer(key, player.name);
+            playerDiv.appendChild(removeBtn);
+        }
+        
         playerDiv.appendChild(statusSpan);
         list.appendChild(playerDiv);
     });
@@ -265,12 +276,34 @@ window.leaveLobby = async function() {
     
     try {
         if (isHost) {
+            // Host deletes the entire room
             await deleteRoom(roomCode);
+        } else {
+            // Regular player removes themselves from the room
+            await firebaseRemovePlayer(roomCode, playerIndex);
         }
         showMenu();
     } catch (error) {
         console.error('Error leaving lobby:', error);
         showMenu();
+    }
+};
+
+// Remove a player from the room (host only or self)
+window.removePlayer = async function(playerKey, playerName) {
+    if (!isHost) return;
+    
+    if (!confirm(`Remove ${playerName} from the room?`)) {
+        return;
+    }
+    
+    try {
+        const playerIdx = parseInt(playerKey.split('_')[1]);
+        await firebaseRemovePlayer(roomCode, playerIdx);
+        showToast(`${playerName} removed from room`);
+    } catch (error) {
+        console.error('Error removing player:', error);
+        showToast('Failed to remove player', true);
     }
 };
 

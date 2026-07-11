@@ -95,6 +95,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 15px;
     transition: transform 0.2s ease;
 }
 
@@ -107,6 +108,7 @@
     font-weight: bold;
     color: #FFF;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    flex: 1;
 }
 
 .player-badge {
@@ -116,6 +118,32 @@
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: bold;
+}
+
+.remove-player-btn {
+    background: rgba(244, 67, 54, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-weight: bold;
+    padding: 0;
+}
+
+.remove-player-btn:hover {
+    background: #F44336;
+    transform: scale(1.1);
+}
+
+.remove-player-btn:active {
+    transform: scale(0.95);
 }
 
 .player-status {
