@@ -40,7 +40,8 @@ let gameState = {
     timerDuration: 1200,
     gameStartTime: null,
     lifelinesRemaining: 3,
-    lifelinesUsed: [false, false, false]
+    lifelinesUsed: [false, false, false],
+    gameResult: null // 'won', 'lost', or null
 };
 
 // ========== SESSION PERSISTENCE ==========
@@ -235,8 +236,11 @@ function startLobbyListener() {
     
     unsubscribeRoom = listenRoom(roomCode, {
         onStatusChange: (status) => {
+            console.log('[StatusChange] Status:', status);
             if (status === 'finished') {
-                // Game ended - could show game over screen
+                // Game ended - show appropriate screen based on game result
+                // The gameState will have been updated with gameResult
+                console.log('[StatusChange] Game finished, showing game over');
             }
         },
         onPlayersChange: (players) => {
@@ -417,6 +421,7 @@ function deserializeGameState(firebaseState) {
 function updateGameFromFirebase(firebaseGameState) {
     if (!firebaseGameState) return;
     
+    const previousResult = gameState.gameResult;
     gameState = deserializeGameState(firebaseGameState);
     updateGameUI();
     displayPhrase();
@@ -424,6 +429,12 @@ function updateGameFromFirebase(firebaseGameState) {
     
     // Check win condition after receiving updates from other players
     checkWin();
+    
+    // Check if game result was set (game ended)
+    if (gameState.gameResult && gameState.gameResult !== previousResult) {
+        console.log('[UpdateFromFirebase] Game result:', gameState.gameResult);
+        showGameOver(gameState.gameResult === 'won');
+    }
 }
 
 // ========== GAME UI ==========
@@ -740,14 +751,30 @@ async function nextLevel() {
 }
 
 async function gameWon() {
-    if (!isHost) return;
-    await firebaseEndGame(roomCode);
+    console.log('[GameWon] All levels complete! IsHost:', isHost);
+    
+    if (isHost) {
+        // Host writes the final state and ends game
+        gameState.gameResult = 'won'; // Store result for other players
+        await writeGameState(roomCode, serializeGameState(gameState));
+        await firebaseEndGame(roomCode);
+    }
+    
+    // All players show game over screen
     showGameOver(true);
 }
 
 async function gameLost() {
-    if (!isHost) return;
-    await firebaseEndGame(roomCode);
+    console.log('[GameLost] Out of lives! IsHost:', isHost);
+    
+    if (isHost) {
+        // Host writes the final state and ends game
+        gameState.gameResult = 'lost'; // Store result for other players
+        await writeGameState(roomCode, serializeGameState(gameState));
+        await firebaseEndGame(roomCode);
+    }
+    
+    // All players show game over screen
     showGameOver(false);
 }
 

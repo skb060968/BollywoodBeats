@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.33.0'; // Allow all players to use lifelines in collaborative play
+const CACHE_VERSION = '1.34.0'; // Show game over screen for all players when game completes
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
