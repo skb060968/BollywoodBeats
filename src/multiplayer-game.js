@@ -697,9 +697,6 @@ window.useLifeline = async function(index) {
 
 // Debug: Log that function is defined
 console.log('[Init] useLifeline function defined:', typeof window.useLifeline);
-    // Check win
-    checkWin();
-};
 
 function checkWin() {
     const requiredLetters = new Set(gameState.currentPhrase.match(/[A-Z0-9]/g));
