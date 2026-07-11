@@ -430,6 +430,14 @@ function updateGameFromFirebase(firebaseGameState) {
     // Check win condition after receiving updates from other players
     checkWin();
     
+    // Check lose condition after receiving updates from other players (host only)
+    if (isHost && gameState.wrongGuesses >= gameState.maxWrongGuesses && !gameState.gameResult) {
+        console.log('[UpdateFromFirebase] All lives exhausted, triggering game over');
+        setTimeout(async () => {
+            await gameLost();
+        }, 1000);
+    }
+    
     // Check if game result was set (game ended)
     if (gameState.gameResult && gameState.gameResult !== previousResult) {
         console.log('[UpdateFromFirebase] Game result:', gameState.gameResult);
