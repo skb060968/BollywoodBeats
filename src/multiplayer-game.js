@@ -636,7 +636,9 @@ window.guessLetter = async function(letter, keyElement) {
 };
 
 window.useLifeline = async function(index) {
-    if (!roomCode || !isHost || gameState.lifelinesUsed[index]) return;
+    if (!roomCode || gameState.lifelinesUsed[index]) return;
+    
+    console.log('[Lifeline] Player using lifeline', index, 'IsHost:', isHost);
     
     // Mark lifeline as used
     gameState.lifelinesUsed[index] = true;
@@ -653,11 +655,15 @@ window.useLifeline = async function(index) {
     if (unrevealedLetters.length > 0) {
         const randomLetter = unrevealedLetters[Math.floor(Math.random() * unrevealedLetters.length)];
         gameState.revealedLetters.add(randomLetter);
+        console.log('[Lifeline] Revealed letter:', randomLetter);
     }
     
     // Update Firebase
     await writeGameState(roomCode, serializeGameState(gameState));
     
+    // Check win after using lifeline
+    checkWin();
+};
     // Check win
     checkWin();
 };
