@@ -83,21 +83,27 @@
     <div id="lobbyScreen" class="screen">
         <div class="lobby-container">
             <h2>Waiting for Players</h2>
-            <div class="room-code-display">
-                <div class="room-code-label">Room Code:</div>
-                <div class="room-code-value" id="lobbyRoomCode">----</div>
-            </div>
-            <div class="players-list" id="playersList">
-                <!-- Players will be populated here -->
-            </div>
-            <div class="lobby-actions">
-                <button id="shareRoomBtn" class="menu-btn secondary">📋 Share Code</button>
-                <button id="qrCodeBtn" class="menu-btn secondary">📱 QR Code</button>
-                <button id="startGameBtn" class="menu-btn primary" onclick="startMultiplayerGame()" style="display: none;">
-                    <span class="btn-icon">▶️</span>
-                    <span>Start Game</span>
-                </button>
-                <button class="menu-btn danger" onclick="leaveLobby()">Leave Room</button>
+            <div class="lobby-split-container">
+                <div class="lobby-left">
+                    <div class="room-code-display">
+                        <div class="room-code-label">Room Code:</div>
+                        <div class="room-code-value" id="lobbyRoomCode">----</div>
+                    </div>
+                    <div class="players-list" id="playersList">
+                        <!-- Players will be populated here -->
+                    </div>
+                </div>
+                <div class="lobby-right">
+                    <div class="lobby-actions">
+                        <button id="shareRoomBtn" class="menu-btn secondary">📋 Share Code</button>
+                        <button id="qrCodeBtn" class="menu-btn secondary">📱 QR Code</button>
+                        <button id="startGameBtn" class="menu-btn primary" onclick="startMultiplayerGame()" style="display: none;">
+                            <span class="btn-icon">▶️</span>
+                            <span>Start Game</span>
+                        </button>
+                        <button class="menu-btn danger" onclick="leaveLobby()">Leave Room</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

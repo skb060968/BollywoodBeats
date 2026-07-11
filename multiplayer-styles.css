@@ -258,3 +258,106 @@
         min-width: 100px;
     }
 }
+
+
+/* ===== COMPACT MENU LAYOUT ===== */
+.menu-container .subtitle {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    margin-bottom: clamp(20px, 3vh, 30px);
+}
+
+.menu-buttons {
+    display: flex;
+    gap: clamp(10px, 2vw, 15px);
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.menu-buttons .menu-btn {
+    flex: 1 1 clamp(140px, 28%, 180px);
+    min-width: clamp(140px, 28%, 180px);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    padding: clamp(12px, 2vh, 16px) clamp(12px, 2vw, 20px);
+}
+
+/* ===== SPLIT LOBBY LAYOUT ===== */
+.lobby-split-container {
+    display: flex;
+    gap: clamp(15px, 3vw, 30px);
+    align-items: flex-start;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.lobby-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.lobby-right {
+    flex: 0 0 auto;
+    min-width: clamp(200px, 35%, 280px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.5vh, 12px);
+}
+
+.lobby-split-container .room-code-display {
+    margin-top: 0;
+}
+
+.lobby-split-container .players-list {
+    margin: clamp(15px, 2vh, 20px) 0 0 0;
+}
+
+.lobby-split-container .lobby-actions {
+    margin: 0;
+    flex-direction: column;
+    gap: clamp(8px, 1.5vh, 10px);
+}
+
+.lobby-split-container .lobby-actions .menu-btn {
+    width: 100%;
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+    padding: clamp(10px, 1.5vh, 12px) clamp(14px, 2.5vw, 18px);
+    min-width: auto;
+}
+
+/* Stack layout on very small screens */
+@media (max-width: 640px) {
+    .lobby-split-container {
+        flex-direction: column;
+    }
+    
+    .lobby-right {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    .lobby-split-container .lobby-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .lobby-split-container .lobby-actions .menu-btn {
+        flex: 1 1 calc(50% - 5px);
+        min-width: clamp(110px, 45%, 140px);
+    }
+}
+
+@media (max-height: 600px) {
+    .lobby-split-container {
+        gap: 12px;
+    }
+    
+    .lobby-right {
+        gap: 8px;
+    }
+    
+    .lobby-split-container .lobby-actions .menu-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
