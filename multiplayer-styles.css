@@ -55,49 +55,49 @@
 
 .room-code-display {
     background: linear-gradient(135deg, #FF8C00 0%, #FF6B35 100%);
-    padding: clamp(10px, 2vh, 15px);
-    border-radius: 15px;
-    margin: clamp(15px, 2vh, 25px) 0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    padding: clamp(8px, 1.5vh, 12px);
+    border-radius: 12px;
+    margin: clamp(12px, 1.5vh, 18px) 0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
 .room-code-label {
-    font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+    font-size: clamp(0.7rem, 1.3vw, 0.8rem);
     color: #FFF;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
 }
 
 .room-code-value {
-    font-size: clamp(2rem, 6vw, 2.5rem);
+    font-size: clamp(1.6rem, 5vw, 2rem);
     font-weight: 900;
     color: #FFD700;
-    letter-spacing: clamp(6px, 1.5vw, 10px);
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+    letter-spacing: clamp(4px, 1.2vw, 8px);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
     font-family: 'Courier New', monospace;
 }
 
 .players-list {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: clamp(12px, 2vh, 18px);
-    margin: clamp(15px, 2vh, 25px) 0;
-    min-height: clamp(100px, 15vh, 130px);
+    border-radius: 12px;
+    padding: clamp(10px, 1.5vh, 14px);
+    margin: clamp(12px, 1.5vh, 18px) 0;
+    min-height: clamp(80px, 12vh, 100px);
     max-height: 30vh;
     overflow-y: auto;
 }
 
 .player-item {
     background: rgba(255, 255, 255, 0.2);
-    padding: clamp(10px, 1.5vh, 12px) clamp(12px, 2vw, 18px);
-    margin: clamp(6px, 1vh, 8px) 0;
-    border-radius: 10px;
+    padding: clamp(8px, 1.2vh, 10px) clamp(10px, 1.5vw, 14px);
+    margin: clamp(5px, 0.8vh, 6px) 0;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
     transition: transform 0.2s ease;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .player-name {
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: bold;
     color: #FFF;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
@@ -119,9 +119,9 @@
 .player-badge {
     background: #FFD700;
     color: #333;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
     font-weight: bold;
 }
 
@@ -130,9 +130,9 @@
     color: white;
     border: none;
     border-radius: 50%;
-    width: clamp(28px, 5vw, 32px);
-    height: clamp(28px, 5vw, 32px);
-    font-size: clamp(1rem, 2vw, 1.1rem);
+    width: clamp(26px, 4.5vw, 30px);
+    height: clamp(26px, 4.5vw, 30px);
+    font-size: clamp(0.9rem, 1.8vw, 1rem);
     cursor: pointer;
     display: flex;
     align-items: center;

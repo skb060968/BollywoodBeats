@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.25.0'; // Fixed menu layout, compact room code, production domain for shares
+const CACHE_VERSION = '1.26.0'; // More compact room code and player list
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
