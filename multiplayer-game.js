@@ -220,11 +220,11 @@ function showLobby() {
     const qrBtn = document.getElementById('qrCodeBtn');
     
     if (shareBtn) {
-        shareBtn.onclick = createShareHandler(roomCode, 'Bollywood Beats', '');
+        shareBtn.onclick = createShareHandler(roomCode, 'Bollywood Beats');
     }
     
     if (qrBtn) {
-        qrBtn.onclick = () => showQRCode(roomCode, 'Bollywood Beats', '');
+        qrBtn.onclick = () => showQRCode(roomCode, 'Bollywood Beats');
     }
 }
 
@@ -915,8 +915,7 @@ async function restoreSession() {
     const deepLinkRoomCode = initDeepLinkHandler({
         roomInputId: 'roomCodeInput',
         joinScreenId: 'joinRoomScreen',
-        gameName: 'Bollywood Beats',
-        htmlFile: ''
+        gameName: 'Bollywood Beats'
     });
     
     // If deep link present, show join screen and return
