@@ -488,6 +488,12 @@ function updateLifelineUI() {
     gameState.lifelinesUsed.forEach((used, index) => {
         if (bulbs[index]) {
             bulbs[index].className = 'lifeline-bulb' + (used ? '' : ' active');
+            
+            // Ensure click handler is attached (backup for onclick attribute)
+            bulbs[index].onclick = function() {
+                console.log('[Lifeline] Click handler triggered for bulb', index);
+                window.useLifeline(index);
+            };
         }
     });
 }
@@ -688,6 +694,9 @@ window.useLifeline = async function(index) {
     // Check win after using lifeline
     checkWin();
 };
+
+// Debug: Log that function is defined
+console.log('[Init] useLifeline function defined:', typeof window.useLifeline);
     // Check win
     checkWin();
 };
