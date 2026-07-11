@@ -2,10 +2,11 @@
   "name": "bollywood-beats-pwa",
   "version": "1.0.0",
   "description": "Bollywood Beats - Progressive Web App",
-  "main": "index.html",
+  "type": "module",
   "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel --prod"
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [
     "game",
@@ -18,5 +19,8 @@
   "dependencies": {
     "firebase": "^12.16.0",
     "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
   }
 }
