@@ -1,0 +1,90 @@
+{
+  "rules": {
+    "bollywood-beats-rooms": {
+      "$roomCode": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['meta', 'players'])",
+        "meta": {
+          ".validate": "newData.hasChildren(['hostUid', 'hostName', 'status', 'createdAt', 'lastActivity'])",
+          "hostUid": { 
+            ".validate": "newData.isString()" 
+          },
+          "hostName": { 
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 15" 
+          },
+          "status": { 
+            ".validate": "newData.isString() && (newData.val() === 'lobby' || newData.val() === 'playing' || newData.val() === 'finished')" 
+          },
+          "createdAt": { 
+            ".validate": "newData.isNumber() && newData.val() > 0" 
+          },
+          "lastActivity": { 
+            ".validate": "newData.isNumber() && newData.val() > 0" 
+          }
+        },
+        "players": {
+          "$playerId": {
+            ".validate": "newData.hasChildren(['name', 'uid', 'connected'])",
+            "name": { 
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 15" 
+            },
+            "uid": { 
+              ".validate": "newData.isString()" 
+            },
+            "connected": { 
+              ".validate": "newData.isBoolean()" 
+            }
+          }
+        },
+        "game": {
+          "gamePhrases": {
+            ".validate": "newData.isString() || !newData.exists()"
+          },
+          "currentPhraseIndex": { 
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9" 
+          },
+          "currentPhrase": { 
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 100" 
+          },
+          "currentCategory": { 
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 50" 
+          },
+          "revealedLetters": {
+            ".validate": "newData.isString() || !newData.exists()"
+          },
+          "wrongGuesses": { 
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 6" 
+          },
+          "maxWrongGuesses": { 
+            ".validate": "newData.isNumber() && newData.val() === 6" 
+          },
+          "currentLevel": { 
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 10" 
+          },
+          "maxLevels": { 
+            ".validate": "newData.isNumber() && newData.val() === 10" 
+          },
+          "score": { 
+            ".validate": "newData.isNumber() && newData.val() >= 0" 
+          },
+          "timeRemaining": { 
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3600" 
+          },
+          "timerDuration": { 
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3600" 
+          },
+          "gameStartTime": { 
+            ".validate": "newData.isNumber() || newData.val() === null" 
+          },
+          "lifelinesRemaining": { 
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3" 
+          },
+          "lifelinesUsed": {
+            ".validate": "newData.isString() || !newData.exists()"
+          }
+        }
+      }
+    }
+  }
+}
