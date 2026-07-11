@@ -20,6 +20,7 @@ let roomCode = null;
 let playerIndex = null;
 let isHost = false;
 let unsubscribeRoom = null;
+let timerInterval = null;
 
 let gameState = {
     gamePhrases: [],
@@ -81,6 +82,7 @@ function hideLoading() {
 
 // ========== SCREEN NAVIGATION ==========
 window.showMenu = function() {
+    stopTimer();
     if (unsubscribeRoom) {
         unsubscribeRoom();
         unsubscribeRoom = null;
@@ -206,6 +208,8 @@ function startLobbyListener() {
                     if (currentScreen && currentScreen.id !== 'gameScreen') {
                         showScreen('gameScreen');
                         hideLoading();
+                        // Start timer when game screen is first shown
+                        startTimer();
                     }
                 }
             }
@@ -443,6 +447,40 @@ function updateTimerDisplay() {
     if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
 }
 
+function startTimer() {
+    // Clear any existing timer
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    
+    // Start countdown (only on host device, who syncs to Firebase)
+    if (isHost) {
+        timerInterval = setInterval(async () => {
+            gameState.timeRemaining--;
+            updateTimerDisplay();
+            
+            // Sync to Firebase every 5 seconds to avoid too many writes
+            if (gameState.timeRemaining % 5 === 0) {
+                await writeGameState(roomCode, serializeGameState(gameState));
+            }
+            
+            // Check if time's up
+            if (gameState.timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                await gameLost();
+            }
+        }, 1000);
+    }
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
 function displayPhrase() {
     const grid = document.getElementById('phraseGrid');
     if (!grid) return;
@@ -646,6 +684,7 @@ async function gameLost() {
 }
 
 function showGameOver(won) {
+    stopTimer();
     const content = document.getElementById('gameOverContent');
     if (!content) return;
     
