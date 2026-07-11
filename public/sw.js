@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.27.0'; // Smaller title, compact lobby, added update toast
+const CACHE_VERSION = '1.28.0'; // Testing update toast notification
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
