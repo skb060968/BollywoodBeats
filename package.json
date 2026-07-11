@@ -14,5 +14,8 @@
     "word-game"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.16.0"
+  }
 }

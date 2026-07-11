@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF8C00">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="screen-orientation" content="landscape">
+    <title>Bollywood Beats - Multiplayer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="multiplayer-styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+</head>
+<body>
+    <!-- Rotate Screen Message (Portrait Mode Only) -->
+    <div id="rotateMessage" class="rotate-message">
+        <div class="rotate-content">
+            <div class="rotate-icon">📱 ↻</div>
+            <h2>Please Rotate Your Device</h2>
+            <p>This game is best played in landscape mode</p>
+        </div>
+    </div>
+
+    <!-- Main Menu Screen -->
+    <div id="menuScreen" class="screen active">
+        <div class="menu-container">
+            <div class="game-title">
+                <h1>🎬 BOLLYWOOD BEATS 🎵</h1>
+                <p class="subtitle">Multiplayer Mode - Guess Together!</p>
+            </div>
+            
+            <div class="menu-buttons">
+                <button class="menu-btn primary" onclick="showCreateRoom()">
+                    <span class="btn-icon">🎮</span>
+                    <span>Create Room</span>
+                </button>
+                <button class="menu-btn" onclick="showJoinRoom()">
+                    <span class="btn-icon">🚪</span>
+                    <span>Join Room</span>
+                </button>
+                <button class="menu-btn" onclick="showInstructions()">
+                    <span class="btn-icon">📖</span>
+                    <span>How to Play</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Room Screen -->
+    <div id="createRoomScreen" class="screen">
+        <div class="lobby-container">
+            <h2>Create Room</h2>
+            <div class="input-group">
+                <label for="hostNameInput">Your Name:</label>
+                <input type="text" id="hostNameInput" maxlength="15" placeholder="Enter your name">
+            </div>
+            <button class="menu-btn primary" onclick="createRoom()">Create Room</button>
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+        </div>
+    </div>
+
+    <!-- Join Room Screen -->
+    <div id="joinRoomScreen" class="screen">
+        <div class="lobby-container">
+            <h2>Join Room</h2>
+            <div class="input-group">
+                <label for="playerNameInput">Your Name:</label>
+                <input type="text" id="playerNameInput" maxlength="15" placeholder="Enter your name">
+            </div>
+            <div class="input-group">
+                <label for="roomCodeInput">Room Code:</label>
+                <input type="text" id="roomCodeInput" maxlength="4" placeholder="ABCD" style="text-transform: uppercase;">
+            </div>
+            <button class="menu-btn primary" onclick="joinRoom()">Join Room</button>
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+        </div>
+    </div>
+
+    <!-- Lobby Screen (Waiting for Players) -->
+    <div id="lobbyScreen" class="screen">
+        <div class="lobby-container">
+            <h2>Waiting for Players</h2>
+            <div class="room-code-display">
+                <div class="room-code-label">Room Code:</div>
+                <div class="room-code-value" id="lobbyRoomCode">----</div>
+            </div>
+            <div class="players-list" id="playersList">
+                <!-- Players will be populated here -->
+            </div>
+            <div class="lobby-actions">
+                <button id="startGameBtn" class="menu-btn primary" onclick="startMultiplayerGame()" style="display: none;">
+                    <span class="btn-icon">▶️</span>
+                    <span>Start Game</span>
+                </button>
+                <button class="menu-btn danger" onclick="leaveLobby()">Leave Room</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Screen -->
+    <div id="instructionsScreen" class="screen">
+        <div class="instructions-container">
+            <h2>How to Play - Multiplayer</h2>
+            <div class="instructions-content">
+                <div class="instruction-item">
+                    <span class="inst-icon">🎯</span>
+                    <p><strong>Create or Join a room</strong> using a 4-character code</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">👥</span>
+                    <p><strong>Play together</strong> - anyone can guess letters</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">🔄</span>
+                    <p><strong>Real-time sync</strong> - see all guesses instantly</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">💡</span>
+                    <p><strong>Shared lifelines</strong> - 3 hints for the whole team</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">❤️</span>
+                    <p><strong>6 lives total</strong> - work together to save them</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">⏳</span>
+                    <p><strong>Beat the timer</strong> - host can set duration</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="inst-icon">🏆</span>
+                    <p><strong>Complete 10 levels</strong> to win as a team!</p>
+                </div>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Game Screen (same as single player but with multiplayer sync) -->
+    <div id="gameScreen" class="screen">
+        <div class="game-layout">
+            <!-- Left Panel - Character & Score -->
+            <div class="left-panel">
+                <!-- Timer Display (Above Character) -->
+                <div class="timer-container">
+                    <div class="timer-label">TIMER</div>
+                    <div class="timer-display">
+                        <span id="timerMinutes">20</span>:<span id="timerSeconds">00</span>
+                    </div>
+                </div>
+                
+                <!-- Lifeline Display -->
+                <div class="lifeline-container">
+                    <div class="lifeline-label">LIFELINE</div>
+                    <div class="lifeline-bulbs" id="lifelineBulbs">
+                        <span class="lifeline-bulb active" onclick="useLifeline(0)">💡</span>
+                        <span class="lifeline-bulb active" onclick="useLifeline(1)">💡</span>
+                        <span class="lifeline-bulb active" onclick="useLifeline(2)">💡</span>
+                    </div>
+                </div>
+                
+                <div class="character-container">
+                    <img id="characterStatic" class="character-image idle" src="./images/character-idle.gif" alt="Game Character">
+                    <img id="characterAnimated" class="character-image" src="" alt="Game Character" style="display: none;">
+                    <div id="characterAnimation" class="character idle" style="display: none;">
+                        <!-- SVG fallback (same as single player) -->
+                    </div>
+                </div>
+                
+                <!-- Score Display (Below Character) -->
+                <div class="score-panel">
+                    <div class="score-label">SCORE</div>
+                    <div id="scoreDisplay" class="score-value">0</div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Game Area -->
+            <div class="right-panel">
+                <!-- Game Title -->
+                <div class="game-title-bar">
+                    <h1>🎬 BOLLYWOOD BEATS 🎵</h1>
+                </div>
+
+                <!-- Top Status Bar -->
+                <div class="status-bar">
+                    <div class="control-block levels-lives-block">
+                        <div class="levels-lives-stack">
+                            <div class="levels-section">
+                                <div class="block-label">LEVELS</div>
+                                <div class="levels-dots" id="levelsDots"></div>
+                            </div>
+                            <div class="lives-section">
+                                <div class="block-label">LIVES</div>
+                                <div class="lives-panel" id="livesPanel"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-block keyboard-block">
+                        <div class="block-label">KEYBOARD</div>
+                        <div class="keyboard-combined" id="keyboardCombined"></div>
+                    </div>
+                    <div class="control-block">
+                        <div class="block-label">CONTROLS</div>
+                        <div class="controls-panel">
+                            <span class="mute-emoji" id="muteBtn">🔊</span>
+                            <span class="quit-emoji" onclick="quitGame()">🚪</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Banner -->
+                <div class="category-banner">
+                    <span id="categoryText">CATEGORY</span>
+                </div>
+
+                <!-- Phrase Board -->
+                <div class="phrase-board">
+                    <div class="phrase-grid" id="phraseGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="screen">
+        <div class="gameover-container">
+            <div id="gameOverContent"></div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="toast-notification" style="display: none;"></div>
+
+    <script type="module" src="multiplayer-game.js"></script>
+</body>
+</html>
