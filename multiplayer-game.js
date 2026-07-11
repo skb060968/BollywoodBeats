@@ -191,39 +191,26 @@ function startLobbyListener() {
     
     unsubscribeRoom = listenRoom(roomCode, {
         onStatusChange: (status) => {
-            console.log('[Lobby] Status changed to:', status);
             if (status === 'finished') {
                 // Game ended - could show game over screen
             }
-            // Don't switch to game screen here - wait for game data in onGameUpdate
         },
         onPlayersChange: (players) => {
-            console.log('[Lobby] Players updated:', Object.keys(players).length, 'players');
             updatePlayersList(players);
         },
         onGameUpdate: (game, status) => {
-            console.log('[Lobby] Game update received. Status:', status, 'Has game data:', !!game);
-            // Update game state from Firebase
             if (game) {
-                console.log('[Lobby] Updating game from Firebase...');
                 updateGameFromFirebase(game);
-                // If we have game data AND status is playing, switch to game screen
                 if (status === 'playing') {
-                    console.log('[Lobby] Status is playing, switching to game screen...');
                     const currentScreen = document.querySelector('.screen.active');
-                    console.log('[Lobby] Current screen:', currentScreen?.id);
-                    showScreen('gameScreen');
-                    hideLoading();
-                    console.log('[Lobby] Screen switched to game');
-                } else {
-                    console.log('[Lobby] Status is not playing, staying on current screen');
+                    if (currentScreen && currentScreen.id !== 'gameScreen') {
+                        showScreen('gameScreen');
+                        hideLoading();
+                    }
                 }
-            } else {
-                console.log('[Lobby] No game data received');
             }
         },
         onRoomDeleted: () => {
-            console.log('[Lobby] Room deleted');
             showToast('Room closed by host', true);
             showMenu();
         }
@@ -319,12 +306,7 @@ window.removePlayer = async function(playerKey, playerName) {
 
 // ========== GAME START ==========
 window.startMultiplayerGame = async function() {
-    if (!isHost) {
-        console.log('[Start Game] Not host, ignoring');
-        return;
-    }
-    
-    console.log('[Start Game] Host starting game...');
+    if (!isHost) return;
     
     try {
         showLoading('Loading phrases...');
@@ -356,17 +338,8 @@ window.startMultiplayerGame = async function() {
         // Convert Set to Array for Firebase
         const gameStateForFirebase = serializeGameState(gameState);
         
-        console.log('[Start Game] Game state prepared:', {
-            phrase: gameState.currentPhrase,
-            category: gameState.currentCategory,
-            level: gameState.currentLevel,
-            revealedLettersCount: gameStateForFirebase.revealedLetters.length
-        });
-        
         // Start game in Firebase
-        console.log('[Start Game] Writing to Firebase...');
         await firebaseStartGame(roomCode, gameStateForFirebase);
-        console.log('[Start Game] Firebase write complete');
         
         hideLoading();
     } catch (error) {

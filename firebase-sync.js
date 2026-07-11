@@ -120,20 +120,12 @@ export function listenRoom(roomCode, callbacks) {
 
   const unsubscribe = onValue(roomRef, (snapshot) => {
     if (!snapshot.exists()) {
-      console.log('[Firebase] Room does not exist:', roomCode);
       if (callbacks.onRoomDeleted) callbacks.onRoomDeleted();
       return;
     }
 
     const data = snapshot.val();
     const status = data.meta?.status || 'lobby';
-    
-    console.log('[Firebase] Room update received:', {
-      roomCode,
-      status,
-      hasGame: !!data.game,
-      playerCount: Object.keys(data.players || {}).length
-    });
 
     if (callbacks.onStatusChange) {
       callbacks.onStatusChange(status);
@@ -144,10 +136,7 @@ export function listenRoom(roomCode, callbacks) {
     }
 
     if (callbacks.onGameUpdate && data.game) {
-      console.log('[Firebase] Calling onGameUpdate with status:', status);
       callbacks.onGameUpdate(data.game, status);
-    } else if (callbacks.onGameUpdate && !data.game) {
-      console.log('[Firebase] Game data is null, not calling onGameUpdate');
     }
   });
 
