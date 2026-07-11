@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.24.0'; // Improved POST/HEAD request handling in service worker
+const CACHE_VERSION = '1.25.0'; // Fixed menu layout, compact room code, production domain for shares
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
