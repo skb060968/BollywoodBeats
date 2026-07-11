@@ -3,19 +3,19 @@
 .lobby-container {
     max-width: 600px;
     margin: 0 auto;
-    padding: clamp(15px, 3vh, 30px) 20px;
+    padding: clamp(8px, 1.5vh, 15px) 20px;
     text-align: center;
 }
 
 .lobby-container h2 {
-    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
     color: #FF8C00;
-    margin-bottom: clamp(15px, 2vh, 25px);
+    margin-bottom: clamp(8px, 1.2vh, 12px);
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .input-group {
-    margin-bottom: clamp(15px, 2vh, 20px);
+    margin-bottom: clamp(10px, 1.5vh, 15px);
 }
 
 .input-group label {
@@ -166,7 +166,7 @@
 }
 
 .lobby-actions {
-    margin-top: clamp(15px, 2vh, 25px);
+    margin-top: clamp(10px, 1.5vh, 15px);
     display: flex;
     gap: clamp(8px, 1.5vw, 12px);
     justify-content: center;

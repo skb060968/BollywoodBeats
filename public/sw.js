@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.26.0'; // More compact room code and player list
+const CACHE_VERSION = '1.27.0'; // Smaller title, compact lobby, added update toast
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
