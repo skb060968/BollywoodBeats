@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.34.0'; // Show game over screen for all players when game completes
+const CACHE_VERSION = '2.0.0'; // Major update - lifeline logging + testing update toast
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

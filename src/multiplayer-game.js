@@ -647,9 +647,19 @@ window.guessLetter = async function(letter, keyElement) {
 };
 
 window.useLifeline = async function(index) {
-    if (!roomCode || gameState.lifelinesUsed[index]) return;
+    console.log('[Lifeline] Clicked lifeline', index, 'IsHost:', isHost, 'RoomCode:', roomCode, 'Already used:', gameState.lifelinesUsed[index]);
     
-    console.log('[Lifeline] Player using lifeline', index, 'IsHost:', isHost);
+    if (!roomCode) {
+        console.log('[Lifeline] No room code, cannot use lifeline');
+        return;
+    }
+    
+    if (gameState.lifelinesUsed[index]) {
+        console.log('[Lifeline] This lifeline was already used');
+        return;
+    }
+    
+    console.log('[Lifeline] Using lifeline', index);
     
     // Mark lifeline as used
     gameState.lifelinesUsed[index] = true;
@@ -667,10 +677,13 @@ window.useLifeline = async function(index) {
         const randomLetter = unrevealedLetters[Math.floor(Math.random() * unrevealedLetters.length)];
         gameState.revealedLetters.add(randomLetter);
         console.log('[Lifeline] Revealed letter:', randomLetter);
+    } else {
+        console.log('[Lifeline] No unrevealed letters to reveal');
     }
     
     // Update Firebase
     await writeGameState(roomCode, serializeGameState(gameState));
+    console.log('[Lifeline] Updated Firebase');
     
     // Check win after using lifeline
     checkWin();
