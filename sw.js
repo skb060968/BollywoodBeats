@@ -1,10 +1,15 @@
-const CACHE_VERSION = '1.22.0'; // Reorganized: Master Bollywood.xml (all phrases) + 3 themed files (Stars, Movies, Singers)
+const CACHE_VERSION = '1.23.0'; // Fixed service worker to not cache POST/HEAD requests + added multiplayer files
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
   '/index.html',
   '/styles.css',
   '/game.js',
+  '/multiplayer.html',
+  '/multiplayer-styles.css',
+  '/multiplayer-game.js',
+  '/firebase-config.js',
+  '/firebase-sync.js',
   '/Bollywood.xml.txt',
   '/BollywoodStars.xml.txt',
   '/Movies.xml.txt',
@@ -29,21 +34,39 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+  
+  // Skip caching for:
+  // 1. Non-GET requests (POST, PUT, DELETE, HEAD, etc.)
+  // 2. Firebase requests
+  // 3. External API requests
+  if (
+    request.method !== 'GET' ||
+    url.hostname.includes('googleapis.com') ||
+    url.hostname.includes('firebaseio.com') ||
+    url.hostname.includes('firebase.com')
+  ) {
+    event.respondWith(fetch(request));
+    return;
+  }
+  
+  // For GET requests of our own resources, use network-first strategy
   event.respondWith(
-    fetch(event.request)
+    fetch(request)
       .then((response) => {
-        // Clone the response before caching
-        const responseToCache = response.clone();
-        
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        
+        // Only cache successful responses
+        if (response && response.status === 200) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+        }
         return response;
       })
       .catch(() => {
         // Network failed, try cache
-        return caches.match(event.request);
+        return caches.match(request);
       })
   );
 });
