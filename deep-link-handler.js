@@ -25,7 +25,34 @@
  *   qrButton.addEventListener('click', () => showQRCode(roomCode, 'Tambola MP', 'multiplayer.html'));
  */
 
-import { showToast } from './platform-ui.js';
+// Simple showToast function (can be overridden by passing custom function)
+function showToast(message, duration = 3000) {
+  const existing = document.getElementById('toast-notification');
+  if (existing) {
+    existing.textContent = message;
+    existing.style.display = 'block';
+    setTimeout(() => existing.style.display = 'none', duration);
+    return;
+  }
+  
+  const toast = document.createElement('div');
+  toast.id = 'toast-notification';
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 10000;
+    font-size: 14px;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), duration);
+}
 
 let deferredInstallPrompt = null;
 
