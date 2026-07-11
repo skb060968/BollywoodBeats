@@ -111,7 +111,7 @@ export async function joinRoom(roomCode, playerName) {
  * @param {Object} callbacks - Callback functions
  * @param {Function} callbacks.onStatusChange - Called when room status changes
  * @param {Function} callbacks.onPlayersChange - Called when players join/leave
- * @param {Function} callbacks.onGameUpdate - Called when game state updates
+ * @param {Function} callbacks.onGameUpdate - Called when game state updates (receives game state and status)
  * @param {Function} callbacks.onRoomDeleted - Called when room is deleted
  * @returns {Function} Unsubscribe function
  */
@@ -125,9 +125,10 @@ export function listenRoom(roomCode, callbacks) {
     }
 
     const data = snapshot.val();
+    const status = data.meta?.status || 'lobby';
 
     if (callbacks.onStatusChange) {
-      callbacks.onStatusChange(data.meta?.status || 'lobby');
+      callbacks.onStatusChange(status);
     }
 
     if (callbacks.onPlayersChange) {
@@ -135,7 +136,7 @@ export function listenRoom(roomCode, callbacks) {
     }
 
     if (callbacks.onGameUpdate && data.game) {
-      callbacks.onGameUpdate(data.game);
+      callbacks.onGameUpdate(data.game, status);
     }
   });
 

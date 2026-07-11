@@ -190,19 +190,27 @@ function startLobbyListener() {
     
     unsubscribeRoom = listenRoom(roomCode, {
         onStatusChange: (status) => {
-            if (status === 'playing') {
-                // Game started, switch to game screen
-                showScreen('gameScreen');
-            } else if (status === 'finished') {
-                // Game ended
+            if (status === 'finished') {
+                // Game ended - could show game over screen
             }
+            // Don't switch to game screen here - wait for game data in onGameUpdate
         },
         onPlayersChange: (players) => {
             updatePlayersList(players);
         },
-        onGameUpdate: (game) => {
+        onGameUpdate: (game, status) => {
             // Update game state from Firebase
-            updateGameFromFirebase(game);
+            if (game) {
+                updateGameFromFirebase(game);
+                // If we have game data AND status is playing, switch to game screen
+                if (status === 'playing') {
+                    const currentScreen = document.querySelector('.screen.active');
+                    if (currentScreen && currentScreen.id !== 'gameScreen') {
+                        showScreen('gameScreen');
+                        hideLoading();
+                    }
+                }
+            }
         },
         onRoomDeleted: () => {
             showToast('Room closed by host', true);
@@ -327,6 +335,8 @@ function deserializeGameState(firebaseState) {
 }
 
 function updateGameFromFirebase(firebaseGameState) {
+    if (!firebaseGameState) return;
+    
     gameState = deserializeGameState(firebaseGameState);
     updateGameUI();
     displayPhrase();
