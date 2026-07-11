@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase": "^12.16.0"
+    "firebase": "^12.16.0",
+    "qrcode": "^1.5.4"
   }
 }

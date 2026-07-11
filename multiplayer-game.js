@@ -14,6 +14,7 @@ import {
   setupDisconnectHandler,
   removePlayer as firebaseRemovePlayer,
 } from './firebase-sync.js';
+import { initDeepLinkHandler, createShareHandler, showQRCode } from './deep-link-handler.js';
 
 // ========== GAME STATE ==========
 let roomCode = null;
@@ -212,6 +213,18 @@ function showLobby() {
     const startBtn = document.getElementById('startGameBtn');
     if (startBtn) {
         startBtn.style.display = isHost ? 'block' : 'none';
+    }
+    
+    // Wire up share and QR code buttons
+    const shareBtn = document.getElementById('shareRoomBtn');
+    const qrBtn = document.getElementById('qrCodeBtn');
+    
+    if (shareBtn) {
+        shareBtn.onclick = createShareHandler(roomCode, 'Bollywood Beats');
+    }
+    
+    if (qrBtn) {
+        qrBtn.onclick = () => showQRCode(roomCode, 'Bollywood Beats');
     }
 }
 
@@ -895,8 +908,23 @@ async function restoreSession() {
     }
 }
 
+// ========== INITIALIZATION ==========
 // Try to restore session on page load
 (async function() {
+    // Check for deep link with room code first
+    const deepLinkRoomCode = initDeepLinkHandler({
+        roomInputId: 'roomCodeInput',
+        joinScreenId: 'joinRoomScreen',
+        gameName: 'Bollywood Beats'
+    });
+    
+    // If deep link present, show join screen and return
+    if (deepLinkRoomCode) {
+        showScreen('joinRoomScreen');
+        return;
+    }
+    
+    // Try to restore existing session
     const restored = await restoreSession();
     if (!restored) {
         showScreen('menuScreen');
