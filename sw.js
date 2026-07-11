@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.23.0'; // Fixed service worker to not cache POST/HEAD requests + added multiplayer files
+const CACHE_VERSION = '1.24.0'; // Improved POST/HEAD request handling in service worker
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -38,14 +38,18 @@ self.addEventListener('install', (event) => {
 // Fetch event - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+  
+  // Skip service worker for non-GET requests (POST, PUT, DELETE, HEAD, etc.)
+  if (request.method !== 'GET') {
+    return; // Let browser handle it normally
+  }
+  
   const url = new URL(request.url);
   
   // Skip caching for:
-  // 1. Non-GET requests (POST, PUT, DELETE, HEAD, etc.)
-  // 2. Firebase requests
-  // 3. External API requests
+  // 1. Firebase requests
+  // 2. External API requests
   if (
-    request.method !== 'GET' ||
     url.hostname.includes('googleapis.com') ||
     url.hostname.includes('firebaseio.com') ||
     url.hostname.includes('firebase.com')
@@ -58,8 +62,8 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
-        // Only cache successful responses
-        if (response && response.status === 200) {
+        // Only cache successful GET responses
+        if (response && response.status === 200 && request.method === 'GET') {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(request, responseToCache);
