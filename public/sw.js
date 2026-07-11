@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.28.0'; // Testing update toast notification
+const CACHE_VERSION = '1.29.0'; // Fixed update toast detection - SW waits for user confirmation
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 const urlsToCache = [
   '/',
@@ -23,8 +23,7 @@ const urlsToCache = [
 // Install event - cache resources
 self.addEventListener('install', (event) => {
   console.log(`[SW] Installing version ${CACHE_VERSION}`);
-  // Skip waiting to activate new service worker immediately
-  self.skipWaiting();
+  // Don't skip waiting automatically - let the page control it
   
   event.waitUntil(
     caches.open(CACHE_NAME)

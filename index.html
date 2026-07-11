@@ -277,14 +277,44 @@
     <script>
         // Service Worker Registration and Update Handler
         if ('serviceWorker' in navigator) {
+            let refreshing = false;
+            
             navigator.serviceWorker.register('/sw.js')
                 .then(reg => {
                     console.log('[SW] Service worker registered');
                     
-                    // Listen for updates from service worker
+                    // Check for updates every 60 seconds
+                    setInterval(() => {
+                        reg.update();
+                    }, 60000);
+                    
+                    // Listen for waiting service worker
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        console.log('[SW] Update found, new worker installing');
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New service worker is installed but waiting
+                                console.log('[SW] New service worker installed and waiting');
+                                showUpdateToast();
+                            }
+                        });
+                    });
+                    
+                    // Listen for controlling service worker change
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (!refreshing) {
+                            console.log('[SW] Controller changed, reloading');
+                            refreshing = true;
+                            window.location.reload();
+                        }
+                    });
+                    
+                    // Listen for messages from service worker
                     navigator.serviceWorker.addEventListener('message', event => {
                         if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
-                            console.log('[SW] Update available:', event.data.version);
+                            console.log('[SW] Update available message received:', event.data.version);
                             showUpdateToast();
                         }
                     });
@@ -295,13 +325,20 @@
         function showUpdateToast() {
             const toast = document.getElementById('updateToast');
             if (toast) {
+                console.log('[SW] Showing update toast');
                 toast.style.display = 'block';
                 toast.style.animation = 'slideUp 0.5s ease-out';
             }
         }
 
         function reloadForUpdate() {
-            window.location.reload();
+            console.log('[SW] User requested reload');
+            // Tell the waiting service worker to take control
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+            } else {
+                window.location.reload();
+            }
         }
 
         function dismissUpdate() {
