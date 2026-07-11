@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.31.0'; // Fixed SW cache for Vite build
+const CACHE_VERSION = '1.32.0'; // Check win after Firebase updates for collaborative play
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

@@ -421,6 +421,9 @@ function updateGameFromFirebase(firebaseGameState) {
     updateGameUI();
     displayPhrase();
     createKeyboard();
+    
+    // Check win condition after receiving updates from other players
+    checkWin();
 }
 
 // ========== GAME UI ==========
