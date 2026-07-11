@@ -333,12 +333,18 @@
 
         function reloadForUpdate() {
             console.log('[SW] User requested reload');
-            // Tell the waiting service worker to take control
-            if (navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
-            } else {
-                window.location.reload();
-            }
+            
+            // Get the waiting service worker
+            navigator.serviceWorker.getRegistration().then(reg => {
+                if (reg && reg.waiting) {
+                    console.log('[SW] Sending SKIP_WAITING to waiting worker');
+                    // Send message to the waiting worker
+                    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                } else {
+                    console.log('[SW] No waiting worker, reloading directly');
+                    window.location.reload();
+                }
+            });
         }
 
         function dismissUpdate() {

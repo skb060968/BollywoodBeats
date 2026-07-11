@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.0.1'; // Fix lifeline clicks by adding event listeners dynamically
+const CACHE_VERSION = '2.0.2'; // Fix update toast reload - send message to waiting SW
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
@@ -92,7 +92,9 @@ self.addEventListener('activate', (event) => {
           }
         }),
         // Take control of all clients immediately
-        self.clients.claim()
+        self.clients.claim().then(() => {
+          console.log('[SW] Claimed all clients');
+        })
       ]);
     }).then(() => {
       // Notify all clients about the update
@@ -110,7 +112,9 @@ self.addEventListener('activate', (event) => {
 
 // Handle messages from clients
 self.addEventListener('message', (event) => {
+  console.log('[SW] Received message:', event.data);
   if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[SW] Calling skipWaiting()');
     self.skipWaiting();
   }
 });
