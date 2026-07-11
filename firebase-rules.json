@@ -292,7 +292,8 @@
           "timerDuration": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3600" },
           "gameStartTime": { ".validate": "newData.isNumber() || newData.val() === null" },
           "lifelinesRemaining": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3" },
-          "lifelinesUsed": { ".validate": "newData.isString() || !newData.exists()" }
+          "lifelinesUsed": { ".validate": "newData.isString() || !newData.exists()" },
+          "gameResult": { ".validate": "newData.isString() || newData.val() === null || !newData.exists()" }
         }
       }
     }
