@@ -14,18 +14,18 @@
  *   const roomCode = initDeepLinkHandler({
  *     roomInputId: 'phone-join-code',
  *     joinScreenId: 'phone-join',
- *     gameName: 'Tambola MP'
+ *     gameName: 'Tambola MP',
+ *     htmlFile: 'multiplayer.html' // optional, defaults to current file
  *   });
  *   
  *   // For share button:
- *   shareButton.addEventListener('click', createShareHandler(roomCode, 'Tambola MP'));
+ *   shareButton.addEventListener('click', createShareHandler(roomCode, 'Tambola MP', 'multiplayer.html'));
  *   
  *   // For QR code button:
- *   qrButton.addEventListener('click', () => showQRCode(roomCode, 'Tambola MP'));
+ *   qrButton.addEventListener('click', () => showQRCode(roomCode, 'Tambola MP', 'multiplayer.html'));
  */
 
 import { showToast } from './platform-ui.js';
-import QRCode from 'qrcode';
 
 let deferredInstallPrompt = null;
 
@@ -83,14 +83,16 @@ export function initDeepLinkHandler({ roomInputId, joinScreenId, gameName }) {
  * Create a share handler function for share buttons
  * @param {string} roomCode - The room code to share
  * @param {string} gameName - Name of the game
+ * @param {string} htmlFile - HTML file to link to (e.g., 'multiplayer.html')
  * @returns {Function} - Async function to handle sharing
  */
-export function createShareHandler(roomCode, gameName) {
+export function createShareHandler(roomCode, gameName, htmlFile = '') {
   return async function handleShare() {
     if (!roomCode) return;
     
-    // Include room code in URL for direct joining
-    const shareUrl = `${location.origin}${location.pathname}?room=${roomCode}`;
+    // Build the correct URL path
+    const basePath = htmlFile ? `${location.origin}/${htmlFile}` : `${location.origin}${location.pathname}`;
+    const shareUrl = `${basePath}?room=${roomCode}`;
     const text = `Join my ${gameName} room! Code: ${roomCode}`;
     
     // Try native share API first (mobile)
@@ -230,12 +232,14 @@ async function handleOpenApp(gameName, isMobile) {
  * Show QR code modal for room sharing
  * @param {string} roomCode - The room code to share
  * @param {string} gameName - Name of the game
+ * @param {string} htmlFile - HTML file to link to (e.g., 'multiplayer.html')
  */
-export async function showQRCode(roomCode, gameName) {
+export async function showQRCode(roomCode, gameName, htmlFile = '') {
   if (!roomCode) return;
   
   // Build share URL with room code
-  const shareUrl = `${location.origin}${location.pathname}?room=${roomCode}`;
+  const basePath = htmlFile ? `${location.origin}/${htmlFile}` : `${location.origin}${location.pathname}`;
+  const shareUrl = `${basePath}?room=${roomCode}`;
   
   // Remove existing QR modal if any
   const existing = document.getElementById('qr-modal');
@@ -268,8 +272,13 @@ export async function showQRCode(roomCode, gameName) {
   
   document.body.appendChild(modal);
   
-  // Generate QR code
+  // Generate QR code using CDN library
   try {
+    // Load QRCode library from CDN if not already loaded
+    if (typeof QRCode === 'undefined') {
+      await loadQRCodeLibrary();
+    }
+    
     const canvas = document.getElementById('qr-canvas');
     await QRCode.toCanvas(canvas, shareUrl, {
       width: 280,
@@ -300,7 +309,7 @@ export async function showQRCode(roomCode, gameName) {
   
   // Share button
   modal.querySelector('.qr-share-btn')?.addEventListener('click', async () => {
-    const shareHandler = createShareHandler(roomCode, gameName);
+    const shareHandler = createShareHandler(roomCode, gameName, htmlFile);
     await shareHandler();
   });
   
@@ -329,4 +338,22 @@ export async function showQRCode(roomCode, gameName) {
     }
   };
   document.addEventListener('keydown', handleEscape);
+}
+
+/**
+ * Dynamically load QRCode library from CDN
+ */
+function loadQRCodeLibrary() {
+  return new Promise((resolve, reject) => {
+    if (typeof QRCode !== 'undefined') {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js';
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
 }
