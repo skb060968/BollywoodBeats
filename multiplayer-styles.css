@@ -55,25 +55,25 @@
 
 .room-code-display {
     background: linear-gradient(135deg, #FF8C00 0%, #FF6B35 100%);
-    padding: clamp(15px, 3vh, 25px);
+    padding: clamp(10px, 2vh, 15px);
     border-radius: 15px;
     margin: clamp(15px, 2vh, 25px) 0;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .room-code-label {
-    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    font-size: clamp(0.75rem, 1.5vw, 0.9rem);
     color: #FFF;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 .room-code-value {
-    font-size: clamp(2.5rem, 8vw, 3.5rem);
+    font-size: clamp(2rem, 6vw, 2.5rem);
     font-weight: 900;
     color: #FFD700;
-    letter-spacing: clamp(8px, 2vw, 12px);
+    letter-spacing: clamp(6px, 1.5vw, 10px);
     text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
     font-family: 'Courier New', monospace;
 }
@@ -266,8 +266,11 @@
     margin-bottom: clamp(20px, 3vh, 30px);
 }
 
-.menu-buttons {
+/* Override base styles.css to make buttons side-by-side */
+#menuScreen .menu-buttons,
+.screen.active .menu-buttons {
     display: flex;
+    flex-direction: row !important;
     gap: clamp(10px, 2vw, 15px);
     justify-content: center;
     flex-wrap: wrap;
@@ -275,7 +278,8 @@
     margin: 0 auto;
 }
 
-.menu-buttons .menu-btn {
+#menuScreen .menu-buttons .menu-btn,
+.screen.active .menu-buttons .menu-btn {
     flex: 1 1 clamp(140px, 28%, 180px);
     min-width: clamp(140px, 28%, 180px);
     font-size: clamp(0.9rem, 2vw, 1rem);
