@@ -22,6 +22,8 @@ let isHost = false;
 let unsubscribeRoom = null;
 let timerInterval = null;
 
+const SESSION_KEY = 'bollywood_beats_session';
+
 let gameState = {
     gamePhrases: [],
     currentPhraseIndex: 0,
@@ -39,6 +41,30 @@ let gameState = {
     lifelinesRemaining: 3,
     lifelinesUsed: [false, false, false]
 };
+
+// ========== SESSION PERSISTENCE ==========
+function saveSession() {
+    if (roomCode != null && playerIndex != null) {
+        try {
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ roomCode, playerIndex, isHost }));
+        } catch (_) {}
+    }
+}
+
+function clearSession() {
+    try {
+        localStorage.removeItem(SESSION_KEY);
+    } catch (_) {}
+}
+
+function loadSession() {
+    try {
+        const data = localStorage.getItem(SESSION_KEY);
+        return data ? JSON.parse(data) : null;
+    } catch (_) {
+        return null;
+    }
+}
 
 // ========== UTILITY FUNCTIONS ==========
 function showScreen(screenId) {
@@ -83,6 +109,7 @@ function hideLoading() {
 // ========== SCREEN NAVIGATION ==========
 window.showMenu = function() {
     stopTimer();
+    clearSession();
     if (unsubscribeRoom) {
         unsubscribeRoom();
         unsubscribeRoom = null;
@@ -128,6 +155,7 @@ window.createRoom = async function() {
         playerIndex = result.playerIndex;
         isHost = true;
         
+        saveSession();
         setupDisconnectHandler(roomCode, playerIndex);
         startLobbyListener();
         showLobby();
@@ -164,6 +192,7 @@ window.joinRoom = async function() {
         playerIndex = result.playerIndex;
         isHost = false;
         
+        saveSession();
         setupDisconnectHandler(roomCode, playerIndex);
         startLobbyListener();
         showLobby();
@@ -790,3 +819,86 @@ if (muteBtn) {
 }
 
 console.log('Bollywood Beats Multiplayer loaded successfully!');
+
+
+// ========== SESSION RESTORATION ==========
+async function restoreSession() {
+    const session = loadSession();
+    if (!session) return false;
+    
+    try {
+        // Import Firebase database functions
+        const { db } = await import('./firebase-config.js');
+        const { ref, get, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+        
+        // Check if room still exists
+        const roomRef = ref(db, `bollywood-beats-rooms/${session.roomCode}`);
+        const snapshot = await get(roomRef);
+        
+        if (!snapshot.exists()) {
+            clearSession();
+            return false;
+        }
+        
+        const roomData = snapshot.val();
+        const status = roomData.meta?.status;
+        
+        // Don't restore if game ended
+        if (status === 'finished') {
+            clearSession();
+            return false;
+        }
+        
+        // Restore session variables
+        roomCode = session.roomCode;
+        playerIndex = session.playerIndex;
+        isHost = session.isHost;
+        
+        // Mark player as connected
+        try {
+            await update(ref(db, `bollywood-beats-rooms/${roomCode}/players/player_${playerIndex}`), {
+                connected: true
+            });
+        } catch (_) {}
+        
+        // Setup disconnect handler
+        setupDisconnectHandler(roomCode, playerIndex);
+        
+        // Restore to appropriate screen
+        if (status === 'lobby') {
+            startLobbyListener();
+            showLobby();
+            showToast('Reconnected to lobby');
+            return true;
+        }
+        
+        if (status === 'playing' && roomData.game) {
+            startLobbyListener();
+            gameState = deserializeGameState(roomData.game);
+            updateGameUI();
+            displayPhrase();
+            createKeyboard();
+            showScreen('gameScreen');
+            startTimer();
+            showToast('Reconnected to game');
+            return true;
+        }
+        
+        // Unknown state, clear session
+        clearSession();
+        return false;
+        
+    } catch (error) {
+        console.error('Failed to restore session:', error);
+        clearSession();
+        return false;
+    }
+}
+
+// Try to restore session on page load
+(async function() {
+    const restored = await restoreSession();
+    if (!restored) {
+        showScreen('menuScreen');
+    }
+})();
