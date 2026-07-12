@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.0.2'; // Fix update toast reload - send message to waiting SW
+const CACHE_VERSION = '2.0.3'; // UI improvements: button styles, tooltips, remove confirmations
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
