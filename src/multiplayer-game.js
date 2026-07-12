@@ -266,6 +266,7 @@ function startLobbyListener() {
             }
         },
         onRoomDeleted: () => {
+            console.log('[RoomDeleted] Room was deleted, returning to menu');
             showToast('Room closed by host', true);
             showMenu();
         }
