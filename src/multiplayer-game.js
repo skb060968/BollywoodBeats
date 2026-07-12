@@ -16,6 +16,249 @@ import {
 } from './firebase-sync.js';
 import { initDeepLinkHandler, createShareHandler, showQRCode } from './deep-link-handler.js';
 
+// ========== SPEECH PHRASES ==========
+const SpeechPhrases = {
+    encourage: [
+        "Great!",
+        "Excellent!",
+        "Perfect!",
+        "Brilliant!",
+        "Superb!",
+        "Outstanding!",
+        "Fantastic!",
+        "Amazing!",
+        "Well done!",
+        "Awesome!"
+    ],
+    disappoint: [
+        "Oops! Try again",
+        "Not this time",
+        "Think again",
+        "Oh no!",
+        "Missed it!",
+        "Better luck",
+        "Almost there",
+        "Keep trying",
+        "Don't give up",
+        "Next time"
+    ],
+    levelComplete: [
+        "Level complete!",
+        "You're on fire!",
+        "Incredible!",
+        "Amazing work!",
+        "Keep going!",
+        "You're a superstar!",
+        "Excellent job!",
+        "You rock!",
+        "Brilliant play!",
+        "Unstoppable!"
+    ]
+};
+
+// ========== AUDIO MANAGER WITH MP3 FILES AND SPEECH ==========
+const AudioManager = (() => {
+    const SOUND_FILES = {
+        correct: './sounds/correct.mp3',
+        wrong: './sounds/wrong.mp3',
+        win: './sounds/win.mp3',
+        music: './sounds/music.mp3',
+    };
+
+    const MUTE_KEY = 'bollywood_beats_multiplayer_muted';
+    let backgroundMusic = null;
+    let currentSoundEffect = null;
+    let speechSynthesis = window.speechSynthesis;
+
+    function isMuted() {
+        try {
+            const v = localStorage.getItem(MUTE_KEY);
+            return v === '1' || v === 'true';
+        } catch (_) {
+            return false;
+        }
+    }
+
+    function setMuted(muted) {
+        try {
+            localStorage.setItem(MUTE_KEY, muted ? '1' : '0');
+        } catch (_) {}
+        
+        if (muted) {
+            pauseBackgroundMusic();
+            stopSoundEffects();
+            if (speechSynthesis) {
+                speechSynthesis.cancel();
+            }
+        } else {
+            resumeBackgroundMusic();
+        }
+    }
+
+    function toggleMute() {
+        const next = !isMuted();
+        setMuted(next);
+        return next;
+    }
+
+    function stopSoundEffects() {
+        if (currentSoundEffect) {
+            try {
+                currentSoundEffect.pause();
+                currentSoundEffect.currentTime = 0;
+                currentSoundEffect = null;
+            } catch (_) {}
+        }
+    }
+
+    function playSound(name, volume = 1.0) {
+        if (isMuted()) return;
+        
+        const url = SOUND_FILES[name];
+        if (!url) return;
+        
+        try {
+            stopSoundEffects();
+            
+            const audio = new Audio(url);
+            audio.volume = volume;
+            currentSoundEffect = audio;
+            
+            audio.onended = () => {
+                if (currentSoundEffect === audio) {
+                    currentSoundEffect = null;
+                }
+            };
+            
+            audio.play().catch(() => {});
+        } catch (_) {}
+    }
+
+    function speak(text, rate = 1.0, pitch = 1.1) {
+        if (isMuted()) return;
+        if (!speechSynthesis) return;
+        
+        try {
+            speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = rate;
+            utterance.pitch = pitch;
+            utterance.volume = 1.0;
+            
+            const voices = speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                const englishVoice = voices.find(v => v.lang.startsWith('en-'));
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+            }
+            
+            speechSynthesis.speak(utterance);
+        } catch (err) {
+            console.error('Speech synthesis error:', err);
+        }
+    }
+
+    function playRandomEncourage() {
+        const phrases = SpeechPhrases.encourage;
+        const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        speak(phrase, 1.1, 1.2);
+    }
+
+    function playRandomDisappoint() {
+        const phrases = SpeechPhrases.disappoint;
+        const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        speak(phrase, 0.95, 0.9);
+    }
+
+    function playRandomLevelComplete() {
+        const phrases = SpeechPhrases.levelComplete;
+        const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        speak(phrase, 1.15, 1.3);
+    }
+
+    function startBackgroundMusic(volume = 0.15) {
+        if (isMuted()) return;
+        
+        stopBackgroundMusic();
+        
+        const url = SOUND_FILES.music;
+        if (!url) return;
+        
+        try {
+            backgroundMusic = new Audio(url);
+            backgroundMusic.loop = true;
+            backgroundMusic.volume = volume;
+            backgroundMusic.preload = 'auto';
+            
+            const playPromise = backgroundMusic.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {
+                    console.log('Background music autoplay blocked');
+                });
+            }
+        } catch (err) {
+            console.error('Failed to start background music:', err);
+        }
+    }
+
+    function stopBackgroundMusic() {
+        if (backgroundMusic) {
+            try {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+                backgroundMusic = null;
+            } catch (_) {}
+        }
+        
+        if (speechSynthesis) {
+            speechSynthesis.cancel();
+        }
+    }
+
+    function pauseBackgroundMusic() {
+        if (backgroundMusic) {
+            try {
+                backgroundMusic.pause();
+            } catch (_) {}
+        }
+    }
+
+    function resumeBackgroundMusic() {
+        if (backgroundMusic && backgroundMusic.paused && !isMuted()) {
+            try {
+                const playPromise = backgroundMusic.play();
+                if (playPromise && typeof playPromise.catch === 'function') {
+                    playPromise.catch(() => {});
+                }
+            } catch (_) {}
+        }
+    }
+
+    function stopSoundEffects() {
+        if (currentSoundEffect) {
+            try {
+                currentSoundEffect.pause();
+                currentSoundEffect.currentTime = 0;
+                currentSoundEffect = null;
+            } catch (_) {}
+        }
+    }
+
+    return {
+        playSound,
+        playRandomEncourage,
+        playRandomDisappoint,
+        playRandomLevelComplete,
+        toggleMute,
+        isMuted,
+        startBackgroundMusic,
+        stopBackgroundMusic,
+        stopSoundEffects,
+    };
+})();
+
 // ========== GAME STATE ==========
 let roomCode = null;
 let playerIndex = null;
@@ -115,6 +358,7 @@ function hideLoading() {
 // ========== SCREEN NAVIGATION ==========
 window.showMenu = function() {
     stopTimer();
+    AudioManager.stopBackgroundMusic();
     clearSession();
     if (unsubscribeRoom) {
         unsubscribeRoom();
@@ -259,8 +503,9 @@ function startLobbyListener() {
                     if (currentScreen && currentScreen.id !== 'gameScreen') {
                         showScreen('gameScreen');
                         hideLoading();
-                        // Start timer when game screen is first shown
+                        // Start timer and music when game screen is first shown
                         startTimer();
+                        AudioManager.startBackgroundMusic(0.15);
                     }
                 }
             }
@@ -644,6 +889,10 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.revealedLetters.add(letter);
         keyElement.classList.add('correct');
         
+        // Play correct sound and encouraging speech on ALL devices
+        AudioManager.playSound('correct');
+        setTimeout(() => AudioManager.playRandomEncourage(), 200);
+        
         // Update Firebase
         await writeGameState(roomCode, serializeGameState(gameState));
         
@@ -654,6 +903,10 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.wrongGuesses++;
         gameState.revealedLetters.add(letter); // Track as guessed
         keyElement.classList.add('wrong');
+        
+        // Play wrong sound and disappointing speech on ALL devices
+        AudioManager.playSound('wrong');
+        setTimeout(() => AudioManager.playRandomDisappoint(), 200);
         
         // Update Firebase
         await writeGameState(roomCode, serializeGameState(gameState));
@@ -694,6 +947,10 @@ window.useLifeline = async function(index) {
         const randomLetter = unrevealedLetters[Math.floor(Math.random() * unrevealedLetters.length)];
         gameState.revealedLetters.add(randomLetter);
         console.log('[Lifeline] Revealed letter:', randomLetter);
+        
+        // Play sound and speech for lifeline on ALL devices
+        AudioManager.playSound('correct');
+        setTimeout(() => AudioManager.playRandomEncourage(), 200);
     } else {
         console.log('[Lifeline] No unrevealed letters to reveal');
     }
@@ -716,7 +973,9 @@ function checkWin() {
     console.log('[CheckWin] Required:', requiredLetters.size, 'Revealed:', gameState.revealedLetters.size, 'AllRevealed:', allRevealed, 'IsHost:', isHost);
     
     if (allRevealed) {
-        // Level complete - anyone can trigger, but only host writes to Firebase
+        // Level complete - play sound and speech on ALL devices
+        AudioManager.playSound('win');
+        setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
         
         if (isHost) {
             const bonusPoints = (gameState.maxWrongGuesses - gameState.wrongGuesses) * 100;
@@ -783,6 +1042,9 @@ async function nextLevel() {
 async function gameWon() {
     console.log('[GameWon] All levels complete! IsHost:', isHost);
     
+    AudioManager.stopBackgroundMusic();
+    AudioManager.playSound('win');
+    
     if (isHost) {
         // Host writes the final state and ends game
         gameState.gameResult = 'won'; // Store result for other players
@@ -796,6 +1058,8 @@ async function gameWon() {
 
 async function gameLost() {
     console.log('[GameLost] Out of lives! IsHost:', isHost);
+    
+    AudioManager.stopBackgroundMusic();
     
     if (isHost) {
         // Host writes the final state and ends game
@@ -932,10 +1196,12 @@ async function loadAndShufflePhrases() {
 // ========== MUTE TOGGLE ==========
 const muteBtn = document.getElementById('muteBtn');
 if (muteBtn) {
+    // Set initial state
+    muteBtn.textContent = AudioManager.isMuted() ? '🔇' : '🔊';
+    
     muteBtn.addEventListener('click', () => {
-        // Toggle mute (audio system would be added here)
-        const isMuted = muteBtn.textContent === '🔇';
-        muteBtn.textContent = isMuted ? '🔊' : '🔇';
+        const muted = AudioManager.toggleMute();
+        muteBtn.textContent = muted ? '🔇' : '🔊';
     });
 }
 
