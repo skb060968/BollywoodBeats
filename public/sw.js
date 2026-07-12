@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.0.6'; // Add complete sound system with speech synthesis to multiplayer
+const CACHE_VERSION = '2.0.7'; // Fix gameResult reset and duplicate level advances
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
