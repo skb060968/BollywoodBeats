@@ -317,10 +317,6 @@ function updatePlayersList(players) {
 }
 
 window.leaveLobby = async function() {
-    if (!confirm('Are you sure you want to leave?')) {
-        return;
-    }
-    
     try {
         if (isHost) {
             // Host deletes the entire room
@@ -339,10 +335,6 @@ window.leaveLobby = async function() {
 // Remove a player from the room (host only or self)
 window.removePlayer = async function(playerKey, playerName) {
     if (!isHost) return;
-    
-    if (!confirm(`Remove ${playerName} from the room?`)) {
-        return;
-    }
     
     try {
         const playerIdx = parseInt(playerKey.split('_')[1]);
@@ -835,10 +827,6 @@ function showGameOver(won) {
 }
 
 window.quitGame = async function() {
-    if (!confirm('Are you sure you want to quit?')) {
-        return;
-    }
-    
     if (isHost) {
         await deleteRoom(roomCode);
     }

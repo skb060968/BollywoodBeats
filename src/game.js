@@ -557,10 +557,8 @@ function showSettings() {
 }
 
 function quitGame() {
-    if (confirm('Are you sure you want to quit the current game?')) {
-        AudioManager.stopBackgroundMusic();
-        showMenu();
-    }
+    AudioManager.stopBackgroundMusic();
+    showMenu();
 }
 
 // ========== PHRASE LOADER ==========
@@ -1114,13 +1112,11 @@ function useLifeline(bulbIndex) {
 }
 
 function quitGame() {
-    if (confirm('Are you sure you want to quit the current game?')) {
-        // Stop timer
-        TimerManager.stopTimer();
-        
-        AudioManager.stopBackgroundMusic();
-        showMenu();
-    }
+    // Stop timer
+    TimerManager.stopTimer();
+    
+    AudioManager.stopBackgroundMusic();
+    showMenu();
 }
 
 // ========== INITIALIZATION ==========
@@ -1471,10 +1467,6 @@ function loadCustomXML() {
 }
 
 async function resetToDefaultXML() {
-    if (!confirm('Reset to default phrase file?\n\nThis will use the original Bollywood.xml.txt file.')) {
-        return;
-    }
-    
     showLoading('Resetting to default...');
     
     // Reset to default
