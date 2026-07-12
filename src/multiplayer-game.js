@@ -253,7 +253,8 @@ function startLobbyListener() {
         onGameUpdate: (game, status) => {
             if (game) {
                 updateGameFromFirebase(game);
-                if (status === 'playing') {
+                // Only show game screen if game is playing AND not ended
+                if (status === 'playing' && !game.gameResult) {
                     const currentScreen = document.querySelector('.screen.active');
                     if (currentScreen && currentScreen.id !== 'gameScreen') {
                         showScreen('gameScreen');
