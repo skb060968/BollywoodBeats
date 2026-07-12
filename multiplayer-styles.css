@@ -226,38 +226,30 @@
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
-    padding: 4px 10px;
+    padding: 6px 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Arial Black', sans-serif;
-    font-weight: 900;
-    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    line-height: 1.1;
     box-shadow: 0 4px 8px rgba(211, 47, 47, 0.4),
                 0 0 12px rgba(255, 0, 0, 0.3);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    min-width: clamp(50px, 10vw, 70px);
+    min-width: clamp(40px, 8vw, 55px);
+    min-height: clamp(40px, 8vw, 55px);
 }
 
 .quit-btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
     box-shadow: 0 6px 12px rgba(211, 47, 47, 0.6),
                 0 0 20px rgba(255, 0, 0, 0.5);
     border-color: rgba(255, 255, 255, 0.5);
 }
 
 .quit-btn:active {
-    transform: scale(0.98);
+    transform: scale(0.95);
     box-shadow: 0 2px 6px rgba(211, 47, 47, 0.5),
                 0 0 10px rgba(255, 0, 0, 0.4);
-}
-
-.quit-line1, .quit-line2 {
-    display: block;
 }
 
 /* Responsive adjustments for very small screens */
