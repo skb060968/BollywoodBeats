@@ -414,7 +414,12 @@ function updateGameFromFirebase(firebaseGameState) {
     if (!firebaseGameState) return;
     
     const previousResult = gameState.gameResult;
+    const previousWrongGuesses = gameState.wrongGuesses;
+    
     gameState = deserializeGameState(firebaseGameState);
+    
+    console.log('[UpdateFromFirebase] Wrong guesses:', previousWrongGuesses, '->', gameState.wrongGuesses, 'Result:', previousResult, '->', gameState.gameResult);
+    
     updateGameUI();
     displayPhrase();
     createKeyboard();
@@ -432,7 +437,7 @@ function updateGameFromFirebase(firebaseGameState) {
     
     // Check if game result was set (game ended)
     if (gameState.gameResult && gameState.gameResult !== previousResult) {
-        console.log('[UpdateFromFirebase] Game result:', gameState.gameResult);
+        console.log('[UpdateFromFirebase] Game result changed, showing game over. Result:', gameState.gameResult);
         showGameOver(gameState.gameResult === 'won');
     }
 }
@@ -789,8 +794,10 @@ async function gameLost() {
     if (isHost) {
         // Host writes the final state and ends game
         gameState.gameResult = 'lost'; // Store result for other players
+        console.log('[GameLost] Host writing gameResult to Firebase:', gameState.gameResult);
         await writeGameState(roomCode, serializeGameState(gameState));
         await firebaseEndGame(roomCode);
+        console.log('[GameLost] Firebase updated, showing game over');
     }
     
     // All players show game over screen

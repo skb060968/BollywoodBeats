@@ -221,66 +221,43 @@
     }
 }
 
-.quit-emoji {
-    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    user-select: none;
-    filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.6)) 
-            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-    font-weight: 900;
-    text-shadow: 
-        0 0 10px rgba(255, 0, 0, 0.8),
-        0 0 20px rgba(255, 0, 0, 0.6),
-        0 0 30px rgba(255, 0, 0, 0.4),
-        2px 2px 4px rgba(0, 0, 0, 0.8);
-    position: relative;
-}
-
-.quit-emoji::after {
-    content: 'QUIT GAME';
-    position: absolute;
-    bottom: -35px;
-    left: 50%;
-    transform: translateX(-50%) scale(0);
+.quit-btn {
     background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
     color: white;
-    padding: 6px 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
+    padding: 4px 10px;
+    cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.6),
-                0 0 20px rgba(255, 0, 0, 0.4);
-    letter-spacing: 1px;
     font-family: 'Arial Black', sans-serif;
-    z-index: 1000;
+    font-weight: 900;
+    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+    box-shadow: 0 4px 8px rgba(211, 47, 47, 0.4),
+                0 0 12px rgba(255, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    min-width: clamp(50px, 10vw, 70px);
 }
 
-.quit-emoji:hover::after {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
+.quit-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(211, 47, 47, 0.6),
+                0 0 20px rgba(255, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
-.quit-emoji:hover {
-    transform: scale(1.3) rotate(-10deg);
-    filter: drop-shadow(0 0 12px rgba(255, 0, 0, 0.9)) 
-            drop-shadow(0 0 20px rgba(255, 0, 0, 0.7))
-            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
-    text-shadow: 
-        0 0 15px rgba(255, 0, 0, 1),
-        0 0 25px rgba(255, 0, 0, 0.8),
-        0 0 35px rgba(255, 0, 0, 0.6),
-        2px 2px 6px rgba(0, 0, 0, 1);
+.quit-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(211, 47, 47, 0.5),
+                0 0 10px rgba(255, 0, 0, 0.4);
 }
 
-.quit-emoji:active {
-    transform: scale(1.1) rotate(-5deg);
-    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 1)) 
-            drop-shadow(0 0 25px rgba(255, 0, 0, 0.8));
+.quit-line1, .quit-line2 {
+    display: block;
 }
 
 /* Responsive adjustments for very small screens */
