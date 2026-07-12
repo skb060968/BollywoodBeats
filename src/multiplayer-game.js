@@ -826,7 +826,7 @@ function showGameOver(won) {
                 <div class="score-label">Final Score</div>
                 <div class="score-value">${gameState.score}</div>
             </div>
-            <button class="menu-btn primary" onclick="showMenu()">Back to Menu</button>
+            <button class="menu-btn primary" onclick="exitToMenu()">Back to Menu</button>
         `;
     } else {
         content.innerHTML = `
@@ -836,7 +836,7 @@ function showGameOver(won) {
                 <div class="score-label">Final Score</div>
                 <div class="score-value">${gameState.score}</div>
             </div>
-            <button class="menu-btn primary" onclick="showMenu()">Back to Menu</button>
+            <button class="menu-btn primary" onclick="exitToMenu()">Back to Menu</button>
         `;
     }
     
@@ -844,6 +844,22 @@ function showGameOver(won) {
     showScreen('gameOverScreen');
     console.log('[ShowGameOver] Screen switched');
 }
+
+window.exitToMenu = async function() {
+    console.log('[ExitToMenu] Cleaning up and returning to menu. IsHost:', isHost, 'RoomCode:', roomCode);
+    
+    // Host deletes the room, others just leave
+    if (isHost && roomCode) {
+        try {
+            await deleteRoom(roomCode);
+            console.log('[ExitToMenu] Room deleted');
+        } catch (error) {
+            console.error('[ExitToMenu] Error deleting room:', error);
+        }
+    }
+    
+    showMenu();
+};
 
 window.quitGame = async function() {
     if (isHost) {
