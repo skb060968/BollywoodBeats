@@ -613,6 +613,7 @@ window.startMultiplayerGame = async function() {
         gameState.gameStartTime = Date.now();
         gameState.lifelinesRemaining = 3;
         gameState.lifelinesUsed = [false, false, false];
+        gameState.gameResult = null; // Reset game result for new game
         
         // Initialize first level
         const phraseData = gameState.gamePhrases[0];
