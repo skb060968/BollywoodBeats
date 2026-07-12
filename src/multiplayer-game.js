@@ -265,6 +265,7 @@ let playerIndex = null;
 let isHost = false;
 let unsubscribeRoom = null;
 let timerInterval = null;
+let isAdvancingLevel = false; // Flag to prevent duplicate level advances
 
 const SESSION_KEY = 'bollywood_beats_session';
 
@@ -603,6 +604,9 @@ window.startMultiplayerGame = async function() {
     
     try {
         showLoading('Loading phrases...');
+        
+        // Reset flags
+        isAdvancingLevel = false;
         
         // Load and shuffle phrases
         gameState.gamePhrases = await loadAndShufflePhrases();
@@ -968,6 +972,12 @@ window.useLifeline = async function(index) {
 console.log('[Init] useLifeline function defined:', typeof window.useLifeline);
 
 function checkWin() {
+    // Don't check if we're already advancing levels
+    if (isAdvancingLevel) {
+        console.log('[CheckWin] Already advancing level, skipping check');
+        return;
+    }
+    
     const requiredLetters = new Set(gameState.currentPhrase.match(/[A-Z0-9]/g));
     const allRevealed = [...requiredLetters].every(letter => gameState.revealedLetters.has(letter));
     
@@ -979,6 +989,8 @@ function checkWin() {
         setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
         
         if (isHost) {
+            isAdvancingLevel = true; // Set flag to prevent duplicate advances
+            
             const bonusPoints = (gameState.maxWrongGuesses - gameState.wrongGuesses) * 100;
             gameState.score += 500 + bonusPoints;
             
@@ -992,6 +1004,7 @@ function checkWin() {
                     console.log('[CheckWin] Moving to next level');
                     await nextLevel();
                 }
+                isAdvancingLevel = false; // Clear flag after level advance
             }, 2000);
         } else {
             // Non-host just celebrates
