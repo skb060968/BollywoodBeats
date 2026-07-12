@@ -70,12 +70,16 @@ function loadSession() {
 
 // ========== UTILITY FUNCTIONS ==========
 function showScreen(screenId) {
+    console.log('[ShowScreen] Switching to screen:', screenId);
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
     });
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active');
+        console.log('[ShowScreen] Screen activated:', screenId);
+    } else {
+        console.error('[ShowScreen] Screen not found:', screenId);
     }
 }
 
@@ -805,9 +809,13 @@ async function gameLost() {
 }
 
 function showGameOver(won) {
+    console.log('[ShowGameOver] Called with won:', won, 'IsHost:', isHost);
     stopTimer();
     const content = document.getElementById('gameOverContent');
-    if (!content) return;
+    if (!content) {
+        console.error('[ShowGameOver] gameOverContent element not found!');
+        return;
+    }
     
     if (won) {
         content.innerHTML = `
@@ -830,7 +838,9 @@ function showGameOver(won) {
         `;
     }
     
+    console.log('[ShowGameOver] Calling showScreen(gameOverScreen)');
     showScreen('gameOverScreen');
+    console.log('[ShowGameOver] Screen switched');
 }
 
 window.quitGame = async function() {
