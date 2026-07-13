@@ -1109,6 +1109,8 @@ function showGameOver(won) {
     } else {
         content.innerHTML = `
             <h1 class="gameover-title lose">😔 GAME OVER</h1>
+            <p style="font-size: 1rem; margin: 8px 0; color: #fff; font-weight: bold;">The phrase was:</p>
+            <div class="revealed-phrase">${gameState.currentPhrase}</div>
             <div class="gameover-message">Better luck next time!</div>
             <div class="final-score">
                 <div class="score-label">Final Score</div>

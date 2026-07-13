@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.0.8'; // Balanced phrase selection - 2 from each category
+const CACHE_VERSION = '2.0.9'; // Show correct phrase when game is lost
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
