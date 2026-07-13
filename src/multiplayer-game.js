@@ -1168,26 +1168,34 @@ async function loadAndShufflePhrases() {
         const xmlDoc = parser.parseFromString(text, 'text/xml');
         
         const categories = xmlDoc.getElementsByTagName('category');
-        const allPhrases = [];
+        const selectedPhrases = [];
+        const phrasesPerCategory = 2;
         
+        // Load 2 random phrases from each category for variety
         for (let category of categories) {
             const categoryName = category.getAttribute('name');
             const phraseElements = category.getElementsByTagName('phrase');
+            const categoryPhrases = [];
             
             for (let phrase of phraseElements) {
-                allPhrases.push({
+                categoryPhrases.push({
                     text: phrase.textContent.trim(),
                     category: categoryName
                 });
             }
+            
+            // Shuffle and take 2 from this category
+            const shuffled = shuffleArray(categoryPhrases);
+            selectedPhrases.push(...shuffled.slice(0, phrasesPerCategory));
         }
         
-        if (allPhrases.length === 0) {
+        if (selectedPhrases.length === 0) {
             throw new Error('No phrases found');
         }
         
-        const shuffled = shuffleArray(allPhrases);
-        return shuffled.slice(0, 10);
+        // Shuffle the final selection so categories aren't grouped together
+        const finalShuffled = shuffleArray(selectedPhrases);
+        return finalShuffled.slice(0, 10);
         
     } catch (error) {
         console.error('Failed to load phrases:', error);

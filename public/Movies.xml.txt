@@ -186,5 +186,6 @@
       <phrase>Border 2</phrase>
       <phrase>Alpha</phrase>
       <phrase>Dhamaal 4</phrase>
+	  <phrase>Ikka</phrase>
     </category>
 </bollywood_phrases>

@@ -100,6 +100,8 @@
       <phrase>Bobby Deol</phrase>
       <phrase>Jaaved Jaaferi</phrase>
       <phrase>Chunky Pandey</phrase>
+	  <phrase>Rajkummar Rao</phrase>
+      <phrase>Ram Kapoor</phrase>
       </category>
     <category name="BOLLYWOOD HEROINE"> 
       <phrase>Shraddha Kapoor</phrase>
@@ -170,6 +172,7 @@
     <category name="FILMS">
       <phrase>Dilwale Dulhania Le Jayenge</phrase>
       <phrase>Sholay</phrase>
+	  <phrase>Ikka</phrase>
       <phrase>3 Idiots</phrase>
       <phrase>Dangal</phrase>
       <phrase>Kabhi Khushi Kabhie Gham</phrase>
