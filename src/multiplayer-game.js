@@ -1099,24 +1099,27 @@ function showGameOver(won) {
     
     if (won) {
         content.innerHTML = `
-            <h1 class="gameover-title win">🎉 YOU WON! 🎉</h1>
-            <div class="final-score">
-                <div class="score-label">Final Score</div>
-                <div class="score-value">${gameState.score}</div>
+            <h2 class="win">🎉 Congratulations! 🎉</h2>
+            <p style="font-size: 1rem; margin: 8px 0; color: #333; line-height: 1.2;">You completed all ${gameState.maxLevels} levels!</p>
+            <div class="final-score">Final Score: <span style="color: #0066CC;">${gameState.score}</span></div>
+            <div class="gameover-buttons">
+                <button class="gameover-btn" onclick="exitToMenu()">
+                    <span>🏠</span> Main Menu
+                </button>
             </div>
-            <button class="menu-btn primary" onclick="exitToMenu()">Back to Menu</button>
         `;
     } else {
         content.innerHTML = `
-            <h1 class="gameover-title lose">😔 GAME OVER</h1>
-            <p style="font-size: 1rem; margin: 8px 0; color: #fff; font-weight: bold;">The phrase was:</p>
+            <h2 class="lose">😢 Game Over</h2>
+            <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">The phrase was:</p>
             <div class="revealed-phrase">${gameState.currentPhrase}</div>
-            <div class="gameover-message">Better luck next time!</div>
-            <div class="final-score">
-                <div class="score-label">Final Score</div>
-                <div class="score-value">${gameState.score}</div>
+            <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">Level Reached: ${gameState.currentLevel}</p>
+            <div class="final-score">Final Score: <span style="color: #0066CC;">${gameState.score}</span></div>
+            <div class="gameover-buttons">
+                <button class="gameover-btn" onclick="exitToMenu()">
+                    <span>🏠</span> Main Menu
+                </button>
             </div>
-            <button class="menu-btn primary" onclick="exitToMenu()">Back to Menu</button>
         `;
     }
     
