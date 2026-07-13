@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.1.0'; // Match single-player game over screen layout
+const CACHE_VERSION = '2.2.0'; // Sync speech synthesis across all devices
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

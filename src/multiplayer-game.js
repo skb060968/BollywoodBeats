@@ -285,7 +285,9 @@ let gameState = {
     gameStartTime: null,
     lifelinesRemaining: 3,
     lifelinesUsed: [false, false, false],
-    gameResult: null // 'won', 'lost', or null
+    gameResult: null, // 'won', 'lost', or null
+    lastAction: null, // 'correct', 'wrong', 'lifeline', 'levelComplete', null
+    lastActionId: 0 // Unique ID for each action to detect new actions
 };
 
 // ========== SESSION PERSISTENCE ==========
@@ -666,6 +668,8 @@ function deserializeGameState(firebaseState) {
     };
 }
 
+let previousActionId = 0; // Track the last action we've seen
+
 function updateGameFromFirebase(firebaseGameState) {
     if (!firebaseGameState) return;
     
@@ -675,6 +679,32 @@ function updateGameFromFirebase(firebaseGameState) {
     gameState = deserializeGameState(firebaseGameState);
     
     console.log('[UpdateFromFirebase] Wrong guesses:', previousWrongGuesses, '->', gameState.wrongGuesses, 'Result:', previousResult, '->', gameState.gameResult);
+    
+    // Detect new actions and play sounds/speech on ALL devices
+    if (gameState.lastActionId && gameState.lastActionId !== previousActionId) {
+        console.log('[UpdateFromFirebase] New action detected:', gameState.lastAction, 'ID:', gameState.lastActionId);
+        previousActionId = gameState.lastActionId;
+        
+        // Play sound and speech based on action type
+        switch (gameState.lastAction) {
+            case 'correct':
+                AudioManager.playSound('correct');
+                setTimeout(() => AudioManager.playRandomEncourage(), 300);
+                break;
+            case 'wrong':
+                AudioManager.playSound('wrong');
+                setTimeout(() => AudioManager.playRandomDisappoint(), 300);
+                break;
+            case 'lifeline':
+                AudioManager.playSound('correct');
+                setTimeout(() => AudioManager.playRandomEncourage(), 300);
+                break;
+            case 'levelComplete':
+                AudioManager.playSound('win');
+                setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
+                break;
+        }
+    }
     
     updateGameUI();
     displayPhrase();
@@ -894,9 +924,9 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.revealedLetters.add(letter);
         keyElement.classList.add('correct');
         
-        // Play correct sound and encouraging speech on ALL devices
-        AudioManager.playSound('correct');
-        setTimeout(() => AudioManager.playRandomEncourage(), 200);
+        // Set action for other devices to trigger sound/speech
+        gameState.lastAction = 'correct';
+        gameState.lastActionId = Date.now();
         
         // Update Firebase
         await writeGameState(roomCode, serializeGameState(gameState));
@@ -909,9 +939,9 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.revealedLetters.add(letter); // Track as guessed
         keyElement.classList.add('wrong');
         
-        // Play wrong sound and disappointing speech on ALL devices
-        AudioManager.playSound('wrong');
-        setTimeout(() => AudioManager.playRandomDisappoint(), 200);
+        // Set action for other devices to trigger sound/speech
+        gameState.lastAction = 'wrong';
+        gameState.lastActionId = Date.now();
         
         // Update Firebase
         await writeGameState(roomCode, serializeGameState(gameState));
@@ -953,9 +983,9 @@ window.useLifeline = async function(index) {
         gameState.revealedLetters.add(randomLetter);
         console.log('[Lifeline] Revealed letter:', randomLetter);
         
-        // Play sound and speech for lifeline on ALL devices
-        AudioManager.playSound('correct');
-        setTimeout(() => AudioManager.playRandomEncourage(), 200);
+        // Set action for other devices to trigger sound/speech
+        gameState.lastAction = 'lifeline';
+        gameState.lastActionId = Date.now();
     } else {
         console.log('[Lifeline] No unrevealed letters to reveal');
     }
@@ -984,10 +1014,6 @@ function checkWin() {
     console.log('[CheckWin] Required:', requiredLetters.size, 'Revealed:', gameState.revealedLetters.size, 'AllRevealed:', allRevealed, 'IsHost:', isHost);
     
     if (allRevealed) {
-        // Level complete - play sound and speech on ALL devices
-        AudioManager.playSound('win');
-        setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
-        
         if (isHost) {
             isAdvancingLevel = true; // Set flag to prevent duplicate advances
             
@@ -996,16 +1022,23 @@ function checkWin() {
             
             console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
             
-            setTimeout(async () => {
-                if (gameState.currentLevel >= gameState.maxLevels) {
-                    console.log('[CheckWin] All levels complete! Showing game won');
-                    await gameWon();
-                } else {
-                    console.log('[CheckWin] Moving to next level');
-                    await nextLevel();
-                }
-                isAdvancingLevel = false; // Clear flag after level advance
-            }, 2000);
+            // Set action for ALL devices to play level complete sound/speech
+            gameState.lastAction = 'levelComplete';
+            gameState.lastActionId = Date.now();
+            
+            // Update Firebase with level complete action so all devices play sound
+            writeGameState(roomCode, serializeGameState(gameState)).then(() => {
+                setTimeout(async () => {
+                    if (gameState.currentLevel >= gameState.maxLevels) {
+                        console.log('[CheckWin] All levels complete! Showing game won');
+                        await gameWon();
+                    } else {
+                        console.log('[CheckWin] Moving to next level');
+                        await nextLevel();
+                    }
+                    isAdvancingLevel = false; // Clear flag after level advance
+                }, 2000);
+            });
         } else {
             // Non-host just celebrates
             console.log('[CheckWin] Level complete! Waiting for host to advance...');
