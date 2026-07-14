@@ -1222,17 +1222,30 @@ async function loadAndShufflePhrases() {
                 });
             }
             
-            // Shuffle and take 2 from this category
-            const shuffled = shuffleArray(categoryPhrases);
-            selectedPhrases.push(...shuffled.slice(0, phrasesPerCategory));
+            // Multiple shuffles with different random seeds for better randomization
+            let shuffled = categoryPhrases;
+            for (let i = 0; i < 3; i++) {
+                shuffled = shuffleArray(shuffled);
+            }
+            
+            // Take 2 from different positions to maximize variety
+            const step = Math.floor(shuffled.length / phrasesPerCategory);
+            for (let i = 0; i < phrasesPerCategory && i * step < shuffled.length; i++) {
+                const index = (i * step + Math.floor(Math.random() * Math.min(step, shuffled.length - i * step))) % shuffled.length;
+                selectedPhrases.push(shuffled[index]);
+            }
         }
         
         if (selectedPhrases.length === 0) {
             throw new Error('No phrases found');
         }
         
-        // Shuffle the final selection so categories aren't grouped together
-        const finalShuffled = shuffleArray(selectedPhrases);
+        // Multiple final shuffles to ensure categories aren't grouped
+        let finalShuffled = selectedPhrases;
+        for (let i = 0; i < 5; i++) {
+            finalShuffled = shuffleArray(finalShuffled);
+        }
+        
         return finalShuffled.slice(0, 10);
         
     } catch (error) {
