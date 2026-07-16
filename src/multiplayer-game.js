@@ -909,6 +909,17 @@ function createKeyboard() {
     }
 }
 
+function disableKeyboard() {
+    const keyboard = document.getElementById('keyboardCombined');
+    if (!keyboard) return;
+    
+    // Disable all buttons to prevent further input
+    const buttons = keyboard.querySelectorAll('.letter-btn');
+    buttons.forEach(btn => {
+        btn.disabled = true;
+    });
+}
+
 function isLetterGuessed(letter) {
     // Check if letter was guessed (either revealed or wrong)
     return gameState.revealedLetters.has(letter);
@@ -1015,6 +1026,9 @@ function checkWin() {
     console.log('[CheckWin] Required:', requiredLetters.size, 'Revealed:', gameState.revealedLetters.size, 'AllRevealed:', allRevealed, 'IsHost:', isHost);
     
     if (allRevealed) {
+        // Disable all keyboard buttons immediately to prevent further guesses
+        disableKeyboard();
+        
         if (isHost) {
             isAdvancingLevel = true; // Set flag to prevent duplicate advances
             
