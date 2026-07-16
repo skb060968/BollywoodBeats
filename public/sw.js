@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.2.4'; // Block all input when level advancing to prevent race conditions
+const CACHE_VERSION = '2.2.5'; // Fully prevent button interaction when level advancing
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

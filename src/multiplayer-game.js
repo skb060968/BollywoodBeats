@@ -913,10 +913,15 @@ function disableKeyboard() {
     const keyboard = document.getElementById('keyboardCombined');
     if (!keyboard) return;
     
+    console.log('[DisableKeyboard] Disabling all keyboard buttons');
+    
     // Disable all buttons to prevent further input
     const buttons = keyboard.querySelectorAll('.letter-btn');
     buttons.forEach(btn => {
         btn.disabled = true;
+        btn.onclick = null; // Remove click handler completely
+        btn.style.pointerEvents = 'none'; // Prevent all pointer interactions
+        btn.style.cursor = 'not-allowed'; // Show not-allowed cursor
     });
 }
 
@@ -927,9 +932,14 @@ function isLetterGuessed(letter) {
 
 // ========== GAME LOGIC ==========
 window.guessLetter = async function(letter, keyElement) {
-    // Ignore clicks if level is advancing or button already disabled
-    if (!roomCode || keyElement.disabled || isAdvancingLevel) {
-        console.log('[GuessLetter] Ignoring - RoomCode:', !!roomCode, 'Disabled:', keyElement.disabled, 'Advancing:', isAdvancingLevel);
+    // Early exit if level is advancing - don't touch button at all
+    if (isAdvancingLevel) {
+        console.log('[GuessLetter] Ignoring - level is advancing');
+        return;
+    }
+    
+    // Normal checks
+    if (!roomCode || keyElement.disabled) {
         return;
     }
     
