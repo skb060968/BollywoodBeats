@@ -927,7 +927,11 @@ function isLetterGuessed(letter) {
 
 // ========== GAME LOGIC ==========
 window.guessLetter = async function(letter, keyElement) {
-    if (!roomCode || keyElement.disabled) return;
+    // Ignore clicks if level is advancing or button already disabled
+    if (!roomCode || keyElement.disabled || isAdvancingLevel) {
+        console.log('[GuessLetter] Ignoring - RoomCode:', !!roomCode, 'Disabled:', keyElement.disabled, 'Advancing:', isAdvancingLevel);
+        return;
+    }
     
     keyElement.disabled = true;
     
@@ -968,6 +972,11 @@ window.useLifeline = async function(index) {
     
     if (!roomCode) {
         console.log('[Lifeline] No room code, cannot use lifeline');
+        return;
+    }
+    
+    if (isAdvancingLevel) {
+        console.log('[Lifeline] Ignoring - level is advancing');
         return;
     }
     
