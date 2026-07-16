@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.2.1'; // Improved shuffle algorithm for better phrase variety
+const CACHE_VERSION = '2.2.2'; // Fix race condition: prevent game over during level advance
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

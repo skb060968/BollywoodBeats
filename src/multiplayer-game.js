@@ -714,7 +714,8 @@ function updateGameFromFirebase(firebaseGameState) {
     checkWin();
     
     // Check lose condition after receiving updates from other players (host only)
-    if (isHost && gameState.wrongGuesses >= gameState.maxWrongGuesses && !gameState.gameResult) {
+    // Skip if we're advancing levels to avoid race condition
+    if (isHost && gameState.wrongGuesses >= gameState.maxWrongGuesses && !gameState.gameResult && !isAdvancingLevel) {
         console.log('[UpdateFromFirebase] All lives exhausted, triggering game over');
         setTimeout(async () => {
             await gameLost();
