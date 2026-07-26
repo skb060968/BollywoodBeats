@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.4'; // Use solid #FF8C00 background for entire game (no gradient)
+const CACHE_VERSION = '2.3.5'; // Change all colors to #FF7900 and remove video drop shadow
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
