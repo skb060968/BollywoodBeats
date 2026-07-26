@@ -1252,24 +1252,16 @@ body {
     flex-shrink: 0;
 }
 
-/* Image-based character (GIF/PNG/JPG) */
-.character-image {
+/* Video-based character (MP4) */
+.character-video {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Fills container while maintaining aspect ratio */
+    object-fit: contain; /* Maintains aspect ratio without cropping */
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
     transition: opacity 0.3s ease;
-}
-
-.character-image.idle {
-    animation: breathe 3s ease-in-out infinite;
-}
-
-.character-image.sad {
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)) grayscale(0.5) brightness(0.8);
 }
 
 /* Character States - Image-based animations */

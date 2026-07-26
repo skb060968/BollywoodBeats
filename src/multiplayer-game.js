@@ -141,6 +141,9 @@ const AudioManager = (() => {
         try {
             speechSynthesis.cancel();
             
+            // Switch to talking character
+            showTalkingCharacter();
+            
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = rate;
             utterance.pitch = pitch;
@@ -154,9 +157,46 @@ const AudioManager = (() => {
                 }
             }
             
+            // When speech ends, switch back to idle character
+            utterance.onend = () => {
+                showIdleCharacter();
+            };
+            
+            utterance.onerror = () => {
+                showIdleCharacter();
+            };
+            
             speechSynthesis.speak(utterance);
         } catch (err) {
             console.error('Speech synthesis error:', err);
+            showIdleCharacter();
+        }
+    }
+    
+    function showTalkingCharacter() {
+        const idleVideo = document.getElementById('characterIdle');
+        const talkingVideo = document.getElementById('characterTalking');
+        
+        if (idleVideo && talkingVideo) {
+            idleVideo.style.display = 'none';
+            idleVideo.pause();
+            
+            talkingVideo.style.display = 'block';
+            talkingVideo.currentTime = 0; // Start from beginning
+            talkingVideo.play().catch(() => {});
+        }
+    }
+    
+    function showIdleCharacter() {
+        const idleVideo = document.getElementById('characterIdle');
+        const talkingVideo = document.getElementById('characterTalking');
+        
+        if (idleVideo && talkingVideo) {
+            talkingVideo.style.display = 'none';
+            talkingVideo.pause();
+            
+            idleVideo.style.display = 'block';
+            idleVideo.play().catch(() => {});
         }
     }
 
