@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.3'; // Add background to character-container for seamless video blend
+const CACHE_VERSION = '2.3.4'; // Use solid #FF8C00 background for entire game (no gradient)
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

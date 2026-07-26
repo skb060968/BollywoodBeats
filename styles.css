@@ -297,7 +297,7 @@ body {
     width: min(100vw, calc(100vh * 2.5)); /* Width limited by height aspect ratio */
     height: 100vh;
     max-height: 100vh;
-    background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
+    background: #FF8C00; /* Solid dark orange - matches video background */
     overflow: hidden;
     gap: 0;
     margin: 0 auto; /* Center if narrower than viewport */
@@ -456,6 +456,7 @@ body {
     gap: clamp(6px, 12px, 20px);
     overflow-y: auto;
     overflow-x: hidden;
+    background: #FF8C00; /* Solid dark orange - matches left panel and video */
 }
 
 /* Game Title Bar */
