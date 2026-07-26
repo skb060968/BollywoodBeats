@@ -311,8 +311,9 @@ body {
     align-items: center;
     padding: clamp(5px, 1vh, 15px) clamp(5px, 1vw, 20px);
     gap: clamp(8px, 1.5vh, 15px);
-    background: red; /* Match video background color */
-    background-color: red; /* Match video background color */
+    background: #F17406; /* Match video background color */
+    background-color: #F17406 /* Match video background color */
+
 }
 
 .score-panel {
@@ -1253,12 +1254,12 @@ body {
     height: clamp(150px, 50vh, 500px);
     max-width: 100%;
     flex-shrink: 0;
-    background: red; /* Match video background color */
+    background:#F17406; /* Match video background color */
 }
 
 /* Video-based character (MP4) */
 .character-video {
-    background: red; 
+    background: #F17406;
     position: absolute;
     top: 0;
     left: 0;
