@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.1'; // Fix MP4 file paths for character animations
+const CACHE_VERSION = '2.3.2'; // Match left-panel background to video background color
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

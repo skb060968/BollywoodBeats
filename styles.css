@@ -311,6 +311,7 @@ body {
     align-items: center;
     padding: clamp(5px, 1vh, 15px) clamp(5px, 1vw, 20px);
     gap: clamp(8px, 1.5vh, 15px);
+    background: #FF8C00; /* Match video background color */
 }
 
 .score-panel {
