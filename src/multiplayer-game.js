@@ -240,6 +240,14 @@ const AudioManager = (() => {
             backgroundMusic.volume = volume;
             backgroundMusic.preload = 'auto';
             
+            // Hide audio element metadata display
+            backgroundMusic.style.display = 'none';
+            backgroundMusic.style.position = 'absolute';
+            backgroundMusic.style.visibility = 'hidden';
+            backgroundMusic.style.width = '0';
+            backgroundMusic.style.height = '0';
+            backgroundMusic.style.opacity = '0';
+            
             const playPromise = backgroundMusic.play();
             if (playPromise && typeof playPromise.catch === 'function') {
                 playPromise.catch(() => {

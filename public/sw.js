@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.13'; // Play talking video once, not loop
+const CACHE_VERSION = '2.3.14'; // Hide audio metadata display
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
