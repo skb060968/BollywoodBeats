@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.14'; // Hide audio metadata display
+const CACHE_VERSION = '2.3.15'; // Fix: Take 3 phrases per category to ensure 10 total phrases
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

@@ -1297,9 +1297,9 @@ async function loadAndShufflePhrases() {
         
         const categories = xmlDoc.getElementsByTagName('category');
         const selectedPhrases = [];
-        const phrasesPerCategory = 2;
+        const phrasesPerCategory = 3; // Changed from 2 to 3 to get 12 phrases (4 categories × 3)
         
-        // Load 2 random phrases from each category for variety
+        // Load 3 random phrases from each category for variety
         for (let category of categories) {
             const categoryName = category.getAttribute('name');
             const phraseElements = category.getElementsByTagName('phrase');
@@ -1318,7 +1318,7 @@ async function loadAndShufflePhrases() {
                 shuffled = shuffleArray(shuffled);
             }
             
-            // Take 2 from different positions to maximize variety
+            // Take 3 from different positions to maximize variety
             const step = Math.floor(shuffled.length / phrasesPerCategory);
             for (let i = 0; i < phrasesPerCategory && i * step < shuffled.length; i++) {
                 const index = (i * step + Math.floor(Math.random() * Math.min(step, shuffled.length - i * step))) % shuffled.length;
