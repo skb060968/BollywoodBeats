@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.11'; // Revert to original colors and drop shadow with new video files
+const CACHE_VERSION = '2.3.12'; // Update Bollywood.xml.txt with new phrases
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
