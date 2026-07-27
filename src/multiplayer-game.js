@@ -183,6 +183,13 @@ const AudioManager = (() => {
             
             talkingVideo.style.display = 'block';
             talkingVideo.currentTime = 0; // Start from beginning
+            talkingVideo.loop = false; // Play only once
+            
+            // When talking video ends, switch back to idle
+            talkingVideo.onended = () => {
+                showIdleCharacter();
+            };
+            
             talkingVideo.play().catch(() => {});
         }
     }
@@ -194,6 +201,7 @@ const AudioManager = (() => {
         if (idleVideo && talkingVideo) {
             talkingVideo.style.display = 'none';
             talkingVideo.pause();
+            talkingVideo.loop = true; // Reset loop for next time (though not used)
             
             idleVideo.style.display = 'block';
             idleVideo.play().catch(() => {});
