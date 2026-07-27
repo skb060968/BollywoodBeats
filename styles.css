@@ -10,7 +10,7 @@ html, body {
     height: 100%;
     width: 100%;
     font-family: 'Arial Black', 'Arial Bold', sans-serif;
-    background: linear-gradient(135deg, #FF7900 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
     overflow: hidden;
 }
 
@@ -28,7 +28,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #FF7900 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
     z-index: 10000;
     justify-content: center;
     align-items: center;
@@ -297,7 +297,7 @@ body {
     width: min(100vw, calc(100vh * 2.5)); /* Width limited by height aspect ratio */
     height: 100vh;
     max-height: 100vh;
-    background: #FF7900; /* Solid orange red - matches video background */
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6600 100%);
     overflow: hidden;
     gap: 0;
     margin: 0 auto; /* Center if narrower than viewport */
@@ -311,13 +311,10 @@ body {
     align-items: center;
     padding: clamp(5px, 1vh, 15px) clamp(5px, 1vw, 20px);
     gap: clamp(8px, 1.5vh, 15px);
-    background: #FE7A00; /* Match video background color */
-    background-color: #FE7A00 /* Match video background color */
-
 }
 
 .score-panel {
-    background: linear-gradient(135deg, #FF7900 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
     border-radius: 8px;
     padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.8vw, 1.5vw, 2vw);
     text-align: center;
@@ -351,7 +348,7 @@ body {
 
 /* Timer Container - Matches Score Panel Style */
 .timer-container {
-    background: linear-gradient(135deg, #FF7900 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
     border-radius: 8px;
     padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.8vw, 1.5vw, 2vw);
     text-align: center;
@@ -368,7 +365,7 @@ body {
 
 /* Lifeline Container - Matches Timer/Score Panel Style */
 .lifeline-container {
-    background: linear-gradient(135deg, #FF7900 0%, #FF7900 100%);
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
     border-radius: 8px;
     padding: clamp(0.5vh, 0.8vh, 1.5vh) clamp(0.5vw, 1vw, 1.5vw);
     text-align: center;
@@ -458,7 +455,6 @@ body {
     gap: clamp(6px, 12px, 20px);
     overflow-y: auto;
     overflow-x: hidden;
-    background: #FF7900; /* Solid dark orange - matches left panel and video */
 }
 
 /* Game Title Bar */
@@ -1254,18 +1250,17 @@ body {
     height: clamp(150px, 50vh, 500px);
     max-width: 100%;
     flex-shrink: 0;
-    background:#FE7A00; /* Match video background color */
 }
 
 /* Video-based character (MP4) */
 .character-video {
-    background: #FE7A00;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: contain; /* Maintains aspect ratio without cropping */
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
     transition: opacity 0.3s ease;
 }
 

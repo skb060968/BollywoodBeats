@@ -9,7 +9,7 @@
 
 .lobby-container h2 {
     font-size: clamp(1.3rem, 3.5vw, 1.8rem);
-    color: #FF7900;
+    color: #FF8C00;
     margin-bottom: clamp(8px, 1.2vh, 12px);
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
@@ -32,7 +32,7 @@
     max-width: 400px;
     padding: clamp(10px, 2vh, 15px) 20px;
     font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-    border: 3px solid #FF7900;
+    border: 3px solid #FF8C00;
     border-radius: 15px;
     background: rgba(255, 255, 255, 0.95);
     color: #333;
@@ -54,7 +54,7 @@
 }
 
 .room-code-display {
-    background: linear-gradient(135deg, #FF7900 0%, #FF6B35 100%);
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B35 100%);
     padding: clamp(8px, 1.5vh, 12px);
     border-radius: 12px;
     margin: clamp(12px, 1.5vh, 18px) 0;
