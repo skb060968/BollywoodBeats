@@ -177,20 +177,25 @@ const AudioManager = (() => {
         const idleVideo = document.getElementById('characterIdle');
         const talkingVideo = document.getElementById('characterTalking');
         
+        console.log('[Character] Switching to talking video');
+        
         if (idleVideo && talkingVideo) {
-            idleVideo.style.display = 'none';
+            // Pause and hide idle video
             idleVideo.pause();
+            idleVideo.style.display = 'none';
             
+            // Show and play talking video
             talkingVideo.style.display = 'block';
             talkingVideo.currentTime = 0; // Start from beginning
             talkingVideo.loop = false; // Play only once
             
-            // When talking video ends, switch back to idle
-            talkingVideo.onended = () => {
-                showIdleCharacter();
-            };
+            // Remove any previous event listeners
+            talkingVideo.onended = null;
             
-            talkingVideo.play().catch(() => {});
+            // Play the talking video
+            talkingVideo.play().catch(err => {
+                console.error('[Character] Failed to play talking video:', err);
+            });
         }
     }
     
@@ -198,13 +203,19 @@ const AudioManager = (() => {
         const idleVideo = document.getElementById('characterIdle');
         const talkingVideo = document.getElementById('characterTalking');
         
+        console.log('[Character] Switching to idle video');
+        
         if (idleVideo && talkingVideo) {
-            talkingVideo.style.display = 'none';
+            // Pause and hide talking video
             talkingVideo.pause();
-            talkingVideo.loop = true; // Reset loop for next time (though not used)
+            talkingVideo.style.display = 'none';
             
+            // Show and play idle video
             idleVideo.style.display = 'block';
-            idleVideo.play().catch(() => {});
+            idleVideo.currentTime = 0; // Reset to beginning for smooth loop
+            idleVideo.play().catch(err => {
+                console.error('[Character] Failed to play idle video:', err);
+            });
         }
     }
 
@@ -756,7 +767,7 @@ function updateGameFromFirebase(firebaseGameState) {
                 setTimeout(() => AudioManager.playRandomEncourage(), 300);
                 break;
             case 'levelComplete':
-                AudioManager.playSound('win');
+                AudioManager.playSound('win', 0.25); // 25% volume for win sound
                 setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
                 break;
         }

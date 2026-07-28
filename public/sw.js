@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.17'; // Update: Combined level complete phrases
+const CACHE_VERSION = '2.3.18'; // Fix: Talking video visibility and win sound volume to 25%
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
