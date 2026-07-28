@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.24'; 
+const CACHE_VERSION = '2.3.25'; 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
