@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.21'; // Update: Combined encourage and disappoint phrases
+const CACHE_VERSION = '2.3.22'; // Update: Talking video plays once (no loop), idle video loops continuously
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
