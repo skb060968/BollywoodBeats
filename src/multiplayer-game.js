@@ -43,16 +43,16 @@ const SpeechPhrases = {
         "Next time"
     ],
     levelComplete: [
-        "Level complete!",
-        "You're on fire!",
-        "Incredible!",
-        "Amazing work!",
-        "Keep going!",
-        "You're a superstar!",
-        "Excellent job!",
-        "You rock!",
-        "Brilliant play!",
-        "Unstoppable!"
+        "Level complete! You're on fire!",
+        "Level complete! Incredible!",
+        "Level complete! Amazing work!",
+        "Level complete! Keep going!",
+        "Level complete! You're a superstar!",
+        "Level complete! Excellent job!",
+        "Level complete! You rock!",
+        "Level complete! Brilliant play!",
+        "Level complete! Unstoppable!",
+        "Level complete! Outstanding performance!"
     ]
 };
 
