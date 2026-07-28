@@ -141,9 +141,6 @@ const AudioManager = (() => {
         try {
             speechSynthesis.cancel();
             
-            // Switch to talking character
-            showTalkingCharacter();
-            
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = rate;
             utterance.pitch = pitch;
@@ -157,18 +154,27 @@ const AudioManager = (() => {
                 }
             }
             
+            // Start speaking first
+            speechSynthesis.speak(utterance);
+            
+            // Switch to talking character after speech starts
+            setTimeout(() => {
+                showTalkingCharacter();
+            }, 50);
+            
             // When speech ends, switch back to idle character
             utterance.onend = () => {
+                console.log('[Speech] Speech ended, switching to idle');
                 showIdleCharacter();
             };
             
-            utterance.onerror = () => {
+            utterance.onerror = (err) => {
+                console.error('[Speech] Speech error:', err);
                 showIdleCharacter();
             };
             
-            speechSynthesis.speak(utterance);
         } catch (err) {
-            console.error('Speech synthesis error:', err);
+            console.error('[Speech] Speech synthesis error:', err);
             showIdleCharacter();
         }
     }
@@ -184,18 +190,17 @@ const AudioManager = (() => {
             idleVideo.pause();
             idleVideo.style.display = 'none';
             
-            // Show and play talking video
+            // Show talking video
             talkingVideo.style.display = 'block';
-            talkingVideo.currentTime = 0; // Start from beginning
-            talkingVideo.loop = false; // Play only once
+            talkingVideo.loop = true; // Loop the talking video while speech is playing
             
-            // Remove any previous event listeners
-            talkingVideo.onended = null;
-            
-            // Play the talking video
-            talkingVideo.play().catch(err => {
-                console.error('[Character] Failed to play talking video:', err);
-            });
+            // Only start playing if not already playing
+            if (talkingVideo.paused) {
+                talkingVideo.currentTime = 0;
+                talkingVideo.play().catch(err => {
+                    console.error('[Character] Failed to play talking video:', err);
+                });
+            }
         }
     }
     

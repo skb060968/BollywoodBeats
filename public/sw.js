@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.18'; // Fix: Talking video visibility and win sound volume to 25%
+const CACHE_VERSION = '2.3.19'; // Fix: Talking video loop during speech synthesis
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
