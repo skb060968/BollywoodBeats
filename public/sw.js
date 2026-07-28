@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.19'; // Fix: Talking video loop during speech synthesis
+const CACHE_VERSION = '2.3.20'; // Fix: Prevent speech interruption with isSpeaking flag
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

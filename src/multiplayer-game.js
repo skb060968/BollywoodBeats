@@ -69,6 +69,7 @@ const AudioManager = (() => {
     let backgroundMusic = null;
     let currentSoundEffect = null;
     let speechSynthesis = window.speechSynthesis;
+    let isSpeaking = false; // Track if speech is in progress
 
     function isMuted() {
         try {
@@ -89,6 +90,7 @@ const AudioManager = (() => {
             stopSoundEffects();
             if (speechSynthesis) {
                 speechSynthesis.cancel();
+                isSpeaking = false; // Reset speaking flag
             }
         } else {
             resumeBackgroundMusic();
@@ -138,8 +140,14 @@ const AudioManager = (() => {
         if (isMuted()) return;
         if (!speechSynthesis) return;
         
+        // Skip if already speaking to prevent interruptions
+        if (isSpeaking) {
+            console.log('[Speech] Already speaking, skipping new speech');
+            return;
+        }
+        
         try {
-            speechSynthesis.cancel();
+            isSpeaking = true;
             
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = rate;
@@ -154,27 +162,30 @@ const AudioManager = (() => {
                 }
             }
             
-            // Start speaking first
-            speechSynthesis.speak(utterance);
-            
-            // Switch to talking character after speech starts
-            setTimeout(() => {
-                showTalkingCharacter();
-            }, 50);
-            
             // When speech ends, switch back to idle character
             utterance.onend = () => {
                 console.log('[Speech] Speech ended, switching to idle');
+                isSpeaking = false;
                 showIdleCharacter();
             };
             
             utterance.onerror = (err) => {
                 console.error('[Speech] Speech error:', err);
+                isSpeaking = false;
                 showIdleCharacter();
             };
             
+            // Start speaking
+            speechSynthesis.speak(utterance);
+            
+            // Switch to talking character after a brief delay
+            setTimeout(() => {
+                showTalkingCharacter();
+            }, 100);
+            
         } catch (err) {
             console.error('[Speech] Speech synthesis error:', err);
+            isSpeaking = false;
             showIdleCharacter();
         }
     }
@@ -183,24 +194,24 @@ const AudioManager = (() => {
         const idleVideo = document.getElementById('characterIdle');
         const talkingVideo = document.getElementById('characterTalking');
         
+        if (!idleVideo || !talkingVideo) return;
+        
         console.log('[Character] Switching to talking video');
         
-        if (idleVideo && talkingVideo) {
-            // Pause and hide idle video
-            idleVideo.pause();
+        // Hide and pause idle video without waiting
+        if (idleVideo.style.display !== 'none') {
             idleVideo.style.display = 'none';
-            
-            // Show talking video
+            idleVideo.pause();
+        }
+        
+        // Show and play talking video
+        if (talkingVideo.style.display !== 'block') {
             talkingVideo.style.display = 'block';
-            talkingVideo.loop = true; // Loop the talking video while speech is playing
-            
-            // Only start playing if not already playing
-            if (talkingVideo.paused) {
-                talkingVideo.currentTime = 0;
-                talkingVideo.play().catch(err => {
-                    console.error('[Character] Failed to play talking video:', err);
-                });
-            }
+            talkingVideo.loop = true; // Loop while speaking
+            talkingVideo.currentTime = 0;
+            talkingVideo.play().catch(err => {
+                console.error('[Character] Failed to play talking video:', err);
+            });
         }
     }
     
@@ -208,20 +219,27 @@ const AudioManager = (() => {
         const idleVideo = document.getElementById('characterIdle');
         const talkingVideo = document.getElementById('characterTalking');
         
+        if (!idleVideo || !talkingVideo) return;
+        
         console.log('[Character] Switching to idle video');
         
-        if (idleVideo && talkingVideo) {
-            // Pause and hide talking video
-            talkingVideo.pause();
-            talkingVideo.style.display = 'none';
+        // Use a small delay to avoid race conditions
+        setTimeout(() => {
+            // Hide and pause talking video
+            if (talkingVideo.style.display !== 'none') {
+                talkingVideo.style.display = 'none';
+                talkingVideo.pause();
+            }
             
             // Show and play idle video
-            idleVideo.style.display = 'block';
-            idleVideo.currentTime = 0; // Reset to beginning for smooth loop
-            idleVideo.play().catch(err => {
-                console.error('[Character] Failed to play idle video:', err);
-            });
-        }
+            if (idleVideo.style.display !== 'block') {
+                idleVideo.style.display = 'block';
+                idleVideo.currentTime = 0;
+                idleVideo.play().catch(err => {
+                    console.error('[Character] Failed to play idle video:', err);
+                });
+            }
+        }, 50);
     }
 
     function playRandomEncourage() {
