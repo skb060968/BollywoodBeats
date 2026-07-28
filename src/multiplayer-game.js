@@ -762,9 +762,12 @@ function updateGameFromFirebase(firebaseGameState) {
         }
     }
     
-    updateGameUI();
-    displayPhrase();
-    createKeyboard();
+    // Only update UI if not currently advancing levels (to avoid interrupting speech/video)
+    if (!isAdvancingLevel) {
+        updateGameUI();
+        displayPhrase();
+        createKeyboard();
+    }
     
     // Check win condition after receiving updates from other players
     checkWin();
@@ -1118,6 +1121,7 @@ function checkWin() {
             
             // Update Firebase with level complete action so all devices play sound
             writeGameState(roomCode, serializeGameState(gameState)).then(() => {
+                // Wait 3 seconds to allow speech and talking video to complete
                 setTimeout(async () => {
                     if (gameState.currentLevel >= gameState.maxLevels) {
                         console.log('[CheckWin] All levels complete! Showing game won');
@@ -1127,7 +1131,12 @@ function checkWin() {
                         await nextLevel();
                     }
                     isAdvancingLevel = false; // Clear flag after level advance
-                }, 2000);
+                    
+                    // Update UI now that flag is cleared
+                    updateGameUI();
+                    displayPhrase();
+                    createKeyboard();
+                }, 3000); // Increased from 2000 to 3000ms to allow speech to finish
             });
         } else {
             // Non-host just celebrates
