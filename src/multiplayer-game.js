@@ -19,28 +19,28 @@ import { initDeepLinkHandler, createShareHandler, showQRCode } from './deep-link
 // ========== SPEECH PHRASES ==========
 const SpeechPhrases = {
     encourage: [
-        "Great!",
-        "Excellent!",
-        "Perfect!",
-        "Brilliant!",
-        "Superb!",
-        "Outstanding!",
-        "Fantastic!",
-        "Amazing!",
+        "Great job!",
+        "Excellent choice!",
+        "Perfect guess!",
+        "Brilliant move!",
+        "Superb thinking!",
+        "Outstanding work!",
+        "Fantastic play!",
+        "Amazing guess!",
         "Well done!",
-        "Awesome!"
+        "Awesome work!"
     ],
     disappoint: [
         "Oops! Try again",
-        "Not this time",
-        "Think again",
-        "Oh no!",
-        "Missed it!",
-        "Better luck",
-        "Almost there",
-        "Keep trying",
+        "Not quite right",
+        "Think again carefully",
+        "Oh no! Wrong one",
+        "Missed it! Continue",
+        "Better luck next",
+        "Almost there! Keep going",
+        "Keep trying hard",
         "Don't give up",
-        "Next time"
+        "Next time buddy"
     ],
     levelComplete: [
         "Level complete! You're on fire!",
