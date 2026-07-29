@@ -136,14 +136,21 @@ const AudioManager = (() => {
         } catch (_) {}
     }
 
-    function speak(text, rate = 1.0, pitch = 1.1) {
+    function speak(text, rate = 1.0, pitch = 1.1, priority = false) {
         if (isMuted()) return;
         if (!speechSynthesis) return;
         
-        // Skip if already speaking to prevent interruptions
-        if (isSpeaking) {
+        // Skip if already speaking UNLESS this is a priority message (like level complete)
+        if (isSpeaking && !priority) {
             console.log('[Speech] Already speaking, skipping new speech');
             return;
+        }
+        
+        // If priority message, cancel current speech and proceed
+        if (priority && isSpeaking) {
+            console.log('[Speech] Priority message, cancelling current speech');
+            speechSynthesis.cancel();
+            isSpeaking = false;
         }
         
         try {
@@ -262,7 +269,7 @@ const AudioManager = (() => {
     function playRandomLevelComplete() {
         const phrases = SpeechPhrases.levelComplete;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        speak(phrase, 1.15, 1.3);
+        speak(phrase, 1.15, 1.3, true); // true = priority, will interrupt current speech
     }
 
     function startBackgroundMusic(volume = 0.15) {
