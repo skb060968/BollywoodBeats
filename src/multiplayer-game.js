@@ -211,15 +211,11 @@ const AudioManager = (() => {
             idleVideo.pause();
         }
         
-        // Show and play talking video WITHOUT loop (play once)
+        // Show and play talking video WITH loop (keeps playing until speech ends)
         if (talkingVideo.style.display !== 'block') {
             talkingVideo.style.display = 'block';
-            talkingVideo.loop = false; // Play only once
+            talkingVideo.loop = true; // Loop continuously while speech is playing
             talkingVideo.currentTime = 0;
-            
-            // When talking video ends naturally, DON'T switch back
-            // (speech synthesis onend will handle switching back to idle)
-            talkingVideo.onended = null;
             
             talkingVideo.play().catch(err => {
                 console.error('[Character] Failed to play talking video:', err);
