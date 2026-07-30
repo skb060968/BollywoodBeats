@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.28'; // Fix: Remove delay in switching back to idle video for better sync with speech 
+const CACHE_VERSION = '2.3.29'; // Fix: Remove 100ms delay before showing talking video for perfect sync 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

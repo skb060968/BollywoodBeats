@@ -182,13 +182,11 @@ const AudioManager = (() => {
                 showIdleCharacter();
             };
             
+            // Switch to talking character immediately
+            showTalkingCharacter();
+            
             // Start speaking
             speechSynthesis.speak(utterance);
-            
-            // Switch to talking character after a brief delay
-            setTimeout(() => {
-                showTalkingCharacter();
-            }, 100);
             
         } catch (err) {
             console.error('[Speech] Speech synthesis error:', err);
