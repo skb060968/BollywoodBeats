@@ -43,16 +43,16 @@ const SpeechPhrases = {
         "Next time buddy"
     ],
     levelComplete: [
-        "Level complete! You're on fire!",
-        "Level complete! Incredible!",
-        "Level complete! Amazing work!",
-        "Level complete! Keep going!",
-        "Level complete! You're a superstar!",
-        "Level complete! Excellent job!",
-        "Level complete! You rock!",
-        "Level complete! Brilliant play!",
-        "Level complete! Unstoppable!",
-        "Level complete! Outstanding performance!"
+        "Level complete!",
+        "Level complete!",
+        "Level complete!",
+        "Level complete!",
+        "Level complete!",
+        "Level complete!",
+        "Level complete!",
+        "Level complete!",
+        "Level complete!",
+        "Level complete!"
     ]
 };
 
@@ -70,6 +70,7 @@ const AudioManager = (() => {
     let currentSoundEffect = null;
     let speechSynthesis = window.speechSynthesis;
     let isSpeaking = false; // Track if speech is in progress
+    let speechQueue = []; // Queue for pending speech
 
     function isMuted() {
         try {
@@ -91,6 +92,7 @@ const AudioManager = (() => {
             if (speechSynthesis) {
                 speechSynthesis.cancel();
                 isSpeaking = false; // Reset speaking flag
+                speechQueue = []; // Clear speech queue
             }
         } else {
             resumeBackgroundMusic();
@@ -136,22 +138,15 @@ const AudioManager = (() => {
         } catch (_) {}
     }
 
-    function speak(text, rate = 1.0, pitch = 1.1, priority = false) {
+    function speak(text, rate = 1.0, pitch = 1.1) {
         if (isMuted()) return;
         if (!speechSynthesis) return;
         
-        // Skip if already speaking UNLESS this is a priority message (like level complete)
-        if (isSpeaking && !priority) {
-            console.log('[Speech] Already speaking, skipping new speech');
+        // If already speaking, queue this speech to play after current one finishes
+        if (isSpeaking) {
+            console.log('[Speech] Already speaking, queueing speech:', text);
+            speechQueue.push({ text, rate, pitch });
             return;
-        }
-        
-        // If priority message, cancel current speech and proceed
-        if (priority && isSpeaking) {
-            console.log('[Speech] Priority message, cancelling current speech');
-            speechSynthesis.cancel();
-            isSpeaking = false;
-            // Don't call showIdleCharacter here - we'll immediately show talking character
         }
         
         try {
@@ -170,20 +165,27 @@ const AudioManager = (() => {
                 }
             }
             
-            // When speech ends, switch back to idle character
+            // When speech ends, check queue and play next or switch to idle
             utterance.onend = () => {
-                console.log('[Speech] Speech ended, switching to idle');
+                console.log('[Speech] Speech ended');
                 isSpeaking = false;
-                showIdleCharacter();
+                
+                // Check if there's queued speech
+                if (speechQueue.length > 0) {
+                    const nextSpeech = speechQueue.shift();
+                    console.log('[Speech] Playing queued speech:', nextSpeech.text);
+                    speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch);
+                } else {
+                    console.log('[Speech] No queued speech, switching to idle');
+                    showIdleCharacter();
+                }
             };
             
             utterance.onerror = (err) => {
                 console.error('[Speech] Speech error:', err);
                 isSpeaking = false;
-                // Only switch to idle if this is not an interruption by priority speech
-                if (err.error !== 'canceled' && err.error !== 'interrupted') {
-                    showIdleCharacter();
-                }
+                speechQueue = []; // Clear queue on error
+                showIdleCharacter();
             };
             
             // Switch to talking character immediately
@@ -195,6 +197,7 @@ const AudioManager = (() => {
         } catch (err) {
             console.error('[Speech] Speech synthesis error:', err);
             isSpeaking = false;
+            speechQueue = []; // Clear queue on error
             showIdleCharacter();
         }
     }
@@ -264,7 +267,7 @@ const AudioManager = (() => {
     function playRandomLevelComplete() {
         const phrases = SpeechPhrases.levelComplete;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        speak(phrase, 1.15, 1.3, true); // true = priority, will interrupt current speech
+        speak(phrase, 1.15, 1.3); // No priority parameter - simpler approach
     }
 
     function startBackgroundMusic(volume = 0.15) {

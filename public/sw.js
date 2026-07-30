@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.30'; // Fix: Talking video shows correctly for priority level complete speech 
+const CACHE_VERSION = '2.3.31'; // Simpler approach: Queue speech instead of interrupting, shorter level complete phrase 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
