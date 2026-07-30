@@ -231,23 +231,20 @@ const AudioManager = (() => {
         
         console.log('[Character] Switching to idle video');
         
-        // Use a small delay to avoid race conditions
-        setTimeout(() => {
-            // Hide and pause talking video
-            if (talkingVideo.style.display !== 'none') {
-                talkingVideo.style.display = 'none';
-                talkingVideo.pause();
-            }
-            
-            // Show and play idle video
-            if (idleVideo.style.display !== 'block') {
-                idleVideo.style.display = 'block';
-                idleVideo.currentTime = 0;
-                idleVideo.play().catch(err => {
-                    console.error('[Character] Failed to play idle video:', err);
-                });
-            }
-        }, 50);
+        // Hide and pause talking video immediately (no delay)
+        if (talkingVideo.style.display !== 'none') {
+            talkingVideo.style.display = 'none';
+            talkingVideo.pause();
+        }
+        
+        // Show and play idle video immediately
+        if (idleVideo.style.display !== 'block') {
+            idleVideo.style.display = 'block';
+            idleVideo.currentTime = 0;
+            idleVideo.play().catch(err => {
+                console.error('[Character] Failed to play idle video:', err);
+            });
+        }
     }
 
     function playRandomEncourage() {

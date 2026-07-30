@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.27'; // Update: Talking video loops continuously until speech synthesis ends 
+const CACHE_VERSION = '2.3.28'; // Fix: Remove delay in switching back to idle video for better sync with speech 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names

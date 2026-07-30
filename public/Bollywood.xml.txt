@@ -137,7 +137,7 @@
       <phrase>Madhuri Dixit</phrase>
       <phrase>Kajol</phrase>
       <phrase>Tabu</phrase>
-	  <phrase>Sai Pallavi</phrase>
+	    <phrase>Sai Pallavi</phrase>
       <phrase>Pooja Hegde</phrase>
       <phrase>Rashmika Mandanna</phrase>
       <phrase>Shruti Haasan</phrase>
@@ -167,7 +167,7 @@
     <category name="FILMS">
       <phrase>Dilwale Dulhania Le Jayenge</phrase>
       <phrase>Sholay</phrase>
-	  <phrase>Ikka</phrase>
+	    <phrase>Ikka</phrase>
       <phrase>3 Idiots</phrase>
       <phrase>Dangal</phrase>
       <phrase>Kabhi Khushi Kabhie Gham</phrase>
