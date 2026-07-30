@@ -43,15 +43,6 @@ const SpeechPhrases = {
         "Next time buddy"
     ],
     levelComplete: [
-        "Level complete!",
-        "Level complete!",
-        "Level complete!",
-        "Level complete!",
-        "Level complete!",
-        "Level complete!",
-        "Level complete!",
-        "Level complete!",
-        "Level complete!",
         "Level complete!"
     ]
 };
