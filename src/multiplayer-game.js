@@ -151,6 +151,7 @@ const AudioManager = (() => {
             console.log('[Speech] Priority message, cancelling current speech');
             speechSynthesis.cancel();
             isSpeaking = false;
+            // Don't call showIdleCharacter here - we'll immediately show talking character
         }
         
         try {
@@ -179,7 +180,10 @@ const AudioManager = (() => {
             utterance.onerror = (err) => {
                 console.error('[Speech] Speech error:', err);
                 isSpeaking = false;
-                showIdleCharacter();
+                // Only switch to idle if this is not an interruption by priority speech
+                if (err.error !== 'canceled' && err.error !== 'interrupted') {
+                    showIdleCharacter();
+                }
             };
             
             // Switch to talking character immediately
