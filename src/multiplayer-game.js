@@ -142,6 +142,7 @@ const AudioManager = (() => {
         
         try {
             isSpeaking = true;
+            let speechStarted = false;
             
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = rate;
@@ -156,8 +157,20 @@ const AudioManager = (() => {
                 }
             }
             
+            // Track when speech actually starts
+            utterance.onstart = () => {
+                speechStarted = true;
+                console.log('[Speech] Speech started:', text);
+            };
+            
             // When speech ends, check queue and play next or switch to idle
             utterance.onend = () => {
+                // Only process end if speech actually started
+                if (!speechStarted) {
+                    console.log('[Speech] Speech ended without starting, ignoring');
+                    return;
+                }
+                
                 console.log('[Speech] Speech ended');
                 isSpeaking = false;
                 
@@ -184,6 +197,22 @@ const AudioManager = (() => {
             
             // Start speaking
             speechSynthesis.speak(utterance);
+            
+            // Failsafe: if speech doesn't start within 500ms, reset
+            setTimeout(() => {
+                if (!speechStarted && isSpeaking) {
+                    console.log('[Speech] Speech failed to start, resetting');
+                    isSpeaking = false;
+                    speechSynthesis.cancel();
+                    showIdleCharacter();
+                    
+                    // Try to play queued speech
+                    if (speechQueue.length > 0) {
+                        const nextSpeech = speechQueue.shift();
+                        speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch);
+                    }
+                }
+            }, 500);
             
         } catch (err) {
             console.error('[Speech] Speech synthesis error:', err);

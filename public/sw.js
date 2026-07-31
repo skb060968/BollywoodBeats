@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.33'; // Fix: Host plays level complete speech locally to prevent skip 
+const CACHE_VERSION = '2.3.34'; // Fix: Add onstart tracking and failsafe for speech synthesis 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
