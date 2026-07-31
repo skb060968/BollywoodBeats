@@ -1150,11 +1150,15 @@ function checkWin() {
             
             console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
             
-            // Set action for ALL devices to play level complete sound/speech
+            // Play level complete sound/speech LOCALLY for host immediately
+            AudioManager.playSound('win', 0.25);
+            setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
+            
+            // Set action for ALL OTHER devices to play level complete sound/speech via Firebase
             gameState.lastAction = 'levelComplete';
             gameState.lastActionId = Date.now();
             
-            // Update Firebase with level complete action so all devices play sound
+            // Update Firebase with level complete action so all other devices play sound
             writeGameState(roomCode, serializeGameState(gameState)).then(() => {
                 // Wait 3 seconds to allow speech and talking video to complete
                 setTimeout(async () => {
