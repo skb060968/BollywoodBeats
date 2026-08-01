@@ -63,6 +63,7 @@ const AudioManager = (() => {
     let isSpeaking = false; // Track if speech is in progress
     let speechQueue = []; // Queue for pending speech
     let voicesLoaded = false;
+    let speechSupported = true; // Track if speech synthesis actually works
     
     // Wait for voices to load
     if (speechSynthesis) {
@@ -76,8 +77,14 @@ const AudioManager = (() => {
             if (speechSynthesis.getVoices().length > 0) {
                 voicesLoaded = true;
                 console.log('[Speech] Voices already available:', speechSynthesis.getVoices().length);
+            } else {
+                console.log('[Speech] No voices available - speech may not be supported');
+                speechSupported = false;
             }
         }, 100);
+    } else {
+        speechSupported = false;
+        console.log('[Speech] speechSynthesis API not available');
     }
 
     function isMuted() {
@@ -153,8 +160,17 @@ const AudioManager = (() => {
             console.log('[Speech] Muted, skipping');
             return;
         }
-        if (!speechSynthesis) {
-            console.log('[Speech] speechSynthesis not available');
+        
+        // If speech not supported, just show visual animation
+        if (!speechSynthesis || !speechSupported) {
+            console.log('[Speech] Speech not supported, showing visual-only animation');
+            showTalkingCharacter();
+            // Show talking animation for 2 seconds then switch to idle
+            setTimeout(() => {
+                if (!isSpeaking) {
+                    showIdleCharacter();
+                }
+            }, 2000);
             return;
         }
         
@@ -185,6 +201,14 @@ const AudioManager = (() => {
                 const englishVoice = voices.find(v => v.lang.startsWith('en-')) || voices[0];
                 utterance.voice = englishVoice;
                 console.log('[Speech] Using voice:', englishVoice.name);
+            } else {
+                // No voices available - speech won't work
+                console.log('[Speech] No voices available, falling back to visual-only');
+                speechSupported = false;
+                isSpeaking = false;
+                showTalkingCharacter();
+                setTimeout(() => showIdleCharacter(), 2000);
+                return;
             }
             
             // Track when speech actually starts
