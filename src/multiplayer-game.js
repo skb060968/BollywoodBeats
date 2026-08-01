@@ -1385,6 +1385,24 @@ function shuffleArray(array) {
     return shuffled;
 }
 
+// Enhanced shuffle that uses timestamp for additional entropy
+function deepShuffle(array, times = 3) {
+    let result = [...array];
+    
+    // Add timestamp-based seed mixing
+    const timeSeed = Date.now() % array.length;
+    
+    // Rotate array by time-based offset for additional randomness
+    result = [...result.slice(timeSeed), ...result.slice(0, timeSeed)];
+    
+    // Multiple shuffle passes
+    for (let i = 0; i < times; i++) {
+        result = shuffleArray(result);
+    }
+    
+    return result;
+}
+
 async function loadAndShufflePhrases() {
     try {
         const response = await fetch('Bollywood.xml.txt');
@@ -1398,14 +1416,17 @@ async function loadAndShufflePhrases() {
         
         const categories = xmlDoc.getElementsByTagName('category');
         const selectedPhrases = [];
-        const phrasesPerCategory = 3; // Changed from 2 to 3 to get 12 phrases (4 categories × 3)
+        const phrasesPerCategory = 3; // Take 3 from each of 4 categories = 12 phrases total
         
-        // Load 3 random phrases from each category for variety
+        console.log('[Shuffle] Loading phrases from', categories.length, 'categories');
+        
+        // Load phrases from each category
         for (let category of categories) {
             const categoryName = category.getAttribute('name');
             const phraseElements = category.getElementsByTagName('phrase');
             const categoryPhrases = [];
             
+            // Collect all phrases from this category
             for (let phrase of phraseElements) {
                 categoryPhrases.push({
                     text: phrase.textContent.trim(),
@@ -1413,31 +1434,48 @@ async function loadAndShufflePhrases() {
                 });
             }
             
-            // Multiple shuffles with different random seeds for better randomization
-            let shuffled = categoryPhrases;
-            for (let i = 0; i < 3; i++) {
-                shuffled = shuffleArray(shuffled);
+            console.log('[Shuffle] Category:', categoryName, '- Total phrases:', categoryPhrases.length);
+            
+            // FIRST: Deep shuffle the entire category (3 passes)
+            const shuffled = deepShuffle(categoryPhrases, 3);
+            
+            console.log('[Shuffle] First 5 phrases after shuffle:', shuffled.slice(0, 5).map(p => p.text).join(', '));
+            
+            // SECOND: Use a random starting offset within the shuffled array
+            // This ensures we don't always take phrases from the beginning
+            const maxOffset = Math.max(0, shuffled.length - phrasesPerCategory);
+            const startOffset = Math.floor(Math.random() * (maxOffset + 1));
+            
+            console.log('[Shuffle] Using random offset:', startOffset, 'out of', maxOffset, 'possible positions');
+            
+            // Take N phrases starting from the random offset
+            for (let i = 0; i < phrasesPerCategory && (startOffset + i) < shuffled.length; i++) {
+                selectedPhrases.push(shuffled[startOffset + i]);
             }
             
-            // Take 3 from different positions to maximize variety
-            const step = Math.floor(shuffled.length / phrasesPerCategory);
-            for (let i = 0; i < phrasesPerCategory && i * step < shuffled.length; i++) {
-                const index = (i * step + Math.floor(Math.random() * Math.min(step, shuffled.length - i * step))) % shuffled.length;
-                selectedPhrases.push(shuffled[index]);
-            }
+            console.log('[Shuffle] Selected phrases from this category:', 
+                selectedPhrases.slice(-phrasesPerCategory).map(p => p.text).join(', '));
         }
         
         if (selectedPhrases.length === 0) {
             throw new Error('No phrases found');
         }
         
-        // Multiple final shuffles to ensure categories aren't grouped
-        let finalShuffled = selectedPhrases;
-        for (let i = 0; i < 5; i++) {
-            finalShuffled = shuffleArray(finalShuffled);
-        }
+        console.log('[Shuffle] Total selected:', selectedPhrases.length, 'phrases before final shuffle');
         
-        return finalShuffled.slice(0, 10);
+        // Deep shuffle the final selection to mix categories (5 passes)
+        const finalShuffled = deepShuffle(selectedPhrases, 5);
+        
+        // Take first 10 for the game
+        const gamePhrases = finalShuffled.slice(0, 10);
+        
+        console.log('[Shuffle] ========== FINAL 10 PHRASES FOR GAME ==========');
+        gamePhrases.forEach((p, idx) => {
+            console.log(`[Shuffle] ${idx + 1}. [${p.category}] ${p.text}`);
+        });
+        console.log('[Shuffle] ====================================');
+        
+        return gamePhrases;
         
     } catch (error) {
         console.error('Failed to load phrases:', error);

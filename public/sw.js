@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.36'; // Refactor: Consistent local-play + sync pattern for all actions 
+const CACHE_VERSION = '2.3.37'; // Improved shuffle: random offset within category for better phrase variety 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
