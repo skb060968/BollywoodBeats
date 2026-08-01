@@ -789,6 +789,7 @@ function deserializeGameState(firebaseState) {
 }
 
 let previousActionId = 0; // Track the last action we've seen
+let myLastActionId = 0; // Track actions I created locally
 
 function updateGameFromFirebase(firebaseGameState) {
     if (!firebaseGameState) return;
@@ -800,33 +801,36 @@ function updateGameFromFirebase(firebaseGameState) {
     
     console.log('[UpdateFromFirebase] Wrong guesses:', previousWrongGuesses, '->', gameState.wrongGuesses, 'Result:', previousResult, '->', gameState.gameResult);
     
-    // Detect new actions and play sounds/speech on ALL devices
+    // Detect new actions and play sounds/speech on ALL devices EXCEPT the one that created the action
     if (gameState.lastActionId && gameState.lastActionId !== previousActionId) {
         console.log('[UpdateFromFirebase] New action detected:', gameState.lastAction, 'ID:', gameState.lastActionId);
         previousActionId = gameState.lastActionId;
         
-        // Play sound and speech based on action type
-        switch (gameState.lastAction) {
-            case 'correct':
-                AudioManager.playSound('correct');
-                setTimeout(() => AudioManager.playRandomEncourage(), 300);
-                break;
-            case 'wrong':
-                AudioManager.playSound('wrong');
-                setTimeout(() => AudioManager.playRandomDisappoint(), 300);
-                break;
-            case 'lifeline':
-                AudioManager.playSound('correct');
-                setTimeout(() => AudioManager.playRandomEncourage(), 300);
-                break;
-            case 'levelComplete':
-                // Only play level complete for non-host players
-                // Host already played it locally in checkWin()
-                if (!isHost) {
-                    AudioManager.playSound('win', 0.25); // 25% volume for win sound
+        // Only play if this action was NOT created by me
+        if (gameState.lastActionId !== myLastActionId) {
+            console.log('[UpdateFromFirebase] Playing action from other device');
+            
+            // Play sound and speech based on action type
+            switch (gameState.lastAction) {
+                case 'correct':
+                    AudioManager.playSound('correct');
+                    setTimeout(() => AudioManager.playRandomEncourage(), 300);
+                    break;
+                case 'wrong':
+                    AudioManager.playSound('wrong');
+                    setTimeout(() => AudioManager.playRandomDisappoint(), 300);
+                    break;
+                case 'lifeline':
+                    AudioManager.playSound('correct');
+                    setTimeout(() => AudioManager.playRandomEncourage(), 300);
+                    break;
+                case 'levelComplete':
+                    AudioManager.playSound('win', 0.25);
                     setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
-                }
-                break;
+                    break;
+            }
+        } else {
+            console.log('[UpdateFromFirebase] Skipping - this was my action');
         }
     }
     
@@ -1077,9 +1081,14 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.revealedLetters.add(letter);
         keyElement.classList.add('correct');
         
-        // Set action for other devices to trigger sound/speech
+        // Play sound and speech LOCALLY for immediate feedback
+        AudioManager.playSound('correct');
+        setTimeout(() => AudioManager.playRandomEncourage(), 300);
+        
+        // Set action for OTHER devices to trigger sound/speech
         gameState.lastAction = 'correct';
         gameState.lastActionId = Date.now();
+        myLastActionId = gameState.lastActionId; // Track that I created this action
         
         // Update Firebase
         await writeGameState(roomCode, serializeGameState(gameState));
@@ -1092,9 +1101,14 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.revealedLetters.add(letter); // Track as guessed
         keyElement.classList.add('wrong');
         
-        // Set action for other devices to trigger sound/speech
+        // Play sound and speech LOCALLY for immediate feedback
+        AudioManager.playSound('wrong');
+        setTimeout(() => AudioManager.playRandomDisappoint(), 300);
+        
+        // Set action for OTHER devices to trigger sound/speech
         gameState.lastAction = 'wrong';
         gameState.lastActionId = Date.now();
+        myLastActionId = gameState.lastActionId; // Track that I created this action
         
         // Update Firebase
         await writeGameState(roomCode, serializeGameState(gameState));
@@ -1141,9 +1155,14 @@ window.useLifeline = async function(index) {
         gameState.revealedLetters.add(randomLetter);
         console.log('[Lifeline] Revealed letter:', randomLetter);
         
-        // Set action for other devices to trigger sound/speech
+        // Play sound and speech LOCALLY for immediate feedback
+        AudioManager.playSound('correct');
+        setTimeout(() => AudioManager.playRandomEncourage(), 300);
+        
+        // Set action for OTHER devices to trigger sound/speech
         gameState.lastAction = 'lifeline';
         gameState.lastActionId = Date.now();
+        myLastActionId = gameState.lastActionId; // Track that I created this action
     } else {
         console.log('[Lifeline] No unrevealed letters to reveal');
     }
@@ -1183,13 +1202,14 @@ function checkWin() {
             
             console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
             
-            // Play level complete sound/speech LOCALLY for host immediately
+            // Play level complete sound/speech LOCALLY for immediate feedback
             AudioManager.playSound('win', 0.25);
             setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
             
-            // Set action for ALL OTHER devices to play level complete sound/speech via Firebase
+            // Set action for OTHER devices to play level complete sound/speech via Firebase
             gameState.lastAction = 'levelComplete';
             gameState.lastActionId = Date.now();
+            myLastActionId = gameState.lastActionId; // Track that I created this action
             
             // Update Firebase with level complete action so all other devices play sound
             writeGameState(roomCode, serializeGameState(gameState)).then(() => {

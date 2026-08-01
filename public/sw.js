@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.35'; // Fix: Prevent double level complete speech on host 
+const CACHE_VERSION = '2.3.36'; // Refactor: Consistent local-play + sync pattern for all actions 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
