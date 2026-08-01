@@ -62,6 +62,23 @@ const AudioManager = (() => {
     let speechSynthesis = window.speechSynthesis;
     let isSpeaking = false; // Track if speech is in progress
     let speechQueue = []; // Queue for pending speech
+    let voicesLoaded = false;
+    
+    // Wait for voices to load
+    if (speechSynthesis) {
+        speechSynthesis.onvoiceschanged = () => {
+            voicesLoaded = true;
+            console.log('[Speech] Voices loaded:', speechSynthesis.getVoices().length);
+        };
+        
+        // Check if voices are already loaded
+        setTimeout(() => {
+            if (speechSynthesis.getVoices().length > 0) {
+                voicesLoaded = true;
+                console.log('[Speech] Voices already available:', speechSynthesis.getVoices().length);
+            }
+        }, 100);
+    }
 
     function isMuted() {
         try {
@@ -149,20 +166,25 @@ const AudioManager = (() => {
         }
         
         try {
+            // Cancel any stuck speech before starting new one
+            speechSynthesis.cancel();
+            
             isSpeaking = true;
             let speechStarted = false;
+            let speechEnded = false;
             
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = rate;
             utterance.pitch = pitch;
             utterance.volume = 1.0;
+            utterance.lang = 'en-US';
             
+            // Select voice if available
             const voices = speechSynthesis.getVoices();
             if (voices.length > 0) {
-                const englishVoice = voices.find(v => v.lang.startsWith('en-'));
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                }
+                const englishVoice = voices.find(v => v.lang.startsWith('en-')) || voices[0];
+                utterance.voice = englishVoice;
+                console.log('[Speech] Using voice:', englishVoice.name);
             }
             
             // Track when speech actually starts
@@ -173,9 +195,15 @@ const AudioManager = (() => {
             
             // When speech ends, check queue and play next or switch to idle
             utterance.onend = () => {
+                // Prevent double-firing of end event
+                if (speechEnded) return;
+                speechEnded = true;
+                
                 // Only process end if speech actually started
                 if (!speechStarted) {
                     console.log('[Speech] Speech ended without starting, ignoring');
+                    isSpeaking = false;
+                    showIdleCharacter();
                     return;
                 }
                 
@@ -186,7 +214,8 @@ const AudioManager = (() => {
                 if (speechQueue.length > 0) {
                     const nextSpeech = speechQueue.shift();
                     console.log('[Speech] Playing queued speech:', nextSpeech.text);
-                    speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch);
+                    // Small delay before next speech
+                    setTimeout(() => speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch), 100);
                 } else {
                     console.log('[Speech] No queued speech, switching to idle');
                     showIdleCharacter();
@@ -194,7 +223,8 @@ const AudioManager = (() => {
             };
             
             utterance.onerror = (err) => {
-                console.error('[Speech] Speech error:', err);
+                console.error('[Speech] Speech error:', err.error, err);
+                speechEnded = true;
                 isSpeaking = false;
                 speechQueue = []; // Clear queue on error
                 showIdleCharacter();
@@ -203,13 +233,16 @@ const AudioManager = (() => {
             // Switch to talking character immediately
             showTalkingCharacter();
             
-            // Start speaking
-            speechSynthesis.speak(utterance);
+            // Small delay before speaking to ensure browser is ready
+            setTimeout(() => {
+                console.log('[Speech] Starting speech synthesis');
+                speechSynthesis.speak(utterance);
+            }, 50);
             
-            // Failsafe: if speech doesn't start within 500ms, reset
+            // Failsafe: if speech doesn't start within 1000ms, reset
             setTimeout(() => {
                 if (!speechStarted && isSpeaking) {
-                    console.log('[Speech] Speech failed to start, resetting');
+                    console.log('[Speech] Speech failed to start within 1s, resetting');
                     isSpeaking = false;
                     speechSynthesis.cancel();
                     showIdleCharacter();
@@ -220,7 +253,7 @@ const AudioManager = (() => {
                         speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch);
                     }
                 }
-            }, 500);
+            }, 1000);
             
         } catch (err) {
             console.error('[Speech] Speech synthesis error:', err);
@@ -828,19 +861,19 @@ function updateGameFromFirebase(firebaseGameState) {
             switch (gameState.lastAction) {
                 case 'correct':
                     AudioManager.playSound('correct');
-                    setTimeout(() => AudioManager.playRandomEncourage(), 300);
+                    setTimeout(() => AudioManager.playRandomEncourage(), 200);
                     break;
                 case 'wrong':
                     AudioManager.playSound('wrong');
-                    setTimeout(() => AudioManager.playRandomDisappoint(), 300);
+                    setTimeout(() => AudioManager.playRandomDisappoint(), 200);
                     break;
                 case 'lifeline':
                     AudioManager.playSound('correct');
-                    setTimeout(() => AudioManager.playRandomEncourage(), 300);
+                    setTimeout(() => AudioManager.playRandomEncourage(), 200);
                     break;
                 case 'levelComplete':
                     AudioManager.playSound('win', 0.25);
-                    setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
+                    setTimeout(() => AudioManager.playRandomLevelComplete(), 200);
                     break;
             }
         } else {
@@ -1095,9 +1128,9 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.revealedLetters.add(letter);
         keyElement.classList.add('correct');
         
-        // Play sound and speech LOCALLY for immediate feedback
+        // Play sound and speech LOCALLY for immediate feedback (no delay for mobile compatibility)
         AudioManager.playSound('correct');
-        setTimeout(() => AudioManager.playRandomEncourage(), 300);
+        AudioManager.playRandomEncourage();
         
         // Set action for OTHER devices to trigger sound/speech
         gameState.lastAction = 'correct';
@@ -1115,9 +1148,9 @@ window.guessLetter = async function(letter, keyElement) {
         gameState.revealedLetters.add(letter); // Track as guessed
         keyElement.classList.add('wrong');
         
-        // Play sound and speech LOCALLY for immediate feedback
+        // Play sound and speech LOCALLY for immediate feedback (no delay for mobile compatibility)
         AudioManager.playSound('wrong');
-        setTimeout(() => AudioManager.playRandomDisappoint(), 300);
+        AudioManager.playRandomDisappoint();
         
         // Set action for OTHER devices to trigger sound/speech
         gameState.lastAction = 'wrong';
@@ -1169,9 +1202,9 @@ window.useLifeline = async function(index) {
         gameState.revealedLetters.add(randomLetter);
         console.log('[Lifeline] Revealed letter:', randomLetter);
         
-        // Play sound and speech LOCALLY for immediate feedback
+        // Play sound and speech LOCALLY for immediate feedback (no delay for mobile compatibility)
         AudioManager.playSound('correct');
-        setTimeout(() => AudioManager.playRandomEncourage(), 300);
+        AudioManager.playRandomEncourage();
         
         // Set action for OTHER devices to trigger sound/speech
         gameState.lastAction = 'lifeline';
@@ -1216,9 +1249,9 @@ function checkWin() {
             
             console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
             
-            // Play level complete sound/speech LOCALLY for immediate feedback
+            // Play level complete sound/speech LOCALLY for immediate feedback (no delay for mobile compatibility)
             AudioManager.playSound('win', 0.25);
-            setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
+            AudioManager.playRandomLevelComplete();
             
             // Set action for OTHER devices to play level complete sound/speech via Firebase
             gameState.lastAction = 'levelComplete';
