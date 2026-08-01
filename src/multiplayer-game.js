@@ -130,8 +130,16 @@ const AudioManager = (() => {
     }
 
     function speak(text, rate = 1.0, pitch = 1.1) {
-        if (isMuted()) return;
-        if (!speechSynthesis) return;
+        console.log('[Speech] speak() called with text:', text);
+        
+        if (isMuted()) {
+            console.log('[Speech] Muted, skipping');
+            return;
+        }
+        if (!speechSynthesis) {
+            console.log('[Speech] speechSynthesis not available');
+            return;
+        }
         
         // If already speaking, queue this speech to play after current one finishes
         if (isSpeaking) {
@@ -273,20 +281,26 @@ const AudioManager = (() => {
     }
 
     function playRandomEncourage() {
+        console.log('[AudioManager] playRandomEncourage() called');
         const phrases = SpeechPhrases.encourage;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        console.log('[AudioManager] Selected encourage phrase:', phrase);
         speak(phrase, 1.1, 1.2);
     }
 
     function playRandomDisappoint() {
+        console.log('[AudioManager] playRandomDisappoint() called');
         const phrases = SpeechPhrases.disappoint;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        console.log('[AudioManager] Selected disappoint phrase:', phrase);
         speak(phrase, 0.95, 0.9);
     }
 
     function playRandomLevelComplete() {
+        console.log('[AudioManager] playRandomLevelComplete() called');
         const phrases = SpeechPhrases.levelComplete;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        console.log('[AudioManager] Selected levelComplete phrase:', phrase);
         speak(phrase, 1.15, 1.3); // No priority parameter - simpler approach
     }
 

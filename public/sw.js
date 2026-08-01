@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.38'; // Simplified shuffle: single shuffle + random offset, no logging 
+const CACHE_VERSION = '2.3.39'; // Debug: Added console logs to trace speech issue 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
