@@ -820,8 +820,12 @@ function updateGameFromFirebase(firebaseGameState) {
                 setTimeout(() => AudioManager.playRandomEncourage(), 300);
                 break;
             case 'levelComplete':
-                AudioManager.playSound('win', 0.25); // 25% volume for win sound
-                setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
+                // Only play level complete for non-host players
+                // Host already played it locally in checkWin()
+                if (!isHost) {
+                    AudioManager.playSound('win', 0.25); // 25% volume for win sound
+                    setTimeout(() => AudioManager.playRandomLevelComplete(), 300);
+                }
                 break;
         }
     }
