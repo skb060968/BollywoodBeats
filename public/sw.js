@@ -1,4 +1,4 @@
-const CACHE_VERSION = '2.3.41'; // Add fallback for devices without speech synthesis support 
+const CACHE_VERSION = '3.0.0'; // Final release: Speech sync, shuffle improvements, mobile fallbacks 
 const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
 
 // Only cache static assets that don't change - Vite handles JS/CSS with hashed names
