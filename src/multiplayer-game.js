@@ -1385,24 +1385,6 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-// Enhanced shuffle that uses timestamp for additional entropy
-function deepShuffle(array, times = 3) {
-    let result = [...array];
-    
-    // Add timestamp-based seed mixing
-    const timeSeed = Date.now() % array.length;
-    
-    // Rotate array by time-based offset for additional randomness
-    result = [...result.slice(timeSeed), ...result.slice(0, timeSeed)];
-    
-    // Multiple shuffle passes
-    for (let i = 0; i < times; i++) {
-        result = shuffleArray(result);
-    }
-    
-    return result;
-}
-
 async function loadAndShufflePhrases() {
     try {
         const response = await fetch('Bollywood.xml.txt');
@@ -1416,9 +1398,7 @@ async function loadAndShufflePhrases() {
         
         const categories = xmlDoc.getElementsByTagName('category');
         const selectedPhrases = [];
-        const phrasesPerCategory = 3; // Take 3 from each of 4 categories = 12 phrases total
-        
-        console.log('[Shuffle] Loading phrases from', categories.length, 'categories');
+        const phrasesPerCategory = 3;
         
         // Load phrases from each category
         for (let category of categories) {
@@ -1434,48 +1414,28 @@ async function loadAndShufflePhrases() {
                 });
             }
             
-            console.log('[Shuffle] Category:', categoryName, '- Total phrases:', categoryPhrases.length);
+            // Shuffle once
+            const shuffled = shuffleArray(categoryPhrases);
             
-            // FIRST: Deep shuffle the entire category (3 passes)
-            const shuffled = deepShuffle(categoryPhrases, 3);
-            
-            console.log('[Shuffle] First 5 phrases after shuffle:', shuffled.slice(0, 5).map(p => p.text).join(', '));
-            
-            // SECOND: Use a random starting offset within the shuffled array
-            // This ensures we don't always take phrases from the beginning
+            // Use random offset to pick from different positions each time
             const maxOffset = Math.max(0, shuffled.length - phrasesPerCategory);
             const startOffset = Math.floor(Math.random() * (maxOffset + 1));
             
-            console.log('[Shuffle] Using random offset:', startOffset, 'out of', maxOffset, 'possible positions');
-            
-            // Take N phrases starting from the random offset
+            // Take phrases from random position
             for (let i = 0; i < phrasesPerCategory && (startOffset + i) < shuffled.length; i++) {
                 selectedPhrases.push(shuffled[startOffset + i]);
             }
-            
-            console.log('[Shuffle] Selected phrases from this category:', 
-                selectedPhrases.slice(-phrasesPerCategory).map(p => p.text).join(', '));
         }
         
         if (selectedPhrases.length === 0) {
             throw new Error('No phrases found');
         }
         
-        console.log('[Shuffle] Total selected:', selectedPhrases.length, 'phrases before final shuffle');
-        
-        // Deep shuffle the final selection to mix categories (5 passes)
-        const finalShuffled = deepShuffle(selectedPhrases, 5);
+        // Shuffle once to mix categories
+        const finalShuffled = shuffleArray(selectedPhrases);
         
         // Take first 10 for the game
-        const gamePhrases = finalShuffled.slice(0, 10);
-        
-        console.log('[Shuffle] ========== FINAL 10 PHRASES FOR GAME ==========');
-        gamePhrases.forEach((p, idx) => {
-            console.log(`[Shuffle] ${idx + 1}. [${p.category}] ${p.text}`);
-        });
-        console.log('[Shuffle] ====================================');
-        
-        return gamePhrases;
+        return finalShuffled.slice(0, 10);
         
     } catch (error) {
         console.error('Failed to load phrases:', error);
