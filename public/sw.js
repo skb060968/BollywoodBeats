@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.0.2';
+const CACHE_VERSION = '4.0.3';
 const CACHE_PREFIX = 'bollywood-beats-';
 const CACHE_NAME = `${CACHE_PREFIX}v${CACHE_VERSION}`;
 const APP_SHELL = [
