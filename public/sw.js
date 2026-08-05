@@ -1,120 +1,60 @@
-const CACHE_VERSION = '3.0.0'; // Final release: Speech sync, shuffle improvements, mobile fallbacks 
-const CACHE_NAME = `bollywood-beats-v${CACHE_VERSION}`;
-
-// Only cache static assets that don't change - Vite handles JS/CSS with hashed names
-const urlsToCache = [
+const CACHE_VERSION = '4.0.2';
+const CACHE_PREFIX = 'bollywood-beats-';
+const CACHE_NAME = `${CACHE_PREFIX}v${CACHE_VERSION}`;
+const APP_SHELL = [
   '/',
+  '/index.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
   '/Bollywood.xml.txt',
   '/BollywoodStars.xml.txt',
   '/Movies.xml.txt',
-  '/Singers.xml.txt'
+  '/Singers.xml.txt',
 ];
 
-// Install event - cache static resources only
-self.addEventListener('install', (event) => {
-  console.log(`[SW] Installing version ${CACHE_VERSION}`);
-  
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[SW] Caching static assets');
-        // Cache each file individually and ignore errors
-        return Promise.allSettled(
-          urlsToCache.map(url => 
-            cache.add(url).catch(err => {
-              console.warn(`[SW] Failed to cache ${url}:`, err);
-              return null;
-            })
-          )
-        );
-      })
-  );
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(async cache => {
+    await Promise.allSettled(APP_SHELL.map(url => cache.add(url)));
+  }));
 });
 
-// Fetch event - network first, fallback to cache
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  
-  // Skip service worker for non-GET requests (POST, PUT, DELETE, HEAD, etc.)
-  if (request.method !== 'GET') {
-    return; // Let browser handle it normally
-  }
-  
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
   const url = new URL(request.url);
-  
-  // Skip caching for:
-  // 1. Firebase requests
-  // 2. External API requests
-  if (
-    url.hostname.includes('googleapis.com') ||
-    url.hostname.includes('firebaseio.com') ||
-    url.hostname.includes('firebase.com')
-  ) {
-    event.respondWith(fetch(request));
+  const isFirebase = /(^|\.)(firebaseio\.com|firebasedatabase\.app|firebaseapp\.com|googleapis\.com)$/.test(url.hostname);
+  if (url.origin !== self.location.origin || isFirebase) return;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(fetch(request).catch(async () => {
+      return (await caches.match('/')) || (await caches.match('/index.html')) || Response.error();
+    }));
     return;
   }
-  
-  // For GET requests of our own resources, use network-first strategy
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        // Only cache successful GET responses
-        if (response && response.status === 200 && request.method === 'GET') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        // Network failed, try cache
-        return caches.match(request);
-      })
-  );
+
+  event.respondWith((async () => {
+    const cacheKey = new Request(url.origin + url.pathname, { method: 'GET' });
+    try {
+      const response = await fetch(request);
+      if (response.ok && response.type === 'basic') {
+        const cache = await caches.open(CACHE_NAME);
+        await cache.put(cacheKey, response.clone());
+      }
+      return response;
+    } catch (_) {
+      return (await caches.match(cacheKey)) || Response.error();
+    }
+  })());
 });
 
-// Activate event - cleanup old caches and notify clients
-self.addEventListener('activate', (event) => {
-  console.log(`[SW] Activating version ${CACHE_VERSION}`);
-  
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all([
-        // Delete old caches
-        ...cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log(`[SW] Deleting old cache: ${cacheName}`);
-            return caches.delete(cacheName);
-          }
-        }),
-        // Take control of all clients immediately
-        self.clients.claim().then(() => {
-          console.log('[SW] Claimed all clients');
-        })
-      ]);
-    }).then(() => {
-      // Notify all clients about the update
-      return self.clients.matchAll().then((clients) => {
-        clients.forEach((client) => {
-          client.postMessage({
-            type: 'UPDATE_AVAILABLE',
-            version: CACHE_VERSION
-          });
-        });
-      });
-    })
-  );
+self.addEventListener('activate', event => {
+  event.waitUntil(caches.keys().then(names => Promise.all(
+    names.filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME)
+      .map(name => caches.delete(name)),
+  )).then(() => self.clients.claim()));
 });
 
-// Handle messages from clients
-self.addEventListener('message', (event) => {
-  console.log('[SW] Received message:', event.data);
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    console.log('[SW] Calling skipWaiting()');
-    self.skipWaiting();
-  }
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });

@@ -64,7 +64,7 @@
             </div>
             <div class="input-group">
                 <label for="roomCodeInput">Room Code:</label>
-                <input type="text" id="roomCodeInput" maxlength="4" placeholder="ABCD" style="text-transform: uppercase;">
+                <input type="text" id="roomCodeInput" maxlength="4" pattern="[A-HJ-NP-Z]{4}" autocomplete="off" autocapitalize="characters" placeholder="ABCD" style="text-transform: uppercase;">
             </div>
             <button class="menu-btn primary" onclick="joinRoom()">Join Room</button>
             <button class="back-btn" onclick="showMenu()">← Back</button>
@@ -152,9 +152,9 @@
                 <div class="lifeline-container">
                     <div class="lifeline-label">LIFELINE</div>
                     <div class="lifeline-bulbs" id="lifelineBulbs">
-                        <span class="lifeline-bulb active" onclick="useLifeline(0)">💡</span>
-                        <span class="lifeline-bulb active" onclick="useLifeline(1)">💡</span>
-                        <span class="lifeline-bulb active" onclick="useLifeline(2)">💡</span>
+                        <button type="button" class="lifeline-bulb active" onclick="useLifeline(0)" aria-label="Use lifeline 1">💡</button>
+                        <button type="button" class="lifeline-bulb active" onclick="useLifeline(1)" aria-label="Use lifeline 2">💡</button>
+                        <button type="button" class="lifeline-bulb active" onclick="useLifeline(2)" aria-label="Use lifeline 3">💡</button>
                     </div>
                 </div>
                 
@@ -202,8 +202,8 @@
                     <div class="control-block">
                         <div class="block-label">CONTROLS</div>
                         <div class="controls-panel">
-                            <span class="mute-emoji" id="muteBtn">🔊</span>
-                            <span class="quit-emoji" onclick="quitGame()">🏠</span>
+                            <button type="button" class="mute-emoji icon-control" id="muteBtn" aria-label="Mute audio" aria-pressed="false">🔊</button>
+                            <button type="button" class="quit-emoji icon-control" onclick="quitGame()" aria-label="Leave game and return home">🏠</button>
                         </div>
                     </div>
                 </div>
@@ -229,7 +229,7 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;" role="status" aria-live="polite" aria-label="Loading">
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <div class="loading-text">Loading...</div>
@@ -237,7 +237,7 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toastNotification" class="toast-notification" style="display: none;"></div>
+    <div id="toastNotification" class="toast-notification" style="display: none;" role="status" aria-live="polite"></div>
 
     <!-- Update Toast Notification -->
     <div id="updateToast" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; padding: 15px 25px; border-radius: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 10001; font-family: 'Arial Black', sans-serif; text-align: center; min-width: 300px;">

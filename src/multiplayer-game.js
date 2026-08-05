@@ -4,15 +4,22 @@
  */
 
 import {
+  ROOM_CODE_PATTERN,
+  cancelDisconnectHandler,
   createRoom as firebaseCreateRoom,
-  joinRoom as firebaseJoinRoom,
-  listenRoom,
-  writeGameState,
-  startGame as firebaseStartGame,
-  endGame as firebaseEndGame,
   deleteRoom,
-  setupDisconnectHandler,
+  endGame as firebaseEndGame,
+  getHostPhraseDeck,
+  joinRoom as firebaseJoinRoom,
+  listenGameActions,
+  listenRoom,
+  removeGameAction,
   removePlayer as firebaseRemovePlayer,
+  restoreConnection,
+  setupDisconnectHandler,
+  startGame as firebaseStartGame,
+  submitGameAction,
+  transactGameState,
 } from './firebase-sync.js';
 import { initDeepLinkHandler, createShareHandler, showQRCode } from './deep-link-handler.js';
 
@@ -453,19 +460,25 @@ const AudioManager = (() => {
 // ========== GAME STATE ==========
 let roomCode = null;
 let playerIndex = null;
+let playerUid = null;
 let isHost = false;
 let unsubscribeRoom = null;
+let unsubscribeActions = null;
+let cancelDisconnect = null;
 let timerInterval = null;
-let isAdvancingLevel = false; // Flag to prevent duplicate level advances
+let levelAdvanceTimer = null;
+let hostPhraseDeck = [];
+let actionQueue = Promise.resolve();
+const pendingLetters = new Set();
 
-const SESSION_KEY = 'bollywood_beats_session';
+const SESSION_KEY = 'bollywood_beats_session_v2';
 
 let gameState = {
-    gamePhrases: [],
     currentPhraseIndex: 0,
-    currentPhrase: '',
+    phraseDisplay: '',
     currentCategory: '',
-    revealedLetters: new Set(),
+    guessedLetters: new Set(),
+    correctLetters: new Set(),
     wrongGuesses: 0,
     maxWrongGuesses: 6,
     currentLevel: 1,
@@ -473,19 +486,24 @@ let gameState = {
     score: 0,
     timeRemaining: 1200,
     timerDuration: 1200,
-    gameStartTime: null,
+    deadline: 0,
     lifelinesRemaining: 3,
     lifelinesUsed: [false, false, false],
-    gameResult: null, // 'won', 'lost', or null
-    lastAction: null, // 'correct', 'wrong', 'lifeline', 'levelComplete', null
-    lastActionId: 0 // Unique ID for each action to detect new actions
+    gameResult: 'none',
+    phase: 'active',
+    advanceAt: 0,
+    lastAction: 'none',
+    lastActionId: 0,
+    lastActorUid: '',
+    revision: 0,
 };
 
 // ========== SESSION PERSISTENCE ==========
 function saveSession() {
-    if (roomCode != null && playerIndex != null) {
+    if (roomCode != null && playerIndex != null && playerUid) {
         try {
-            localStorage.setItem(SESSION_KEY, JSON.stringify({ roomCode, playerIndex, isHost }));
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ roomCode, playerIndex, playerUid, isHost }));
+            localStorage.removeItem('bollywood_beats_session');
         } catch (_) {}
     }
 }
@@ -493,13 +511,16 @@ function saveSession() {
 function clearSession() {
     try {
         localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem('bollywood_beats_session');
     } catch (_) {}
 }
 
 function loadSession() {
     try {
         const data = localStorage.getItem(SESSION_KEY);
-        return data ? JSON.parse(data) : null;
+        const session = data ? JSON.parse(data) : null;
+        if (!session || !ROOM_CODE_PATTERN.test(session.roomCode) || !Number.isInteger(session.playerIndex)) return null;
+        return session;
     } catch (_) {
         return null;
     }
@@ -552,15 +573,26 @@ function hideLoading() {
 // ========== SCREEN NAVIGATION ==========
 window.showMenu = function() {
     stopTimer();
+    if (levelAdvanceTimer) {
+        clearTimeout(levelAdvanceTimer);
+        levelAdvanceTimer = null;
+    }
     AudioManager.stopBackgroundMusic();
     clearSession();
-    if (unsubscribeRoom) {
-        unsubscribeRoom();
-        unsubscribeRoom = null;
-    }
+    unsubscribeRoom?.();
+    unsubscribeActions?.();
+    unsubscribeRoom = null;
+    unsubscribeActions = null;
+    if (cancelDisconnect) Promise.resolve(cancelDisconnect()).catch(() => {});
+    cancelDisconnect = null;
     roomCode = null;
     playerIndex = null;
+    playerUid = null;
     isHost = false;
+    hostPhraseDeck = [];
+    pendingLetters.clear();
+    previousActionId = 0;
+    previousResult = 'none';
     showScreen('menuScreen');
 };
 
@@ -597,10 +629,10 @@ window.createRoom = async function() {
         const result = await firebaseCreateRoom(name);
         roomCode = result.roomCode;
         playerIndex = result.playerIndex;
+        playerUid = result.uid;
         isHost = true;
-        
+        cancelDisconnect = await setupDisconnectHandler(roomCode, playerIndex);
         saveSession();
-        setupDisconnectHandler(roomCode, playerIndex);
         startLobbyListener();
         showLobby();
         hideLoading();
@@ -623,7 +655,7 @@ window.joinRoom = async function() {
         return;
     }
     
-    if (!code || code.length !== 4) {
+    if (!ROOM_CODE_PATTERN.test(code)) {
         showToast('Please enter a valid 4-character room code', true);
         codeInput.focus();
         return;
@@ -634,10 +666,10 @@ window.joinRoom = async function() {
         const result = await firebaseJoinRoom(code, name);
         roomCode = code;
         playerIndex = result.playerIndex;
+        playerUid = result.uid;
         isHost = false;
-        
+        cancelDisconnect = await setupDisconnectHandler(roomCode, playerIndex);
         saveSession();
-        setupDisconnectHandler(roomCode, playerIndex);
         startLobbyListener();
         showLobby();
         hideLoading();
@@ -672,50 +704,87 @@ function showLobby() {
 }
 
 function startLobbyListener() {
-    if (unsubscribeRoom) {
-        unsubscribeRoom();
-    }
-    
+    unsubscribeRoom?.();
+    unsubscribeActions?.();
+    unsubscribeActions = null;
+
+    let finishSyncPromise = null;
+    const reconcileFinishedRoom = (game) => {
+        if (!isHost || game?.gameResult === 'none' || finishSyncPromise) return;
+        finishSyncPromise = (async () => {
+            let lastError;
+            for (let attempt = 0; attempt < 3; attempt += 1) {
+                try {
+                    await firebaseEndGame(roomCode, game);
+                    return;
+                } catch (error) {
+                    lastError = error;
+                    if (attempt < 2) {
+                        await new Promise(resolve => setTimeout(resolve, 500 * (2 ** attempt)));
+                    }
+                }
+            }
+            throw lastError;
+        })().catch(error => {
+            console.error('Failed to reconcile finished room status:', error);
+            showToast('Final game status will retry after reconnect', true);
+        }).finally(() => {
+            finishSyncPromise = null;
+        });
+    };
+
     unsubscribeRoom = listenRoom(roomCode, {
         onStatusChange: (status) => {
-            console.log('[StatusChange] Status:', status);
-            if (status === 'finished') {
-                // Game ended - show appropriate screen based on game result
-                // The gameState will have been updated with gameResult
-                console.log('[StatusChange] Game finished, showing game over');
-            }
+            if (status === 'finished') stopTimer();
         },
         onPlayersChange: (players) => {
             updatePlayersList(players);
+            const host = players.player_0;
+            if (!isHost && host && !host.connected) {
+                showToast('Host disconnected — game will resume when the host returns', true);
+            }
         },
         onGameUpdate: (game, status) => {
-            if (game) {
-                updateGameFromFirebase(game);
-                // Only show game screen if game is playing AND not ended
-                if (status === 'playing' && !game.gameResult) {
-                    const currentScreen = document.querySelector('.screen.active');
-                    if (currentScreen && currentScreen.id !== 'gameScreen') {
-                        showScreen('gameScreen');
-                        hideLoading();
-                        // Start timer and music when game screen is first shown
-                        startTimer();
-                        AudioManager.startBackgroundMusic(0.15);
-                    }
+            if (!game) return;
+            updateGameFromFirebase(game);
+            if (status === 'playing' && game.gameResult !== 'none') {
+                reconcileFinishedRoom(game);
+            }
+            if (status === 'playing' && game.gameResult === 'none') {
+                const currentScreen = document.querySelector('.screen.active');
+                if (currentScreen?.id !== 'gameScreen') {
+                    showScreen('gameScreen');
+                    hideLoading();
+                    startTimer();
+                    AudioManager.startBackgroundMusic(0.15);
                 }
             }
         },
         onRoomDeleted: () => {
-            console.log('[RoomDeleted] Room was deleted, returning to menu');
             showToast('Room closed by host', true);
-            showMenu();
-        }
+            window.showMenu();
+        },
+        onError: (error) => {
+            console.error('Room listener failed:', error);
+            showToast('Room connection was lost', true);
+        },
     });
+
+    if (isHost) {
+        unsubscribeActions = listenGameActions(roomCode, enqueueHostAction, error => {
+            console.error('Action listener failed:', error);
+        });
+    }
 }
 
 function updatePlayersList(players) {
     const list = document.getElementById('playersList');
     if (!list) return;
-    
+    if (playerIndex != null && !players[`player_${playerIndex}`]) {
+        showToast('You were removed from the room', true);
+        window.showMenu();
+        return;
+    }
     list.innerHTML = '';
     
     const playerEntries = Object.entries(players).sort((a, b) => {
@@ -794,44 +863,40 @@ window.removePlayer = async function(playerKey, playerName) {
 // ========== GAME START ==========
 window.startMultiplayerGame = async function() {
     if (!isHost) return;
-    
+
     try {
         showLoading('Loading phrases...');
-        
-        // Reset flags
-        isAdvancingLevel = false;
-        
-        // Load and shuffle phrases
-        gameState.gamePhrases = await loadAndShufflePhrases();
-        gameState.currentLevel = 1;
-        gameState.currentPhraseIndex = 0;
-        gameState.score = 0;
-        gameState.timeRemaining = gameState.timerDuration;
-        gameState.gameStartTime = Date.now();
-        gameState.lifelinesRemaining = 3;
-        gameState.lifelinesUsed = [false, false, false];
-        gameState.gameResult = null; // Reset game result for new game
-        
-        // Initialize first level
-        const phraseData = gameState.gamePhrases[0];
-        gameState.currentPhrase = phraseData.text.toUpperCase();
-        gameState.currentCategory = phraseData.category;
-        gameState.revealedLetters = new Set();
-        gameState.wrongGuesses = 0;
-        
-        // Add punctuation to revealed letters
-        for (let char of gameState.currentPhrase) {
-            if (!/[A-Z0-9]/.test(char)) {
-                gameState.revealedLetters.add(char);
-            }
-        }
-        
-        // Convert Set to Array for Firebase
-        const gameStateForFirebase = serializeGameState(gameState);
-        
-        // Start game in Firebase
-        await firebaseStartGame(roomCode, gameStateForFirebase);
-        
+        hostPhraseDeck = await loadAndShufflePhrases();
+        previousActionId = 0;
+        previousResult = 'none';
+        pendingLetters.clear();
+        const phraseData = hostPhraseDeck[0];
+        const now = Date.now();
+        gameState = {
+            currentPhraseIndex: 0,
+            phraseDisplay: maskPhrase(phraseData.text),
+            currentCategory: phraseData.category,
+            guessedLetters: new Set(),
+            correctLetters: new Set(),
+            wrongGuesses: 0,
+            maxWrongGuesses: 6,
+            currentLevel: 1,
+            maxLevels: 10,
+            score: 0,
+            timeRemaining: gameState.timerDuration,
+            timerDuration: gameState.timerDuration,
+            deadline: now + gameState.timerDuration * 1000,
+            lifelinesRemaining: 3,
+            lifelinesUsed: [false, false, false],
+            gameResult: 'none',
+            phase: 'active',
+            advanceAt: 0,
+            lastAction: 'none',
+            lastActionId: now,
+            lastActorUid: playerUid,
+            revision: 1,
+        };
+        await firebaseStartGame(roomCode, serializeGameState(gameState), hostPhraseDeck);
         hideLoading();
     } catch (error) {
         hideLoading();
@@ -841,92 +906,89 @@ window.startMultiplayerGame = async function() {
 };
 
 // ========== GAME STATE SYNC ==========
+function maskPhrase(phrase) {
+    return phrase.toUpperCase().replace(/[A-Z0-9]/g, '_');
+}
+
+function revealLetter(answer, display, letter) {
+    return Array.from(display, (character, index) => answer[index] === letter ? letter : character).join('');
+}
+
 function serializeGameState(state) {
     return {
-        ...state,
-        gamePhrases: JSON.stringify(state.gamePhrases), // Convert array to JSON string
-        revealedLetters: JSON.stringify(Array.from(state.revealedLetters)), // Convert to JSON string
-        lifelinesUsed: JSON.stringify(state.lifelinesUsed), // Convert to JSON string
+        currentPhraseIndex: state.currentPhraseIndex,
+        phraseDisplay: state.phraseDisplay,
+        currentCategory: state.currentCategory,
+        guessedLetters: [...state.guessedLetters].sort().join(''),
+        correctLetters: [...state.correctLetters].sort().join(''),
+        wrongGuesses: state.wrongGuesses,
+        maxWrongGuesses: state.maxWrongGuesses,
+        currentLevel: state.currentLevel,
+        maxLevels: state.maxLevels,
+        score: state.score,
+        timerDuration: state.timerDuration,
+        deadline: state.deadline,
+        lifelinesRemaining: state.lifelinesRemaining,
+        lifelinesUsed: state.lifelinesUsed.map(Boolean).map(Number).join(''),
+        gameResult: state.gameResult,
+        phase: state.phase,
+        advanceAt: state.advanceAt,
+        lastAction: state.lastAction,
+        lastActionId: state.lastActionId,
+        lastActorUid: state.lastActorUid,
+        revision: state.revision,
     };
 }
 
 function deserializeGameState(firebaseState) {
+    const deadline = Number(firebaseState.deadline) || 0;
     return {
         ...firebaseState,
-        gamePhrases: JSON.parse(firebaseState.gamePhrases || '[]'), // Parse JSON string back to array
-        revealedLetters: new Set(JSON.parse(firebaseState.revealedLetters || '[]')), // Parse and convert to Set
-        lifelinesUsed: JSON.parse(firebaseState.lifelinesUsed || '[false,false,false]'), // Parse JSON string back to array
+        guessedLetters: new Set(firebaseState.guessedLetters || ''),
+        correctLetters: new Set(firebaseState.correctLetters || ''),
+        lifelinesUsed: String(firebaseState.lifelinesUsed || '000').split('').map(value => value === '1'),
+        timeRemaining: Math.max(0, Math.ceil((deadline - Date.now()) / 1000)),
+        deadline,
     };
 }
 
-let previousActionId = 0; // Track the last action we've seen
-let myLastActionId = 0; // Track actions I created locally
+let previousActionId = 0;
+let previousResult = 'none';
 
 function updateGameFromFirebase(firebaseGameState) {
     if (!firebaseGameState) return;
-    
-    const previousResult = gameState.gameResult;
-    const previousWrongGuesses = gameState.wrongGuesses;
-    
+    const hadPreviousAction = previousActionId !== 0;
     gameState = deserializeGameState(firebaseGameState);
-    
-    console.log('[UpdateFromFirebase] Wrong guesses:', previousWrongGuesses, '->', gameState.wrongGuesses, 'Result:', previousResult, '->', gameState.gameResult);
-    
-    // Detect new actions and play sounds/speech on ALL devices EXCEPT the one that created the action
-    if (gameState.lastActionId && gameState.lastActionId !== previousActionId) {
-        console.log('[UpdateFromFirebase] New action detected:', gameState.lastAction, 'ID:', gameState.lastActionId);
+    for (const letter of gameState.guessedLetters) pendingLetters.delete(letter);
+
+    if (gameState.lastActionId !== previousActionId) {
         previousActionId = gameState.lastActionId;
-        
-        // Only play if this action was NOT created by me
-        if (gameState.lastActionId !== myLastActionId) {
-            console.log('[UpdateFromFirebase] Playing action from other device');
-            
-            // Play sound and speech based on action type
+        if (hadPreviousAction) {
             switch (gameState.lastAction) {
                 case 'correct':
+                case 'lifeline':
                     AudioManager.playSound('correct');
-                    setTimeout(() => AudioManager.playRandomEncourage(), 200);
+                    AudioManager.playRandomEncourage();
                     break;
                 case 'wrong':
                     AudioManager.playSound('wrong');
-                    setTimeout(() => AudioManager.playRandomDisappoint(), 200);
-                    break;
-                case 'lifeline':
-                    AudioManager.playSound('correct');
-                    setTimeout(() => AudioManager.playRandomEncourage(), 200);
+                    AudioManager.playRandomDisappoint();
                     break;
                 case 'levelComplete':
                     AudioManager.playSound('win', 0.25);
-                    setTimeout(() => AudioManager.playRandomLevelComplete(), 200);
+                    AudioManager.playRandomLevelComplete();
                     break;
             }
-        } else {
-            console.log('[UpdateFromFirebase] Skipping - this was my action');
         }
     }
-    
-    // Only update UI if not currently advancing levels (to avoid interrupting speech/video)
-    if (!isAdvancingLevel) {
-        updateGameUI();
-        displayPhrase();
-        createKeyboard();
-    }
-    
-    // Check win condition after receiving updates from other players
-    checkWin();
-    
-    // Check lose condition after receiving updates from other players (host only)
-    // Skip if we're advancing levels to avoid race condition
-    if (isHost && gameState.wrongGuesses >= gameState.maxWrongGuesses && !gameState.gameResult && !isAdvancingLevel) {
-        console.log('[UpdateFromFirebase] All lives exhausted, triggering game over');
-        setTimeout(async () => {
-            await gameLost();
-        }, 1000);
-    }
-    
-    // Check if game result was set (game ended)
-    if (gameState.gameResult && gameState.gameResult !== previousResult) {
-        console.log('[UpdateFromFirebase] Game result changed, showing game over. Result:', gameState.gameResult);
+
+    updateGameUI();
+    displayPhrase();
+    createKeyboard();
+    if (isHost && gameState.phase === 'levelComplete') scheduleLevelAdvance();
+
+    if (gameState.gameResult !== 'none' && gameState.gameResult !== previousResult) {
+        previousResult = gameState.gameResult;
         showGameOver(gameState.gameResult === 'won');
     }
 }
@@ -980,15 +1042,12 @@ function updateGameUI() {
 function updateLifelineUI() {
     const bulbs = document.querySelectorAll('.lifeline-bulb');
     gameState.lifelinesUsed.forEach((used, index) => {
-        if (bulbs[index]) {
-            bulbs[index].className = 'lifeline-bulb' + (used ? '' : ' active');
-            
-            // Ensure click handler is attached (backup for onclick attribute)
-            bulbs[index].onclick = function() {
-                console.log('[Lifeline] Click handler triggered for bulb', index);
-                window.useLifeline(index);
-            };
-        }
+        const bulb = bulbs[index];
+        if (!bulb) return;
+        bulb.className = `lifeline-bulb ${used ? 'used' : 'active'}`;
+        bulb.disabled = used || gameState.phase !== 'active';
+        bulb.setAttribute('aria-label', used ? `Lifeline ${index + 1} used` : `Use lifeline ${index + 1}`);
+        bulb.onclick = () => window.useLifeline(index);
     });
 }
 
@@ -1004,25 +1063,17 @@ function updateTimerDisplay() {
 }
 
 function startTimer() {
-    // Clear any existing timer
-    if (timerInterval) {
-        clearInterval(timerInterval);
-    }
-    
-    // Start countdown on ALL devices (local countdown, no Firebase sync needed)
-    timerInterval = setInterval(() => {
-        gameState.timeRemaining--;
+    stopTimer();
+    const tick = () => {
+        gameState.timeRemaining = Math.max(0, Math.ceil((gameState.deadline - Date.now()) / 1000));
         updateTimerDisplay();
-        
-        // Check if time's up (only host ends the game)
-        if (gameState.timeRemaining <= 0) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            if (isHost) {
-                gameLost();
-            }
+        if (gameState.timeRemaining === 0) {
+            stopTimer();
+            if (isHost && gameState.gameResult === 'none') gameLost();
         }
-    }, 1000);
+    };
+    tick();
+    if (gameState.timeRemaining > 0) timerInterval = setInterval(tick, 250);
 }
 
 function stopTimer() {
@@ -1035,50 +1086,34 @@ function stopTimer() {
 function displayPhrase() {
     const grid = document.getElementById('phraseGrid');
     if (!grid) return;
-    
     grid.innerHTML = '';
-    
-    const phrase = gameState.currentPhrase;
-    const letterCount = phrase.replace(/[^A-Z0-9]/g, '').length;
-    
-    // Add dynamic sizing
+
+    const phrase = gameState.phraseDisplay;
+    const letterCount = phrase.replace(/[^A-Z0-9_]/g, '').length;
     grid.classList.remove('short-phrase', 'medium-phrase', 'long-phrase', 'very-long-phrase');
-    if (letterCount <= 15) {
-        grid.classList.add('short-phrase');
-    } else if (letterCount <= 25) {
-        grid.classList.add('medium-phrase');
-    } else if (letterCount <= 35) {
-        grid.classList.add('long-phrase');
-    } else {
-        grid.classList.add('very-long-phrase');
-    }
-    
-    const words = phrase.split(' ');
-    
-    words.forEach((word, wordIndex) => {
+    if (letterCount <= 15) grid.classList.add('short-phrase');
+    else if (letterCount <= 25) grid.classList.add('medium-phrase');
+    else if (letterCount <= 35) grid.classList.add('long-phrase');
+    else grid.classList.add('very-long-phrase');
+
+    phrase.split(' ').forEach((word, wordIndex, words) => {
         const wordContainer = document.createElement('div');
         wordContainer.className = 'word-container';
-        
-        for (let char of word) {
+        for (const character of word) {
             const tile = document.createElement('div');
             tile.className = 'phrase-tile';
-            
-            if (/[A-Z0-9]/.test(char)) {
-                tile.dataset.letter = char;
-                if (gameState.revealedLetters.has(char)) {
-                    tile.textContent = char;
-                    tile.classList.add('revealed');
-                }
+            if (character === '_') {
+                tile.setAttribute('aria-label', 'hidden character');
+            } else if (/[A-Z0-9]/.test(character)) {
+                tile.textContent = character;
+                tile.classList.add('revealed');
             } else {
-                tile.textContent = char;
+                tile.textContent = character;
                 tile.classList.add('punctuation');
             }
-            
             wordContainer.appendChild(tile);
         }
-        
         grid.appendChild(wordContainer);
-        
         if (wordIndex < words.length - 1) {
             const spaceTile = document.createElement('div');
             spaceTile.className = 'phrase-tile space';
@@ -1090,297 +1125,176 @@ function displayPhrase() {
 function createKeyboard() {
     const allKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234';
     const keyboard = document.getElementById('keyboardCombined');
-    
     if (!keyboard) return;
-    
     keyboard.innerHTML = '';
-    
-    for (let key of allKeys) {
+
+    for (const key of allKeys) {
         const btn = document.createElement('button');
         btn.className = 'letter-btn';
         btn.textContent = key;
-        btn.onclick = () => guessLetter(key, btn);
-        
-        // Disable if already guessed
-        if (gameState.revealedLetters.has(key) || isLetterGuessed(key)) {
+        btn.setAttribute('aria-label', `Guess ${key}`);
+        btn.onclick = () => window.guessLetter(key, btn);
+        if (gameState.guessedLetters.has(key) || pendingLetters.has(key) || gameState.phase !== 'active') {
             btn.disabled = true;
-            btn.classList.add(gameState.currentPhrase.includes(key) ? 'correct' : 'wrong');
+            if (gameState.guessedLetters.has(key)) {
+                btn.classList.add(gameState.correctLetters.has(key) ? 'correct' : 'wrong');
+            }
         }
-        
         keyboard.appendChild(btn);
     }
 }
 
-function disableKeyboard() {
-    const keyboard = document.getElementById('keyboardCombined');
-    if (!keyboard) return;
-    
-    console.log('[DisableKeyboard] Disabling all keyboard buttons');
-    
-    // Disable all buttons to prevent further input
-    const buttons = keyboard.querySelectorAll('.letter-btn');
-    buttons.forEach(btn => {
-        btn.disabled = true;
-        btn.onclick = null; // Remove click handler completely
-        btn.style.pointerEvents = 'none'; // Prevent all pointer interactions
-        btn.style.cursor = 'not-allowed'; // Show not-allowed cursor
-    });
-}
-
-function isLetterGuessed(letter) {
-    // Check if letter was guessed (either revealed or wrong)
-    return gameState.revealedLetters.has(letter);
-}
-
-// ========== GAME LOGIC ==========
 window.guessLetter = async function(letter, keyElement) {
-    // Early exit if level is advancing - don't touch button at all
-    if (isAdvancingLevel) {
-        console.log('[GuessLetter] Ignoring - level is advancing');
-        return;
-    }
-    
-    // Normal checks
-    if (!roomCode || keyElement.disabled) {
-        return;
-    }
-    
+    if (!roomCode || gameState.phase !== 'active' || gameState.guessedLetters.has(letter) || pendingLetters.has(letter)) return;
+    pendingLetters.add(letter);
     keyElement.disabled = true;
-    
-    if (gameState.currentPhrase.includes(letter)) {
-        // Correct guess
-        gameState.revealedLetters.add(letter);
-        keyElement.classList.add('correct');
-        
-        // Play sound and speech LOCALLY for immediate feedback (no delay for mobile compatibility)
-        AudioManager.playSound('correct');
-        AudioManager.playRandomEncourage();
-        
-        // Set action for OTHER devices to trigger sound/speech
-        gameState.lastAction = 'correct';
-        gameState.lastActionId = Date.now();
-        myLastActionId = gameState.lastActionId; // Track that I created this action
-        
-        // Update Firebase
-        await writeGameState(roomCode, serializeGameState(gameState));
-        
-        // Check win
-        checkWin();
-    } else {
-        // Wrong guess
-        gameState.wrongGuesses++;
-        gameState.revealedLetters.add(letter); // Track as guessed
-        keyElement.classList.add('wrong');
-        
-        // Play sound and speech LOCALLY for immediate feedback (no delay for mobile compatibility)
-        AudioManager.playSound('wrong');
-        AudioManager.playRandomDisappoint();
-        
-        // Set action for OTHER devices to trigger sound/speech
-        gameState.lastAction = 'wrong';
-        gameState.lastActionId = Date.now();
-        myLastActionId = gameState.lastActionId; // Track that I created this action
-        
-        // Update Firebase
-        await writeGameState(roomCode, serializeGameState(gameState));
-        
-        // Check lose
-        checkLose();
+    try {
+        await submitGameAction(roomCode, { type: 'guess', letter });
+    } catch (error) {
+        pendingLetters.delete(letter);
+        keyElement.disabled = false;
+        console.error('Failed to submit guess:', error);
+        showToast('Guess could not be sent', true);
     }
 };
 
 window.useLifeline = async function(index) {
-    console.log('[Lifeline] Clicked lifeline', index, 'IsHost:', isHost, 'RoomCode:', roomCode, 'Already used:', gameState.lifelinesUsed[index]);
-    
-    if (!roomCode) {
-        console.log('[Lifeline] No room code, cannot use lifeline');
-        return;
+    if (!roomCode || gameState.phase !== 'active' || gameState.lifelinesUsed[index]) return;
+    const bulb = document.querySelectorAll('.lifeline-bulb')[index];
+    if (bulb) bulb.disabled = true;
+    try {
+        await submitGameAction(roomCode, { type: 'lifeline', lifelineIndex: index });
+    } catch (error) {
+        if (bulb) bulb.disabled = false;
+        console.error('Failed to submit lifeline:', error);
+        showToast('Lifeline could not be sent', true);
     }
-    
-    if (isAdvancingLevel) {
-        console.log('[Lifeline] Ignoring - level is advancing');
-        return;
-    }
-    
-    if (gameState.lifelinesUsed[index]) {
-        console.log('[Lifeline] This lifeline was already used');
-        return;
-    }
-    
-    console.log('[Lifeline] Using lifeline', index);
-    
-    // Mark lifeline as used
-    gameState.lifelinesUsed[index] = true;
-    gameState.lifelinesRemaining--;
-    
-    // Reveal a random unrevealed letter
-    const unrevealedLetters = [];
-    for (let char of gameState.currentPhrase) {
-        if (/[A-Z0-9]/.test(char) && !gameState.revealedLetters.has(char)) {
-            unrevealedLetters.push(char);
-        }
-    }
-    
-    if (unrevealedLetters.length > 0) {
-        const randomLetter = unrevealedLetters[Math.floor(Math.random() * unrevealedLetters.length)];
-        gameState.revealedLetters.add(randomLetter);
-        console.log('[Lifeline] Revealed letter:', randomLetter);
-        
-        // Play sound and speech LOCALLY for immediate feedback (no delay for mobile compatibility)
-        AudioManager.playSound('correct');
-        AudioManager.playRandomEncourage();
-        
-        // Set action for OTHER devices to trigger sound/speech
-        gameState.lastAction = 'lifeline';
-        gameState.lastActionId = Date.now();
-        myLastActionId = gameState.lastActionId; // Track that I created this action
-    } else {
-        console.log('[Lifeline] No unrevealed letters to reveal');
-    }
-    
-    // Update Firebase
-    await writeGameState(roomCode, serializeGameState(gameState));
-    console.log('[Lifeline] Updated Firebase');
-    
-    // Check win after using lifeline
-    checkWin();
 };
 
-// Debug: Log that function is defined
-console.log('[Init] useLifeline function defined:', typeof window.useLifeline);
+function enqueueHostAction(actionId, action) {
+    actionQueue = actionQueue
+        .then(() => processHostAction(actionId, action))
+        .catch(error => console.error('Failed to process game action:', error));
+}
 
-function checkWin() {
-    // Don't check if we're already advancing levels
-    if (isAdvancingLevel) {
-        console.log('[CheckWin] Already advancing level, skipping check');
-        return;
-    }
-    
-    const requiredLetters = new Set(gameState.currentPhrase.match(/[A-Z0-9]/g));
-    const allRevealed = [...requiredLetters].every(letter => gameState.revealedLetters.has(letter));
-    
-    console.log('[CheckWin] Required:', requiredLetters.size, 'Revealed:', gameState.revealedLetters.size, 'AllRevealed:', allRevealed, 'IsHost:', isHost);
-    
-    if (allRevealed) {
-        // Disable all keyboard buttons immediately to prevent further guesses
-        disableKeyboard();
-        
-        if (isHost) {
-            isAdvancingLevel = true; // Set flag to prevent duplicate advances
-            
-            const bonusPoints = (gameState.maxWrongGuesses - gameState.wrongGuesses) * 100;
-            gameState.score += 500 + bonusPoints;
-            
-            console.log('[CheckWin] Level complete! Score:', gameState.score, 'Current Level:', gameState.currentLevel);
-            
-            // Play level complete sound/speech LOCALLY for immediate feedback (no delay for mobile compatibility)
-            AudioManager.playSound('win', 0.25);
-            AudioManager.playRandomLevelComplete();
-            
-            // Set action for OTHER devices to play level complete sound/speech via Firebase
-            gameState.lastAction = 'levelComplete';
-            gameState.lastActionId = Date.now();
-            myLastActionId = gameState.lastActionId; // Track that I created this action
-            
-            // Update Firebase with level complete action so all other devices play sound
-            writeGameState(roomCode, serializeGameState(gameState)).then(() => {
-                // Wait 3 seconds to allow speech and talking video to complete
-                setTimeout(async () => {
-                    if (gameState.currentLevel >= gameState.maxLevels) {
-                        console.log('[CheckWin] All levels complete! Showing game won');
-                        await gameWon();
-                    } else {
-                        console.log('[CheckWin] Moving to next level');
-                        await nextLevel();
-                    }
-                    isAdvancingLevel = false; // Clear flag after level advance
-                    
-                    // Update UI now that flag is cleared
-                    updateGameUI();
-                    displayPhrase();
-                    createKeyboard();
-                }, 3000); // Increased from 2000 to 3000ms to allow speech to finish
-            });
-        } else {
-            // Non-host just celebrates
-            console.log('[CheckWin] Level complete! Waiting for host to advance...');
+async function processHostAction(actionId, action) {
+    try {
+        if (!isHost || !hostPhraseDeck.length) return;
+        const transaction = await transactGameState(roomCode, firebaseState => {
+            const state = deserializeGameState(firebaseState);
+            if (state.gameResult !== 'none' || state.phase !== 'active' || Date.now() >= state.deadline) return undefined;
+            const answer = hostPhraseDeck[state.currentPhraseIndex]?.text?.toUpperCase();
+            if (!answer) return undefined;
+
+            let accepted = false;
+            if (action.type === 'guess' && /^[A-Z1-4]$/.test(action.letter) && !state.guessedLetters.has(action.letter)) {
+                state.guessedLetters.add(action.letter);
+                accepted = true;
+                if (answer.includes(action.letter)) {
+                    state.correctLetters.add(action.letter);
+                    state.phraseDisplay = revealLetter(answer, state.phraseDisplay, action.letter);
+                    state.lastAction = 'correct';
+                } else {
+                    state.wrongGuesses += 1;
+                    state.lastAction = 'wrong';
+                }
+            } else if (action.type === 'lifeline' && Number.isInteger(action.lifelineIndex)
+                && action.lifelineIndex >= 0 && action.lifelineIndex < 3 && !state.lifelinesUsed[action.lifelineIndex]) {
+                const options = [...new Set(answer.match(/[A-Z0-9]/g) || [])]
+                    .filter(letter => !state.correctLetters.has(letter));
+                if (options.length) {
+                    const letter = options[Math.floor(Math.random() * options.length)];
+                    state.lifelinesUsed[action.lifelineIndex] = true;
+                    state.lifelinesRemaining -= 1;
+                    state.guessedLetters.add(letter);
+                    state.correctLetters.add(letter);
+                    state.phraseDisplay = revealLetter(answer, state.phraseDisplay, letter);
+                    state.lastAction = 'lifeline';
+                    accepted = true;
+                }
+            }
+
+            if (!accepted) return undefined;
+            state.lastActorUid = action.actorUid;
+            state.lastActionId = Math.max(Date.now(), state.lastActionId + 1);
+            state.revision += 1;
+
+            if (state.wrongGuesses >= state.maxWrongGuesses) {
+                state.phraseDisplay = answer;
+                state.gameResult = 'lost';
+                state.phase = 'finished';
+            } else if (!state.phraseDisplay.includes('_')) {
+                state.score += 500 + (state.maxWrongGuesses - state.wrongGuesses) * 100;
+                state.lastAction = 'levelComplete';
+                if (state.currentLevel >= state.maxLevels) {
+                    state.gameResult = 'won';
+                    state.phase = 'finished';
+                } else {
+                    state.phase = 'levelComplete';
+                    state.advanceAt = Date.now() + 3000;
+                }
+            }
+            return serializeGameState(state);
+        });
+
+        const committedState = transaction.snapshot.val();
+        if (transaction.committed && committedState?.gameResult !== 'none') {
+            await firebaseEndGame(roomCode, committedState);
         }
+    } finally {
+        await removeGameAction(roomCode, actionId).catch(() => {});
     }
 }
 
-function checkLose() {
-    if (gameState.wrongGuesses >= gameState.maxWrongGuesses && isHost) {
-        setTimeout(async () => {
-            await gameLost();
-        }, 1000);
-    }
+function scheduleLevelAdvance() {
+    if (!isHost || levelAdvanceTimer || gameState.phase !== 'levelComplete') return;
+    const delay = Math.max(0, gameState.advanceAt - Date.now());
+    levelAdvanceTimer = setTimeout(async () => {
+        levelAdvanceTimer = null;
+        await nextLevel();
+    }, delay);
 }
 
 async function nextLevel() {
     if (!isHost) return;
-    
-    console.log('[NextLevel] Moving to next level...');
-    
-    gameState.currentLevel++;
-    gameState.currentPhraseIndex++;
-    gameState.revealedLetters = new Set();
-    gameState.wrongGuesses = 0;
-    
-    const phraseData = gameState.gamePhrases[gameState.currentPhraseIndex];
-    gameState.currentPhrase = phraseData.text.toUpperCase();
-    gameState.currentCategory = phraseData.category;
-    
-    console.log('[NextLevel] New level:', gameState.currentLevel, 'Phrase:', gameState.currentPhrase);
-    
-    // Add punctuation to revealed letters
-    for (let char of gameState.currentPhrase) {
-        if (!/[A-Z0-9]/.test(char)) {
-            gameState.revealedLetters.add(char);
-        }
-    }
-    
-    // Write to Firebase
-    await writeGameState(roomCode, serializeGameState(gameState));
-    
-    // Update local UI immediately for host
-    updateGameUI();
-    displayPhrase();
-    createKeyboard();
-}
-
-async function gameWon() {
-    console.log('[GameWon] All levels complete! IsHost:', isHost);
-    
-    AudioManager.stopBackgroundMusic();
-    AudioManager.playSound('win');
-    
-    if (isHost) {
-        // Host writes the final state and ends game
-        gameState.gameResult = 'won'; // Store result for other players
-        await writeGameState(roomCode, serializeGameState(gameState));
-        await firebaseEndGame(roomCode);
-    }
-    
-    // All players show game over screen
-    showGameOver(true);
+    await transactGameState(roomCode, firebaseState => {
+        const state = deserializeGameState(firebaseState);
+        if (state.phase !== 'levelComplete' || state.gameResult !== 'none') return undefined;
+        const nextIndex = state.currentPhraseIndex + 1;
+        const phraseData = hostPhraseDeck[nextIndex];
+        if (!phraseData) return undefined;
+        state.currentLevel += 1;
+        state.currentPhraseIndex = nextIndex;
+        state.phraseDisplay = maskPhrase(phraseData.text);
+        state.currentCategory = phraseData.category;
+        state.guessedLetters = new Set();
+        state.correctLetters = new Set();
+        state.wrongGuesses = 0;
+        state.phase = 'active';
+        state.advanceAt = 0;
+        state.lastAction = 'none';
+        state.revision += 1;
+        return serializeGameState(state);
+    });
 }
 
 async function gameLost() {
-    console.log('[GameLost] Out of lives! IsHost:', isHost);
-    
-    AudioManager.stopBackgroundMusic();
-    
-    if (isHost) {
-        // Host writes the final state and ends game
-        gameState.gameResult = 'lost'; // Store result for other players
-        console.log('[GameLost] Host writing gameResult to Firebase:', gameState.gameResult);
-        await writeGameState(roomCode, serializeGameState(gameState));
-        await firebaseEndGame(roomCode);
-        console.log('[GameLost] Firebase updated, showing game over');
-    }
-    
-    // All players show game over screen
-    showGameOver(false);
+    if (!isHost || gameState.gameResult !== 'none') return;
+    const transaction = await transactGameState(roomCode, firebaseState => {
+        const state = deserializeGameState(firebaseState);
+        if (state.gameResult !== 'none') return undefined;
+        const answer = hostPhraseDeck[state.currentPhraseIndex]?.text?.toUpperCase();
+        if (!answer) return undefined;
+        state.phraseDisplay = answer;
+        state.gameResult = 'lost';
+        state.phase = 'finished';
+        state.advanceAt = 0;
+        state.lastActionId = Math.max(Date.now(), state.lastActionId + 1);
+        state.lastActorUid = playerUid;
+        state.revision += 1;
+        return serializeGameState(state);
+    });
+    if (transaction.committed) await firebaseEndGame(roomCode, transaction.snapshot.val());
 }
 
 function showGameOver(won) {
@@ -1407,7 +1321,7 @@ function showGameOver(won) {
         content.innerHTML = `
             <h2 class="lose">😢 Game Over</h2>
             <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">The phrase was:</p>
-            <div class="revealed-phrase">${gameState.currentPhrase}</div>
+            <div class="revealed-phrase">${gameState.phraseDisplay}</div>
             <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">Level Reached: ${gameState.currentLevel}</p>
             <div class="final-score">Final Score: <span style="color: #0066CC;">${gameState.score}</span></div>
             <div class="gameover-buttons">
@@ -1424,26 +1338,27 @@ function showGameOver(won) {
 }
 
 window.exitToMenu = async function() {
-    console.log('[ExitToMenu] Cleaning up and returning to menu. IsHost:', isHost, 'RoomCode:', roomCode);
-    
-    // Host deletes the room, others just leave
-    if (isHost && roomCode) {
+    if (roomCode) {
         try {
-            await deleteRoom(roomCode);
-            console.log('[ExitToMenu] Room deleted');
+            if (isHost) await deleteRoom(roomCode);
+            else await firebaseRemovePlayer(roomCode, playerIndex);
         } catch (error) {
-            console.error('[ExitToMenu] Error deleting room:', error);
+            console.error('Failed to leave room:', error);
         }
     }
-    
-    showMenu();
+    window.showMenu();
 };
 
 window.quitGame = async function() {
-    if (isHost) {
-        await deleteRoom(roomCode);
+    if (roomCode) {
+        try {
+            if (isHost) await deleteRoom(roomCode);
+            else await firebaseRemovePlayer(roomCode, playerIndex);
+        } catch (error) {
+            console.error('Failed to leave room:', error);
+        }
     }
-    showMenu();
+    window.showMenu();
 };
 
 // ========== PHRASE LOADER ==========
@@ -1529,13 +1444,13 @@ async function loadAndShufflePhrases() {
 // ========== MUTE TOGGLE ==========
 const muteBtn = document.getElementById('muteBtn');
 if (muteBtn) {
-    // Set initial state
-    muteBtn.textContent = AudioManager.isMuted() ? '🔇' : '🔊';
-    
-    muteBtn.addEventListener('click', () => {
-        const muted = AudioManager.toggleMute();
+    const updateMuteButton = (muted) => {
         muteBtn.textContent = muted ? '🔇' : '🔊';
-    });
+        muteBtn.setAttribute('aria-pressed', String(muted));
+        muteBtn.setAttribute('aria-label', muted ? 'Unmute audio' : 'Mute audio');
+    };
+    updateMuteButton(AudioManager.isMuted());
+    muteBtn.addEventListener('click', () => updateMuteButton(AudioManager.toggleMute()));
 }
 
 console.log('Bollywood Beats Multiplayer loaded successfully!');
@@ -1545,69 +1460,36 @@ console.log('Bollywood Beats Multiplayer loaded successfully!');
 async function restoreSession() {
     const session = loadSession();
     if (!session) return false;
-    
+
     try {
-        // Import Firebase database functions
-        const { db } = await import('./firebase-config.js');
-        const { ref, get, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-        
-        // Check if room still exists
-        const roomRef = ref(db, `bollywood-beats-rooms/${session.roomCode}`);
-        const snapshot = await get(roomRef);
-        
-        if (!snapshot.exists()) {
-            clearSession();
-            return false;
-        }
-        
-        const roomData = snapshot.val();
-        const status = roomData.meta?.status;
-        
-        // Don't restore if game ended
-        if (status === 'finished') {
-            clearSession();
-            return false;
-        }
-        
-        // Restore session variables
+        const restored = await restoreConnection(session.roomCode, session.playerIndex);
+        if (session.playerUid !== restored.uid) throw new Error('Saved session identity changed');
         roomCode = session.roomCode;
         playerIndex = session.playerIndex;
-        isHost = session.isHost;
-        
-        // Mark player as connected
-        try {
-            await update(ref(db, `bollywood-beats-rooms/${roomCode}/players/player_${playerIndex}`), {
-                connected: true
-            });
-        } catch (_) {}
-        
-        // Setup disconnect handler
-        setupDisconnectHandler(roomCode, playerIndex);
-        
-        // Restore to appropriate screen
-        if (status === 'lobby') {
-            startLobbyListener();
+        playerUid = restored.uid;
+        isHost = playerIndex === 0 && restored.meta.hostUid === restored.uid;
+        cancelDisconnect = async () => cancelDisconnectHandler(roomCode, playerIndex);
+
+        if (isHost && restored.meta.status === 'playing') {
+            hostPhraseDeck = await getHostPhraseDeck(roomCode);
+        }
+
+        saveSession();
+        startLobbyListener();
+        if (restored.meta.status === 'lobby') {
             showLobby();
             showToast('Reconnected to lobby');
             return true;
         }
-        
-        if (status === 'playing' && roomData.game) {
-            startLobbyListener();
-            gameState = deserializeGameState(roomData.game);
-            updateGameUI();
-            displayPhrase();
-            createKeyboard();
+        if (restored.meta.status === 'playing' && restored.game) {
+            updateGameFromFirebase(restored.game);
             showScreen('gameScreen');
             startTimer();
+            AudioManager.startBackgroundMusic(0.15);
             showToast('Reconnected to game');
             return true;
         }
-        
-        // Unknown state, clear session
-        clearSession();
-        return false;
-        
+        throw new Error('Unsupported room state');
     } catch (error) {
         console.error('Failed to restore session:', error);
         clearSession();
