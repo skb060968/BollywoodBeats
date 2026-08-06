@@ -65,6 +65,8 @@ const AudioManager = (() => {
 
     const MUTE_KEY = 'bollywood_beats_multiplayer_muted';
     let backgroundMusic = null;
+    let backgroundMusicRequested = false;
+    let backgroundMusicVolume = 0.15;
     let currentSoundEffect = null;
     let speechSynthesis = window.speechSynthesis;
     let isSpeaking = false; // Track if speech is in progress
@@ -118,6 +120,7 @@ const AudioManager = (() => {
             }
         } else {
             resumeBackgroundMusic();
+            showIdleCharacter();
         }
     }
 
@@ -156,15 +159,23 @@ const AudioManager = (() => {
                 }
             };
             
-            audio.play().catch(() => {});
-        } catch (_) {}
+            audio.play().catch(error => {
+                console.warn(`[AudioManager] Failed to play ${name}`, error);
+            });
+        } catch (error) {
+            console.error(`[AudioManager] Could not create ${name} audio`, error);
+        }
     }
 
     function speak(text, rate = 1.0, pitch = 1.1) {
         console.log('[Speech] speak() called with text:', text);
         
         if (isMuted()) {
-            console.log('[Speech] Muted, skipping');
+            console.log('[Speech] Muted, showing visual feedback only');
+            showTalkingCharacter();
+            setTimeout(() => {
+                if (!isSpeaking) showIdleCharacter();
+            }, 1200);
             return;
         }
         
@@ -308,16 +319,14 @@ const AudioManager = (() => {
             idleVideo.pause();
         }
         
-        // Show and play talking video WITH loop (keeps playing until speech ends)
-        if (talkingVideo.style.display !== 'block') {
-            talkingVideo.style.display = 'block';
-            talkingVideo.loop = true; // Loop continuously while speech is playing
-            talkingVideo.currentTime = 0;
-            
-            talkingVideo.play().catch(err => {
-                console.error('[Character] Failed to play talking video:', err);
-            });
-        }
+        // Show and play talking video WITH loop (keeps playing until speech ends).
+        // Always retry play(): mobile browsers may defer playback while hidden.
+        talkingVideo.style.display = 'block';
+        talkingVideo.loop = true;
+        if (talkingVideo.paused) talkingVideo.currentTime = 0;
+        talkingVideo.play().catch(err => {
+            console.error('[Character] Failed to play talking video:', err);
+        });
     }
     
     function showIdleCharacter() {
@@ -334,14 +343,13 @@ const AudioManager = (() => {
             talkingVideo.pause();
         }
         
-        // Show and play idle video immediately
-        if (idleVideo.style.display !== 'block') {
-            idleVideo.style.display = 'block';
-            idleVideo.currentTime = 0;
-            idleVideo.play().catch(err => {
-                console.error('[Character] Failed to play idle video:', err);
-            });
-        }
+        // Show and play idle video immediately. Always retry play() because
+        // autoplay may have been deferred while the game screen was hidden.
+        idleVideo.style.display = 'block';
+        if (idleVideo.paused) idleVideo.currentTime = 0;
+        idleVideo.play().catch(err => {
+            console.error('[Character] Failed to play idle video:', err);
+        });
     }
 
     function playRandomEncourage() {
@@ -368,40 +376,37 @@ const AudioManager = (() => {
         speak(phrase, 1.15, 1.3); // No priority parameter - simpler approach
     }
 
+    function ensureBackgroundMusic() {
+        if (backgroundMusic) return backgroundMusic;
+        backgroundMusic = new Audio(SOUND_FILES.music);
+        backgroundMusic.loop = true;
+        backgroundMusic.preload = 'auto';
+        backgroundMusic.style.display = 'none';
+        return backgroundMusic;
+    }
+
     function startBackgroundMusic(volume = 0.15) {
+        backgroundMusicRequested = true;
+        backgroundMusicVolume = volume;
         if (isMuted()) return;
-        
-        stopBackgroundMusic();
-        
-        const url = SOUND_FILES.music;
-        if (!url) return;
-        
+
         try {
-            backgroundMusic = new Audio(url);
-            backgroundMusic.loop = true;
-            backgroundMusic.volume = volume;
-            backgroundMusic.preload = 'auto';
-            
-            // Hide audio element metadata display
-            backgroundMusic.style.display = 'none';
-            backgroundMusic.style.position = 'absolute';
-            backgroundMusic.style.visibility = 'hidden';
-            backgroundMusic.style.width = '0';
-            backgroundMusic.style.height = '0';
-            backgroundMusic.style.opacity = '0';
-            
-            const playPromise = backgroundMusic.play();
+            const music = ensureBackgroundMusic();
+            music.muted = false;
+            music.volume = volume;
+            const playPromise = music.play();
             if (playPromise && typeof playPromise.catch === 'function') {
-                playPromise.catch(() => {
-                    console.log('Background music autoplay blocked');
+                playPromise.catch(error => {
+                    console.warn('Background music playback was blocked; it will retry on the next game control', error);
                 });
             }
-        } catch (err) {
-            console.error('Failed to start background music:', err);
+        } catch (error) {
+            console.error('Failed to start background music:', error);
         }
     }
 
     function stopBackgroundMusic() {
+        backgroundMusicRequested = false;
         if (backgroundMusic) {
             try {
                 backgroundMusic.pause();
@@ -409,7 +414,7 @@ const AudioManager = (() => {
                 backgroundMusic = null;
             } catch (_) {}
         }
-        
+
         if (speechSynthesis) {
             speechSynthesis.cancel();
         }
@@ -424,14 +429,8 @@ const AudioManager = (() => {
     }
 
     function resumeBackgroundMusic() {
-        if (backgroundMusic && backgroundMusic.paused && !isMuted()) {
-            try {
-                const playPromise = backgroundMusic.play();
-                if (playPromise && typeof playPromise.catch === 'function') {
-                    playPromise.catch(() => {});
-                }
-            } catch (_) {}
-        }
+        if (!backgroundMusicRequested || isMuted()) return;
+        startBackgroundMusic(backgroundMusicVolume);
     }
 
     function stopSoundEffects() {
@@ -452,8 +451,10 @@ const AudioManager = (() => {
         toggleMute,
         isMuted,
         startBackgroundMusic,
+        resumeBackgroundMusic,
         stopBackgroundMusic,
         stopSoundEffects,
+        showIdleCharacter,
     };
 })();
 
@@ -535,6 +536,9 @@ function showScreen(screenId) {
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active');
+        if (screenId === 'gameScreen') {
+            requestAnimationFrame(() => AudioManager.showIdleCharacter());
+        }
         console.log('[ShowScreen] Screen activated:', screenId);
     } else {
         console.error('[ShowScreen] Screen not found:', screenId);
@@ -864,6 +868,9 @@ window.removePlayer = async function(playerKey, playerName) {
 window.startMultiplayerGame = async function() {
     if (!isHost) return;
 
+    // Start during the trusted button gesture so mobile autoplay policies allow it.
+    AudioManager.startBackgroundMusic(0.15);
+
     try {
         showLoading('Loading phrases...');
         hostPhraseDeck = await loadAndShufflePhrases();
@@ -899,6 +906,7 @@ window.startMultiplayerGame = async function() {
         await firebaseStartGame(roomCode, serializeGameState(gameState), hostPhraseDeck);
         hideLoading();
     } catch (error) {
+        AudioManager.stopBackgroundMusic();
         hideLoading();
         console.error('Failed to start game:', error);
         showToast('Failed to start game. Please try again.', true);
@@ -1146,6 +1154,7 @@ function createKeyboard() {
 
 window.guessLetter = async function(letter, keyElement) {
     if (!roomCode || gameState.phase !== 'active' || gameState.guessedLetters.has(letter) || pendingLetters.has(letter)) return;
+    AudioManager.resumeBackgroundMusic();
     pendingLetters.add(letter);
     keyElement.disabled = true;
     try {
@@ -1160,6 +1169,7 @@ window.guessLetter = async function(letter, keyElement) {
 
 window.useLifeline = async function(index) {
     if (!roomCode || gameState.phase !== 'active' || gameState.lifelinesUsed[index]) return;
+    AudioManager.resumeBackgroundMusic();
     const bulb = document.querySelectorAll('.lifeline-bulb')[index];
     if (bulb) bulb.disabled = true;
     try {
