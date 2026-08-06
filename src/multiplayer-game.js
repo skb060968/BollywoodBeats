@@ -162,19 +162,28 @@ const AudioManager = (() => {
         }
     }
 
-    function speak(text, rate = 1.0, pitch = 1.1) {
+    function finishSpeechStep(onComplete) {
+        showIdleCharacter();
+        if (typeof onComplete === 'function') {
+            setTimeout(onComplete, 100);
+        } else {
+            resumeBackgroundMusic();
+        }
+    }
+
+    function speak(text, rate = 1.0, pitch = 1.1, onComplete = null) {
         console.log('[Speech] speak() called with text:', text);
         
         if (isMuted()) {
             console.log('[Speech] Muted, keeping character idle');
-            showIdleCharacter();
+            finishSpeechStep(onComplete);
             return;
         }
         
         // If speech not supported, just show visual animation
         if (!speechSynthesis || !speechSupported) {
             console.log('[Speech] Speech not supported, keeping character idle');
-            showIdleCharacter();
+            finishSpeechStep(onComplete);
             return;
         }
 
@@ -188,7 +197,7 @@ const AudioManager = (() => {
                 continued = true;
                 activeEffect.removeEventListener('ended', continueSpeech);
                 activeEffect.removeEventListener('error', continueSpeech);
-                speak(text, rate, pitch);
+                speak(text, rate, pitch, onComplete);
             };
             activeEffect.addEventListener('ended', continueSpeech, { once: true });
             activeEffect.addEventListener('error', continueSpeech, { once: true });
@@ -199,7 +208,7 @@ const AudioManager = (() => {
         // If already speaking, queue this speech to play after current one finishes
         if (isSpeaking) {
             console.log('[Speech] Already speaking, queueing speech:', text);
-            speechQueue.push({ text, rate, pitch });
+            speechQueue.push({ text, rate, pitch, onComplete });
             return;
         }
         
@@ -251,24 +260,28 @@ const AudioManager = (() => {
                 if (!speechStarted) {
                     console.log('[Speech] Speech ended without starting, ignoring');
                     isSpeaking = false;
-                    resumeBackgroundMusic();
-                    showIdleCharacter();
+                    finishSpeechStep(onComplete);
                     return;
                 }
                 
                 console.log('[Speech] Speech ended');
                 isSpeaking = false;
                 
-                // Check if there's queued speech
-                if (speechQueue.length > 0) {
+                if (typeof onComplete === 'function') {
+                    finishSpeechStep(onComplete);
+                } else if (speechQueue.length > 0) {
                     const nextSpeech = speechQueue.shift();
                     console.log('[Speech] Playing queued speech:', nextSpeech.text);
                     showIdleCharacter();
-                    setTimeout(() => speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch), 100);
+                    setTimeout(() => speak(
+                        nextSpeech.text,
+                        nextSpeech.rate,
+                        nextSpeech.pitch,
+                        nextSpeech.onComplete,
+                    ), 100);
                 } else {
                     console.log('[Speech] No queued speech, switching to idle');
-                    resumeBackgroundMusic();
-                    showIdleCharacter();
+                    finishSpeechStep(null);
                 }
             };
             
@@ -278,8 +291,7 @@ const AudioManager = (() => {
                 if (activeUtterance === utterance) activeUtterance = null;
                 isSpeaking = false;
                 speechQueue = [];
-                resumeBackgroundMusic();
-                showIdleCharacter();
+                finishSpeechStep(onComplete);
             };
             
             // Keep idle visible while the mobile TTS engine initializes.
@@ -303,12 +315,15 @@ const AudioManager = (() => {
                     isSpeaking = false;
                     activeUtterance = null;
                     speechSynthesis.cancel();
-                    resumeBackgroundMusic();
-                    showIdleCharacter();
-                    
-                    if (speechQueue.length > 0) {
+
+                    if (typeof onComplete === 'function') {
+                        finishSpeechStep(onComplete);
+                    } else if (speechQueue.length > 0) {
                         const nextSpeech = speechQueue.shift();
-                        speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch);
+                        showIdleCharacter();
+                        speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch, nextSpeech.onComplete);
+                    } else {
+                        finishSpeechStep(null);
                     }
                 }
             }, 5000);
@@ -318,8 +333,7 @@ const AudioManager = (() => {
             activeUtterance = null;
             isSpeaking = false;
             speechQueue = [];
-            resumeBackgroundMusic();
-            showIdleCharacter();
+            finishSpeechStep(onComplete);
         }
     }
     
@@ -386,12 +400,26 @@ const AudioManager = (() => {
         speak(phrase, 0.95, 0.9);
     }
 
-    function playRandomLevelComplete() {
+    function playRandomLevelComplete(onComplete = null) {
         console.log('[AudioManager] playRandomLevelComplete() called');
         const phrases = SpeechPhrases.levelComplete;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
         console.log('[AudioManager] Selected levelComplete phrase:', phrase);
-        speak(phrase, 1.15, 1.3); // No priority parameter - simpler approach
+        speak(phrase, 1.15, 1.3, onComplete);
+    }
+
+    function playLevelCompleteSequence(onComplete = null) {
+        const phrases = SpeechPhrases.encourage;
+        const encouragement = phrases[Math.floor(Math.random() * phrases.length)];
+        console.log('[AudioManager] Final correct encouragement:', encouragement);
+        playSound('correct');
+        speak(encouragement, 1.1, 1.2, () => {
+            playSound('win', 0.25);
+            playRandomLevelComplete(() => {
+                resumeBackgroundMusic();
+                onComplete?.();
+            });
+        });
     }
 
     function ensureBackgroundMusic() {
@@ -466,6 +494,7 @@ const AudioManager = (() => {
         playRandomEncourage,
         playRandomDisappoint,
         playRandomLevelComplete,
+        playLevelCompleteSequence,
         toggleMute,
         isMuted,
         startBackgroundMusic,
@@ -486,6 +515,7 @@ let unsubscribeActions = null;
 let cancelDisconnect = null;
 let timerInterval = null;
 let levelAdvanceTimer = null;
+let levelAdvanceInFlight = false;
 let hostPhraseDeck = [];
 let actionQueue = Promise.resolve();
 const pendingLetters = new Set();
@@ -599,6 +629,7 @@ window.showMenu = function() {
         clearTimeout(levelAdvanceTimer);
         levelAdvanceTimer = null;
     }
+    levelAdvanceInFlight = false;
     AudioManager.stopBackgroundMusic();
     clearSession();
     unsubscribeRoom?.();
@@ -1001,8 +1032,9 @@ function updateGameFromFirebase(firebaseGameState) {
                     AudioManager.playRandomDisappoint();
                     break;
                 case 'levelComplete':
-                    AudioManager.playSound('win', 0.25);
-                    AudioManager.playRandomLevelComplete();
+                    AudioManager.playLevelCompleteSequence(() => {
+                        if (isHost) requestLevelAdvance();
+                    });
                     break;
             }
         }
@@ -1259,7 +1291,9 @@ async function processHostAction(actionId, action) {
                     state.phase = 'finished';
                 } else {
                     state.phase = 'levelComplete';
-                    state.advanceAt = Date.now() + 3000;
+                    // Safety fallback only; the host normally advances as soon
+                    // as its complete feedback sequence reports completion.
+                    state.advanceAt = Date.now() + 5000;
                 }
             }
             return serializeGameState(state);
@@ -1274,12 +1308,26 @@ async function processHostAction(actionId, action) {
     }
 }
 
-function scheduleLevelAdvance() {
-    if (!isHost || levelAdvanceTimer || gameState.phase !== 'levelComplete') return;
-    const delay = Math.max(0, gameState.advanceAt - Date.now());
-    levelAdvanceTimer = setTimeout(async () => {
+function requestLevelAdvance() {
+    if (!isHost || levelAdvanceInFlight || gameState.phase !== 'levelComplete') return;
+    if (levelAdvanceTimer) {
+        clearTimeout(levelAdvanceTimer);
         levelAdvanceTimer = null;
-        await nextLevel();
+    }
+    levelAdvanceInFlight = true;
+    nextLevel()
+        .catch(error => console.error('Failed to advance level:', error))
+        .finally(() => {
+            levelAdvanceInFlight = false;
+        });
+}
+
+function scheduleLevelAdvance() {
+    if (!isHost || levelAdvanceTimer || levelAdvanceInFlight || gameState.phase !== 'levelComplete') return;
+    const delay = Math.max(0, gameState.advanceAt - Date.now());
+    levelAdvanceTimer = setTimeout(() => {
+        levelAdvanceTimer = null;
+        requestLevelAdvance();
     }, delay);
 }
 
