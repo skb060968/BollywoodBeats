@@ -68,31 +68,26 @@ const AudioManager = (() => {
     let backgroundMusicRequested = false;
     let backgroundMusicVolume = 0.15;
     let currentSoundEffect = null;
-    let speechSynthesis = window.speechSynthesis;
+    const speechSynthesis = window.speechSynthesis;
+    let activeUtterance = null; // Keep mobile browsers from garbage-collecting it.
     let isSpeaking = false; // Track if speech is in progress
     let speechQueue = []; // Queue for pending speech
     let voicesLoaded = false;
-    let speechSupported = true; // Track if speech synthesis actually works
-    
-    // Wait for voices to load
+    const speechSupported = Boolean(speechSynthesis);
+
+    // Mobile browsers often expose voices late. An empty voice list does not
+    // mean synthesis is unsupported; the browser can still use its default.
     if (speechSynthesis) {
-        speechSynthesis.onvoiceschanged = () => {
-            voicesLoaded = true;
-            console.log('[Speech] Voices loaded:', speechSynthesis.getVoices().length);
+        const refreshVoices = () => {
+            const voices = speechSynthesis.getVoices();
+            voicesLoaded = voices.length > 0;
+            console.log(`[Speech] Voices available: ${voices.length}`);
         };
-        
-        // Check if voices are already loaded
-        setTimeout(() => {
-            if (speechSynthesis.getVoices().length > 0) {
-                voicesLoaded = true;
-                console.log('[Speech] Voices already available:', speechSynthesis.getVoices().length);
-            } else {
-                console.log('[Speech] No voices available - speech may not be supported');
-                speechSupported = false;
-            }
-        }, 100);
+        speechSynthesis.onvoiceschanged = refreshVoices;
+        refreshVoices();
+        setTimeout(refreshVoices, 500);
+        setTimeout(refreshVoices, 1500);
     } else {
-        speechSupported = false;
         console.log('[Speech] speechSynthesis API not available');
     }
 
@@ -171,24 +166,33 @@ const AudioManager = (() => {
         console.log('[Speech] speak() called with text:', text);
         
         if (isMuted()) {
-            console.log('[Speech] Muted, showing visual feedback only');
-            showTalkingCharacter();
-            setTimeout(() => {
-                if (!isSpeaking) showIdleCharacter();
-            }, 1200);
+            console.log('[Speech] Muted, keeping character idle');
+            showIdleCharacter();
             return;
         }
         
         // If speech not supported, just show visual animation
         if (!speechSynthesis || !speechSupported) {
-            console.log('[Speech] Speech not supported, showing visual-only animation');
-            showTalkingCharacter();
-            // Show talking animation for 2 seconds then switch to idle
-            setTimeout(() => {
-                if (!isSpeaking) {
-                    showIdleCharacter();
-                }
-            }, 2000);
+            console.log('[Speech] Speech not supported, keeping character idle');
+            showIdleCharacter();
+            return;
+        }
+
+        // Mobile browsers often cannot mix an HTMLAudio effect and synthesized
+        // speech. Wait for the short effect to finish before claiming audio focus.
+        const activeEffect = currentSoundEffect;
+        if (activeEffect && !activeEffect.paused && !activeEffect.ended) {
+            let continued = false;
+            const continueSpeech = () => {
+                if (continued) return;
+                continued = true;
+                activeEffect.removeEventListener('ended', continueSpeech);
+                activeEffect.removeEventListener('error', continueSpeech);
+                speak(text, rate, pitch);
+            };
+            activeEffect.addEventListener('ended', continueSpeech, { once: true });
+            activeEffect.addEventListener('error', continueSpeech, { once: true });
+            setTimeout(continueSpeech, 5000);
             return;
         }
         
@@ -200,7 +204,9 @@ const AudioManager = (() => {
         }
         
         try {
-            // Cancel any stuck speech before starting new one
+            // Mobile audio stacks frequently cannot mix looping music and TTS.
+            pauseBackgroundMusic();
+            // Cancel only after the effect has finished, then start a fresh utterance.
             speechSynthesis.cancel();
             
             isSpeaking = true;
@@ -212,26 +218,25 @@ const AudioManager = (() => {
             utterance.pitch = pitch;
             utterance.volume = 1.0;
             utterance.lang = 'en-US';
+            activeUtterance = utterance;
             
             // Select voice if available
             const voices = speechSynthesis.getVoices();
             if (voices.length > 0) {
                 const englishVoice = voices.find(v => v.lang.startsWith('en-')) || voices[0];
                 utterance.voice = englishVoice;
+                voicesLoaded = true;
                 console.log('[Speech] Using voice:', englishVoice.name);
             } else {
-                // No voices available - speech won't work
-                console.log('[Speech] No voices available, falling back to visual-only');
-                speechSupported = false;
-                isSpeaking = false;
-                showTalkingCharacter();
-                setTimeout(() => showIdleCharacter(), 2000);
-                return;
+                // Android/iOS can synthesize with the system default before
+                // getVoices() is populated, so do not reject the utterance.
+                console.log('[Speech] Voice list is still loading; using browser default');
             }
             
             // Track when speech actually starts
             utterance.onstart = () => {
                 speechStarted = true;
+                showTalkingCharacter();
                 console.log('[Speech] Speech started:', text);
             };
             
@@ -240,11 +245,13 @@ const AudioManager = (() => {
                 // Prevent double-firing of end event
                 if (speechEnded) return;
                 speechEnded = true;
+                if (activeUtterance === utterance) activeUtterance = null;
                 
                 // Only process end if speech actually started
                 if (!speechStarted) {
                     console.log('[Speech] Speech ended without starting, ignoring');
                     isSpeaking = false;
+                    resumeBackgroundMusic();
                     showIdleCharacter();
                     return;
                 }
@@ -256,10 +263,11 @@ const AudioManager = (() => {
                 if (speechQueue.length > 0) {
                     const nextSpeech = speechQueue.shift();
                     console.log('[Speech] Playing queued speech:', nextSpeech.text);
-                    // Small delay before next speech
+                    showIdleCharacter();
                     setTimeout(() => speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch), 100);
                 } else {
                     console.log('[Speech] No queued speech, switching to idle');
+                    resumeBackgroundMusic();
                     showIdleCharacter();
                 }
             };
@@ -267,40 +275,50 @@ const AudioManager = (() => {
             utterance.onerror = (err) => {
                 console.error('[Speech] Speech error:', err.error, err);
                 speechEnded = true;
+                if (activeUtterance === utterance) activeUtterance = null;
                 isSpeaking = false;
-                speechQueue = []; // Clear queue on error
+                speechQueue = [];
+                resumeBackgroundMusic();
                 showIdleCharacter();
             };
             
-            // Switch to talking character immediately
-            showTalkingCharacter();
+            // Keep idle visible while the mobile TTS engine initializes.
+            // The talking video starts only after the actual onstart event.
+            showIdleCharacter();
             
-            // Small delay before speaking to ensure browser is ready
+            // Give mobile engines a brief moment after cancel(), then resume
+            // the speech queue before submitting the retained utterance.
             setTimeout(() => {
+                if (speechEnded) return;
                 console.log('[Speech] Starting speech synthesis');
+                speechSynthesis.resume();
                 speechSynthesis.speak(utterance);
-            }, 50);
+            }, 100);
             
-            // Failsafe: if speech doesn't start within 1000ms, reset
+            // Mobile TTS services can cold-start slowly; do not cancel at 1s.
             setTimeout(() => {
-                if (!speechStarted && isSpeaking) {
-                    console.log('[Speech] Speech failed to start within 1s, resetting');
+                if (!speechStarted && !speechEnded && isSpeaking && activeUtterance === utterance) {
+                    console.log('[Speech] Speech failed to start within 5s, resetting');
+                    speechEnded = true;
                     isSpeaking = false;
+                    activeUtterance = null;
                     speechSynthesis.cancel();
+                    resumeBackgroundMusic();
                     showIdleCharacter();
                     
-                    // Try to play queued speech
                     if (speechQueue.length > 0) {
                         const nextSpeech = speechQueue.shift();
                         speak(nextSpeech.text, nextSpeech.rate, nextSpeech.pitch);
                     }
                 }
-            }, 1000);
+            }, 5000);
             
         } catch (err) {
             console.error('[Speech] Speech synthesis error:', err);
+            activeUtterance = null;
             isSpeaking = false;
-            speechQueue = []; // Clear queue on error
+            speechQueue = [];
+            resumeBackgroundMusic();
             showIdleCharacter();
         }
     }
