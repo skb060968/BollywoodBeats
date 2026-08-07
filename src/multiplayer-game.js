@@ -82,14 +82,11 @@ const AudioManager = (() => {
         const refreshVoices = () => {
             const voices = speechSynthesis.getVoices();
             voicesLoaded = voices.length > 0;
-            console.log(`[Speech] Voices available: ${voices.length}`);
         };
         speechSynthesis.onvoiceschanged = refreshVoices;
         refreshVoices();
         setTimeout(refreshVoices, 500);
         setTimeout(refreshVoices, 1500);
-    } else {
-        console.log('[Speech] speechSynthesis API not available');
     }
 
     function isMuted() {
@@ -173,17 +170,13 @@ const AudioManager = (() => {
     }
 
     function speak(text, rate = 1.0, pitch = 1.1, onComplete = null) {
-        console.log('[Speech] speak() called with text:', text);
-        
         if (isMuted()) {
-            console.log('[Speech] Muted, keeping character idle');
             finishSpeechStep(onComplete);
             return;
         }
         
         // If speech not supported, just show visual animation
         if (!speechSynthesis || !speechSupported) {
-            console.log('[Speech] Speech not supported, keeping character idle');
             finishSpeechStep(onComplete);
             return;
         }
@@ -208,7 +201,6 @@ const AudioManager = (() => {
         
         // If already speaking, queue this speech to play after current one finishes
         if (isSpeaking) {
-            console.log('[Speech] Already speaking, queueing speech:', text);
             speechQueue.push({ text, rate, pitch, onComplete });
             return;
         }
@@ -237,18 +229,12 @@ const AudioManager = (() => {
                 const englishVoice = voices.find(v => v.lang.startsWith('en-')) || voices[0];
                 utterance.voice = englishVoice;
                 voicesLoaded = true;
-                console.log('[Speech] Using voice:', englishVoice.name);
-            } else {
-                // Android/iOS can synthesize with the system default before
-                // getVoices() is populated, so do not reject the utterance.
-                console.log('[Speech] Voice list is still loading; using browser default');
             }
             
             // Track when speech actually starts
             utterance.onstart = () => {
                 speechStarted = true;
                 showTalkingCharacter();
-                console.log('[Speech] Speech started:', text);
             };
             
             // When speech ends, check queue and play next or switch to idle
@@ -260,20 +246,17 @@ const AudioManager = (() => {
                 
                 // Only process end if speech actually started
                 if (!speechStarted) {
-                    console.log('[Speech] Speech ended without starting, ignoring');
                     isSpeaking = false;
                     finishSpeechStep(onComplete);
                     return;
                 }
                 
-                console.log('[Speech] Speech ended');
                 isSpeaking = false;
                 
                 if (typeof onComplete === 'function') {
                     finishSpeechStep(onComplete);
                 } else if (speechQueue.length > 0) {
                     const nextSpeech = speechQueue.shift();
-                    console.log('[Speech] Playing queued speech:', nextSpeech.text);
                     showIdleCharacter();
                     setTimeout(() => speak(
                         nextSpeech.text,
@@ -282,7 +265,6 @@ const AudioManager = (() => {
                         nextSpeech.onComplete,
                     ), 100);
                 } else {
-                    console.log('[Speech] No queued speech, switching to idle');
                     finishSpeechStep(null);
                 }
             };
@@ -304,7 +286,6 @@ const AudioManager = (() => {
             // the speech queue before submitting the retained utterance.
             setTimeout(() => {
                 if (speechEnded) return;
-                console.log('[Speech] Starting speech synthesis');
                 speechSynthesis.resume();
                 speechSynthesis.speak(utterance);
             }, 100);
@@ -312,7 +293,6 @@ const AudioManager = (() => {
             // Mobile TTS services can cold-start slowly; do not cancel at 1s.
             setTimeout(() => {
                 if (!speechStarted && !speechEnded && isSpeaking && activeUtterance === utterance) {
-                    console.log('[Speech] Speech failed to start within 5s, resetting');
                     speechEnded = true;
                     isSpeaking = false;
                     activeUtterance = null;
@@ -345,8 +325,6 @@ const AudioManager = (() => {
         
         if (!idleVideo || !talkingVideo) return;
         
-        console.log('[Character] Switching to talking video');
-        
         // Hide and pause idle video without waiting
         if (idleVideo.style.display !== 'none') {
             idleVideo.style.display = 'none';
@@ -369,8 +347,6 @@ const AudioManager = (() => {
         
         if (!idleVideo || !talkingVideo) return;
         
-        console.log('[Character] Switching to idle video');
-        
         // Hide and pause talking video immediately (no delay)
         if (talkingVideo.style.display !== 'none') {
             talkingVideo.style.display = 'none';
@@ -387,33 +363,26 @@ const AudioManager = (() => {
     }
 
     function playRandomEncourage() {
-        console.log('[AudioManager] playRandomEncourage() called');
         const phrases = SpeechPhrases.encourage;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        console.log('[AudioManager] Selected encourage phrase:', phrase);
         speak(phrase, 1.1, 1.2);
     }
 
     function playRandomDisappoint() {
-        console.log('[AudioManager] playRandomDisappoint() called');
         const phrases = SpeechPhrases.disappoint;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        console.log('[AudioManager] Selected disappoint phrase:', phrase);
         speak(phrase, 0.95, 0.9);
     }
 
     function playRandomLevelComplete(onComplete = null) {
-        console.log('[AudioManager] playRandomLevelComplete() called');
         const phrases = SpeechPhrases.levelComplete;
         const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        console.log('[AudioManager] Selected levelComplete phrase:', phrase);
         speak(phrase, 1.15, 1.3, onComplete);
     }
 
     function playLevelCompleteSequence(onComplete = null) {
         const phrases = SpeechPhrases.encourage;
         const encouragement = phrases[Math.floor(Math.random() * phrases.length)];
-        console.log('[AudioManager] Final correct encouragement:', encouragement);
         playSound('correct');
         speak(encouragement, 1.1, 1.2, () => {
             playSound('win', 0.25);
@@ -588,7 +557,6 @@ function loadSession() {
 
 // ========== UTILITY FUNCTIONS ==========
 function showScreen(screenId) {
-    console.log('[ShowScreen] Switching to screen:', screenId);
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
     });
@@ -598,7 +566,6 @@ function showScreen(screenId) {
         if (screenId === 'gameScreen') {
             requestAnimationFrame(() => AudioManager.showIdleCharacter());
         }
-        console.log('[ShowScreen] Screen activated:', screenId);
     } else {
         console.error('[ShowScreen] Screen not found:', screenId);
     }
@@ -1021,6 +988,9 @@ window.startMultiplayerGame = async function() {
             revision: 1,
         };
         await firebaseStartGame(roomCode, serializeGameState(gameState), hostPhraseDeck);
+        console.log('[Game] Final 10 phrases:\n' + hostPhraseDeck
+            .map((phrase, index) => `${index + 1}. ${phrase.text} (${phrase.category})`)
+            .join('\n'));
         recordPhraseUsage(hostPhraseDeck);
         hideLoading();
     } catch (error) {
@@ -1572,7 +1542,6 @@ async function gameLost() {
 }
 
 function showGameOver(won) {
-    console.log('[ShowGameOver] Called with won:', won, 'IsHost:', isHost);
     stopTimer();
     const content = document.getElementById('gameOverContent');
     if (!content) {
@@ -1606,9 +1575,7 @@ function showGameOver(won) {
         `;
     }
     
-    console.log('[ShowGameOver] Calling showScreen(gameOverScreen)');
     showScreen('gameOverScreen');
-    console.log('[ShowGameOver] Screen switched');
 }
 
 window.exitToMenu = async function() {
@@ -1772,8 +1739,6 @@ if (muteBtn) {
     updateMuteButton(AudioManager.isMuted());
     muteBtn.addEventListener('click', () => updateMuteButton(AudioManager.toggleMute()));
 }
-
-console.log('Bollywood Beats Multiplayer loaded successfully!');
 
 
 // ========== SESSION RESTORATION ==========
