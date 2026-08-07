@@ -619,16 +619,49 @@ function showToast(message, isError = false) {
 
 function showLoading(message = 'Loading...') {
     const loader = document.getElementById('loadingOverlay');
-    if (loader) {
-        const textEl = loader.querySelector('.loading-text');
-        if (textEl) textEl.textContent = message;
-        loader.style.display = 'flex';
+    if (!loader) return;
+    const textEl = loader.querySelector('.loading-text');
+    const spinner = loader.querySelector('.loading-spinner');
+    const dismissButton = loader.querySelector('.loading-error-action');
+    if (textEl) textEl.textContent = message;
+    if (spinner) spinner.hidden = false;
+    if (dismissButton) dismissButton.hidden = true;
+    loader.classList.remove('error');
+    loader.setAttribute('role', 'status');
+    loader.setAttribute('aria-live', 'polite');
+    loader.setAttribute('aria-label', 'Loading');
+    loader.setAttribute('aria-busy', 'true');
+    loader.style.display = 'flex';
+}
+
+function showLoadingError(message) {
+    const loader = document.getElementById('loadingOverlay');
+    if (!loader) {
+        showToast(message, true);
+        return;
     }
+    const textEl = loader.querySelector('.loading-text');
+    const spinner = loader.querySelector('.loading-spinner');
+    const dismissButton = loader.querySelector('.loading-error-action');
+    if (textEl) textEl.textContent = message;
+    if (spinner) spinner.hidden = true;
+    if (dismissButton) {
+        dismissButton.hidden = false;
+        dismissButton.onclick = hideLoading;
+    }
+    loader.classList.add('error');
+    loader.setAttribute('role', 'alert');
+    loader.setAttribute('aria-live', 'assertive');
+    loader.setAttribute('aria-label', 'Phrase loading error');
+    loader.setAttribute('aria-busy', 'false');
+    loader.style.display = 'flex';
+    requestAnimationFrame(() => dismissButton?.focus());
 }
 
 function hideLoading() {
     const loader = document.getElementById('loadingOverlay');
     if (loader) {
+        loader.setAttribute('aria-busy', 'false');
         loader.style.display = 'none';
     }
 }
@@ -988,12 +1021,18 @@ window.startMultiplayerGame = async function() {
             revision: 1,
         };
         await firebaseStartGame(roomCode, serializeGameState(gameState), hostPhraseDeck);
+        recordPhraseUsage(hostPhraseDeck);
         hideLoading();
     } catch (error) {
         AudioManager.stopBackgroundMusic();
-        hideLoading();
+        hostPhraseDeck = [];
         console.error('Failed to start game:', error);
-        showToast('Failed to start game. Please try again.', true);
+        if (error?.code === 'PHRASE_LOAD_FAILED') {
+            showLoadingError('Phrases could not be loaded. Please check your connection and try again.');
+        } else {
+            hideLoading();
+            showToast('Failed to start game. Please try again.', true);
+        }
     }
 };
 
@@ -1597,6 +1636,9 @@ window.quitGame = async function() {
 };
 
 // ========== PHRASE LOADER ==========
+const PHRASE_USAGE_KEY = 'bollywood_beats_phrase_usage_v1';
+let phraseUsageMemory = {};
+
 function shuffleArray(array) {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -1606,73 +1648,116 @@ function shuffleArray(array) {
     return shuffled;
 }
 
+function phraseUsageKey(phrase) {
+    return JSON.stringify([phrase.category, phrase.text.toUpperCase()]);
+}
+
+function loadPhraseUsage(phrases) {
+    let storedUsage = {};
+    try {
+        const stored = JSON.parse(localStorage.getItem(PHRASE_USAGE_KEY) || '{}');
+        if (stored && typeof stored === 'object' && !Array.isArray(stored)) storedUsage = stored;
+    } catch (error) {
+        console.warn('Phrase usage history was invalid and has been reset:', error);
+    }
+
+    const currentUsage = {};
+    for (const phrase of phrases) {
+        const key = phraseUsageKey(phrase);
+        const count = storedUsage[key];
+        currentUsage[key] = Number.isSafeInteger(count) && count >= 0 ? count : 0;
+    }
+    phraseUsageMemory = currentUsage;
+    return currentUsage;
+}
+
+function selectCategoryBalanced(phrases, limit) {
+    const byCategory = new Map();
+    for (const phrase of shuffleArray(phrases)) {
+        if (!byCategory.has(phrase.category)) byCategory.set(phrase.category, []);
+        byCategory.get(phrase.category).push(phrase);
+    }
+
+    const categories = shuffleArray([...byCategory.keys()]);
+    const selected = [];
+    while (selected.length < limit) {
+        let addedPhrase = false;
+        for (const category of categories) {
+            const phrase = byCategory.get(category)?.pop();
+            if (!phrase) continue;
+            selected.push(phrase);
+            addedPhrase = true;
+            if (selected.length === limit) break;
+        }
+        if (!addedPhrase) break;
+    }
+    return selected;
+}
+
+function selectLeastUsedPhrases(phrases, limit) {
+    const usage = loadPhraseUsage(phrases);
+    const usageBuckets = new Map();
+    for (const phrase of phrases) {
+        const count = usage[phraseUsageKey(phrase)];
+        if (!usageBuckets.has(count)) usageBuckets.set(count, []);
+        usageBuckets.get(count).push(phrase);
+    }
+
+    const selected = [];
+    const counts = [...usageBuckets.keys()].sort((a, b) => a - b);
+    for (const count of counts) {
+        if (selected.length === limit) break;
+        selected.push(...selectCategoryBalanced(usageBuckets.get(count), limit - selected.length));
+    }
+    return shuffleArray(selected);
+}
+
+function recordPhraseUsage(phrases) {
+    for (const phrase of phrases) {
+        const key = phraseUsageKey(phrase);
+        phraseUsageMemory[key] = (phraseUsageMemory[key] || 0) + 1;
+    }
+    try {
+        localStorage.setItem(PHRASE_USAGE_KEY, JSON.stringify(phraseUsageMemory));
+    } catch (error) {
+        console.warn('Phrase usage history could not be saved:', error);
+    }
+}
+
 async function loadAndShufflePhrases() {
     try {
         const response = await fetch('Bollywood.xml.txt');
-        if (!response.ok) {
-            throw new Error('Failed to load phrases');
-        }
-        
+        if (!response.ok) throw new Error(`Phrase request failed with status ${response.status}`);
+
         const text = await response.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, 'text/xml');
-        
-        const categories = xmlDoc.getElementsByTagName('category');
-        const selectedPhrases = [];
-        const phrasesPerCategory = 3;
-        
-        // Load phrases from each category
-        for (let category of categories) {
-            const categoryName = category.getAttribute('name');
-            const phraseElements = category.getElementsByTagName('phrase');
-            const categoryPhrases = [];
-            
-            // Collect all phrases from this category
-            for (let phrase of phraseElements) {
-                categoryPhrases.push({
-                    text: phrase.textContent.trim(),
-                    category: categoryName
-                });
-            }
-            
-            // Shuffle once
-            const shuffled = shuffleArray(categoryPhrases);
-            
-            // Use random offset to pick from different positions each time
-            const maxOffset = Math.max(0, shuffled.length - phrasesPerCategory);
-            const startOffset = Math.floor(Math.random() * (maxOffset + 1));
-            
-            // Take phrases from random position
-            for (let i = 0; i < phrasesPerCategory && (startOffset + i) < shuffled.length; i++) {
-                selectedPhrases.push(shuffled[startOffset + i]);
+        if (xmlDoc.querySelector('parsererror')) throw new Error('Phrase XML is malformed');
+
+        const seenPhrases = new Set();
+        const validPhrases = [];
+        for (const category of xmlDoc.getElementsByTagName('category')) {
+            const categoryName = String(category.getAttribute('name') || '').trim();
+            if (!categoryName || categoryName.length > 50) continue;
+
+            for (const phraseElement of category.getElementsByTagName('phrase')) {
+                const phraseText = phraseElement.textContent.trim();
+                const phraseKey = phraseText.toUpperCase();
+                if (!phraseText || phraseText.length > 100 || !/[A-Z0-9]/i.test(phraseText)
+                    || seenPhrases.has(phraseKey)) continue;
+                seenPhrases.add(phraseKey);
+                validPhrases.push({ text: phraseText, category: categoryName });
             }
         }
-        
-        if (selectedPhrases.length === 0) {
-            throw new Error('No phrases found');
-        }
-        
-        // Shuffle once to mix categories
-        const finalShuffled = shuffleArray(selectedPhrases);
-        
-        // Take first 10 for the game
-        return finalShuffled.slice(0, 10);
-        
-    } catch (error) {
-        console.error('Failed to load phrases:', error);
-        // Fallback phrases
-        return [
-            { text: 'Shah Rukh Khan', category: 'ACTORS' },
-            { text: 'Salman Khan', category: 'ACTORS' },
-            { text: 'Aamir Khan', category: 'ACTORS' },
-            { text: 'Deepika Padukone', category: 'ACTRESSES' },
-            { text: 'Alia Bhatt', category: 'ACTRESSES' },
-            { text: 'Katrina Kaif', category: 'ACTRESSES' },
-            { text: 'Dilwale Dulhania Le Jayenge', category: 'FILMS' },
-            { text: 'Three Idiots', category: 'FILMS' },
-            { text: 'Dangal', category: 'FILMS' },
-            { text: 'Sholay', category: 'FILMS' }
-        ];
+
+        if (validPhrases.length < 10) throw new Error('Fewer than 10 valid unique phrases were found');
+        return selectLeastUsedPhrases(validPhrases, 10);
+    } catch (cause) {
+        console.error('Failed to load or validate phrases:', cause);
+        const error = new Error('Phrases could not be loaded');
+        error.code = 'PHRASE_LOAD_FAILED';
+        error.cause = cause;
+        throw error;
     }
 }
 

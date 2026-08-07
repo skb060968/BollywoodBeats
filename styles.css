@@ -1264,6 +1264,37 @@ body {
     font-weight: bold;
 }
 
+.loading-overlay.error .loading-content {
+    width: min(90vw, 460px);
+    padding: 28px;
+    border: 2px solid #ff8a80;
+    border-radius: 18px;
+    background: rgba(80, 0, 0, 0.92);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+
+.loading-overlay.error .loading-text {
+    color: white;
+    line-height: 1.4;
+}
+
+.loading-error-action {
+    margin-top: 22px;
+    padding: 11px 22px;
+    border: 0;
+    border-radius: 999px;
+    background: #FFD700;
+    color: #3a2200;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.loading-error-action:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 3px;
+}
+
 /* ========== ENHANCED CHARACTER ANIMATIONS ========== */
 .character-container {
     position: relative;

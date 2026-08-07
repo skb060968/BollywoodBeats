@@ -229,10 +229,11 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;" role="status" aria-live="polite" aria-label="Loading">
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;" role="status" aria-live="polite" aria-label="Loading" aria-busy="false">
         <div class="loading-content">
-            <div class="loading-spinner"></div>
+            <div class="loading-spinner" aria-hidden="true"></div>
             <div class="loading-text">Loading...</div>
+            <button type="button" class="loading-error-action" hidden>Return to lobby</button>
         </div>
     </div>
 
