@@ -152,7 +152,20 @@ export function listenRoom(roomCode, callbacks = {}) {
       emitGame();
     }, error => callbacks.onError?.(error)),
   ];
+  if (callbacks.onFinalRevealAcksChange) {
+    unsubscribers.push(onValue(ref(db, `${base}/finalRevealAcks`), snapshot => {
+      callbacks.onFinalRevealAcksChange(snapshot.val() || {});
+    }, error => callbacks.onError?.(error)));
+  }
   return () => unsubscribers.forEach(unsubscribe => unsubscribe());
+}
+
+export async function acknowledgeFinalReveal(roomCode, revealId) {
+  if (!Number.isSafeInteger(revealId) || revealId <= 0) {
+    throw new Error('Invalid final reveal token');
+  }
+  const user = await currentUser();
+  await set(ref(db, roomPath(roomCode, `finalRevealAcks/${user.uid}`)), revealId);
 }
 
 export async function startGame(roomCode, publicGameState, phraseDeck) {

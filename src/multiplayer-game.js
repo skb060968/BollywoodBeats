@@ -5,6 +5,7 @@
 
 import {
   ROOM_CODE_PATTERN,
+  acknowledgeFinalReveal,
   cancelDisconnectHandler,
   createRoom as firebaseCreateRoom,
   deleteRoom,
@@ -213,8 +214,9 @@ const AudioManager = (() => {
         }
         
         try {
-            // Mobile audio stacks frequently cannot mix looping music and TTS.
-            pauseBackgroundMusic();
+            // Keep the looping game music active while effects and synthesized
+            // speech play over it. Some mobile systems may temporarily duck the
+            // volume, but the app must never explicitly pause the music here.
             // Cancel only after the effect has finished, then start a fresh utterance.
             speechSynthesis.cancel();
             
@@ -516,6 +518,15 @@ let cancelDisconnect = null;
 let timerInterval = null;
 let levelAdvanceTimer = null;
 let levelAdvanceInFlight = false;
+let finalRevealAckRetryTimer = null;
+let finalRevealAckScheduledId = 0;
+let acknowledgedFinalRevealId = 0;
+let latestPlayers = {};
+let latestFinalRevealAcks = {};
+let finalizationInFlight = false;
+let finalizationRetryTimer = null;
+let finalFeedbackId = 0;
+let finalFeedbackCompleteId = 0;
 let hostPhraseDeck = [];
 let actionQueue = Promise.resolve();
 const pendingLetters = new Set();
@@ -629,7 +640,22 @@ window.showMenu = function() {
         clearTimeout(levelAdvanceTimer);
         levelAdvanceTimer = null;
     }
+    if (finalRevealAckRetryTimer) {
+        clearTimeout(finalRevealAckRetryTimer);
+        finalRevealAckRetryTimer = null;
+    }
+    if (finalizationRetryTimer) {
+        clearTimeout(finalizationRetryTimer);
+        finalizationRetryTimer = null;
+    }
     levelAdvanceInFlight = false;
+    finalRevealAckScheduledId = 0;
+    acknowledgedFinalRevealId = 0;
+    latestPlayers = {};
+    latestFinalRevealAcks = {};
+    finalizationInFlight = false;
+    finalFeedbackId = 0;
+    finalFeedbackCompleteId = 0;
     AudioManager.stopBackgroundMusic();
     clearSession();
     unsubscribeRoom?.();
@@ -760,6 +786,8 @@ function startLobbyListener() {
     unsubscribeRoom?.();
     unsubscribeActions?.();
     unsubscribeActions = null;
+    latestPlayers = {};
+    latestFinalRevealAcks = {};
 
     let finishSyncPromise = null;
     const reconcileFinishedRoom = (game) => {
@@ -791,11 +819,13 @@ function startLobbyListener() {
             if (status === 'finished') stopTimer();
         },
         onPlayersChange: (players) => {
+            latestPlayers = players;
             updatePlayersList(players);
             const host = players.player_0;
             if (!isHost && host && !host.connected) {
                 showToast('Host disconnected — game will resume when the host returns', true);
             }
+            maybeFinalizeWin();
         },
         onGameUpdate: (game, status) => {
             if (!game) return;
@@ -808,11 +838,16 @@ function startLobbyListener() {
                 if (currentScreen?.id !== 'gameScreen') {
                     showScreen('gameScreen');
                     hideLoading();
-                    startTimer();
                     AudioManager.startBackgroundMusic(0.15);
                 }
+                if (game.phase === 'active') startTimer();
+                else stopTimer();
             }
         },
+        onFinalRevealAcksChange: isHost ? (acks) => {
+            latestFinalRevealAcks = acks;
+            maybeFinalizeWin();
+        } : undefined,
         onRoomDeleted: () => {
             showToast('Room closed by host', true);
             window.showMenu();
@@ -1012,6 +1047,94 @@ function deserializeGameState(firebaseState) {
 let previousActionId = 0;
 let previousResult = 'none';
 
+function maybeShowFinalWin() {
+    if (gameState.phase !== 'finished' || gameState.gameResult !== 'won') return;
+    const revealId = gameState.lastActionId;
+    if (finalFeedbackId === revealId && finalFeedbackCompleteId !== revealId) return;
+    if (document.querySelector('.screen.active')?.id !== 'gameOverScreen') showGameOver(true);
+}
+
+function scheduleFinalRevealAcknowledgement() {
+    const revealId = gameState.lastActionId;
+    if (!roomCode || !playerUid || gameState.phase !== 'finalReveal'
+        || !Number.isSafeInteger(revealId) || revealId <= 0
+        || acknowledgedFinalRevealId === revealId || finalRevealAckScheduledId === revealId) return;
+
+    const expectedRoomCode = roomCode;
+    finalRevealAckScheduledId = revealId;
+    requestAnimationFrame(() => requestAnimationFrame(async () => {
+        if (roomCode !== expectedRoomCode || gameState.phase !== 'finalReveal'
+            || gameState.lastActionId !== revealId) {
+            if (finalRevealAckScheduledId === revealId) finalRevealAckScheduledId = 0;
+            return;
+        }
+
+        try {
+            await acknowledgeFinalReveal(expectedRoomCode, revealId);
+            acknowledgedFinalRevealId = revealId;
+        } catch (error) {
+            console.error('Failed to acknowledge final phrase render:', error);
+            if (!finalRevealAckRetryTimer) {
+                finalRevealAckRetryTimer = setTimeout(() => {
+                    finalRevealAckRetryTimer = null;
+                    scheduleFinalRevealAcknowledgement();
+                }, 1000);
+            }
+        } finally {
+            if (finalRevealAckScheduledId === revealId) finalRevealAckScheduledId = 0;
+        }
+    }));
+}
+
+function connectedPlayerUids() {
+    const uids = Object.values(latestPlayers)
+        .filter(player => player?.connected === true)
+        .map(player => player.uid)
+        .filter(uid => typeof uid === 'string' && uid.length > 0);
+    return [...new Set(uids)];
+}
+
+function scheduleFinalizationRetry() {
+    if (finalizationRetryTimer || gameState.phase !== 'finalReveal') return;
+    finalizationRetryTimer = setTimeout(() => {
+        finalizationRetryTimer = null;
+        maybeFinalizeWin();
+    }, 1000);
+}
+
+function maybeFinalizeWin() {
+    const revealId = gameState.lastActionId;
+    if (!isHost || !roomCode || finalizationInFlight || gameState.phase !== 'finalReveal'
+        || gameState.gameResult !== 'none' || !Number.isSafeInteger(revealId) || revealId <= 0) return;
+
+    const connectedUids = connectedPlayerUids();
+    if (!connectedUids.length || !connectedUids.every(uid => latestFinalRevealAcks[uid] === revealId)) return;
+
+    const expectedRoomCode = roomCode;
+    finalizationInFlight = true;
+    transactGameState(expectedRoomCode, firebaseState => {
+        const state = deserializeGameState(firebaseState);
+        if (state.phase !== 'finalReveal' || state.gameResult !== 'none'
+            || state.lastActionId !== revealId) return undefined;
+        state.gameResult = 'won';
+        state.phase = 'finished';
+        state.advanceAt = 0;
+        state.revision += 1;
+        return serializeGameState(state);
+    }).then(async transaction => {
+        if (transaction.committed) {
+            await firebaseEndGame(expectedRoomCode, transaction.snapshot.val());
+        } else if (roomCode === expectedRoomCode && gameState.phase === 'finalReveal') {
+            scheduleFinalizationRetry();
+        }
+    }).catch(error => {
+        console.error('Failed to finalize acknowledged win:', error);
+        if (roomCode === expectedRoomCode) scheduleFinalizationRetry();
+    }).finally(() => {
+        finalizationInFlight = false;
+    });
+}
+
 function updateGameFromFirebase(firebaseGameState) {
     if (!firebaseGameState) return;
     const hadPreviousAction = previousActionId !== 0;
@@ -1020,7 +1143,8 @@ function updateGameFromFirebase(firebaseGameState) {
 
     if (gameState.lastActionId !== previousActionId) {
         previousActionId = gameState.lastActionId;
-        if (hadPreviousAction) {
+        const isFinalReveal = gameState.phase === 'finalReveal' && gameState.lastAction === 'levelComplete';
+        if (hadPreviousAction || isFinalReveal) {
             switch (gameState.lastAction) {
                 case 'correct':
                 case 'lifeline':
@@ -1031,11 +1155,25 @@ function updateGameFromFirebase(firebaseGameState) {
                     AudioManager.playSound('wrong');
                     AudioManager.playRandomDisappoint();
                     break;
-                case 'levelComplete':
+                case 'levelComplete': {
+                    const completedRoomCode = roomCode;
+                    const completedActionId = gameState.lastActionId;
+                    if (isFinalReveal) {
+                        finalFeedbackId = completedActionId;
+                        finalFeedbackCompleteId = 0;
+                    }
                     AudioManager.playLevelCompleteSequence(() => {
-                        if (isHost) requestLevelAdvance();
+                        // Ignore a late media callback after leaving this room.
+                        if (roomCode !== completedRoomCode || gameState.lastActionId !== completedActionId) return;
+                        if (isFinalReveal) {
+                            finalFeedbackCompleteId = completedActionId;
+                            maybeShowFinalWin();
+                        } else if (isHost) {
+                            requestLevelAdvance();
+                        }
                     });
                     break;
+                }
             }
         }
     }
@@ -1043,11 +1181,24 @@ function updateGameFromFirebase(firebaseGameState) {
     updateGameUI();
     displayPhrase();
     createKeyboard();
-    if (isHost && gameState.phase === 'levelComplete') scheduleLevelAdvance();
 
-    if (gameState.gameResult !== 'none' && gameState.gameResult !== previousResult) {
+    if (gameState.phase === 'active') {
+        if (!timerInterval) startTimer();
+    } else {
+        stopTimer();
+    }
+    if (isHost && gameState.phase === 'levelComplete') scheduleLevelAdvance();
+    if (gameState.phase === 'finalReveal') {
+        scheduleFinalRevealAcknowledgement();
+        maybeFinalizeWin();
+    }
+
+    if (gameState.gameResult === 'lost' && gameState.gameResult !== previousResult) {
         previousResult = gameState.gameResult;
-        showGameOver(gameState.gameResult === 'won');
+        showGameOver(false);
+    } else if (gameState.gameResult === 'won' && gameState.phase === 'finished') {
+        previousResult = gameState.gameResult;
+        maybeShowFinalWin();
     }
 }
 
@@ -1122,12 +1273,17 @@ function updateTimerDisplay() {
 
 function startTimer() {
     stopTimer();
+    if (gameState.phase !== 'active' || gameState.gameResult !== 'none') return;
     const tick = () => {
+        if (gameState.phase !== 'active' || gameState.gameResult !== 'none') {
+            stopTimer();
+            return;
+        }
         gameState.timeRemaining = Math.max(0, Math.ceil((gameState.deadline - Date.now()) / 1000));
         updateTimerDisplay();
         if (gameState.timeRemaining === 0) {
             stopTimer();
-            if (isHost && gameState.gameResult === 'none') gameLost();
+            if (isHost) gameLost();
         }
     };
     tick();
@@ -1287,8 +1443,11 @@ async function processHostAction(actionId, action) {
                 state.score += 500 + (state.maxWrongGuesses - state.wrongGuesses) * 100;
                 state.lastAction = 'levelComplete';
                 if (state.currentLevel >= state.maxLevels) {
-                    state.gameResult = 'won';
-                    state.phase = 'finished';
+                    // Keep the completed phrase public and visible until every
+                    // currently connected player acknowledges rendering it.
+                    state.gameResult = 'none';
+                    state.phase = 'finalReveal';
+                    state.advanceAt = 0;
                 } else {
                     state.phase = 'levelComplete';
                     // Safety fallback only; the host normally advances as soon
@@ -1355,10 +1514,10 @@ async function nextLevel() {
 }
 
 async function gameLost() {
-    if (!isHost || gameState.gameResult !== 'none') return;
+    if (!isHost || gameState.gameResult !== 'none' || gameState.phase !== 'active') return;
     const transaction = await transactGameState(roomCode, firebaseState => {
         const state = deserializeGameState(firebaseState);
-        if (state.gameResult !== 'none') return undefined;
+        if (state.gameResult !== 'none' || state.phase !== 'active') return undefined;
         const answer = hostPhraseDeck[state.currentPhraseIndex]?.text?.toUpperCase();
         if (!answer) return undefined;
         state.phraseDisplay = answer;
