@@ -1295,7 +1295,7 @@ body {
     outline-offset: 3px;
 }
 
-/* ========== ENHANCED CHARACTER ANIMATIONS ========== */
+/* ========== MP4 CHARACTER ========== */
 .character-container {
     position: relative;
     width: 100%; /* Full width of left panel */
@@ -1304,7 +1304,6 @@ body {
     flex-shrink: 0;
 }
 
-/* Video-based character (MP4) */
 .character-video {
     position: absolute;
     top: 0;
@@ -1314,61 +1313,6 @@ body {
     object-fit: contain; /* Maintains aspect ratio without cropping */
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
     transition: opacity 0.3s ease;
-}
-
-/* Character States - Image-based animations */
-.character.idle {
-    animation: breathe 3s ease-in-out infinite;
-}
-
-.character.correct {
-    animation: jumpExcited 0.8s ease-out;
-}
-
-.character.wrong {
-    animation: shakeDisappointed 0.8s ease-out;
-}
-
-.character.celebrate {
-    animation: celebrateSpin 1.5s ease-out;
-}
-
-@keyframes breathe {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-8px) scale(1.03); }
-}
-
-@keyframes jumpExcited {
-    0% { transform: translateY(0) rotate(0deg) scale(1); }
-    20% { transform: translateY(-40px) rotate(-5deg) scale(1.1); }
-    40% { transform: translateY(-30px) rotate(5deg) scale(1.1); }
-    60% { transform: translateY(-35px) rotate(-3deg) scale(1.08); }
-    80% { transform: translateY(0) rotate(0deg) scale(1.05); }
-    100% { transform: translateY(0) rotate(0deg) scale(1); }
-}
-
-@keyframes shakeDisappointed {
-    0%, 100% { transform: translateX(0) rotate(0deg) scale(1); }
-    10% { transform: translateX(-15px) rotate(-8deg) scale(0.95); }
-    20% { transform: translateX(15px) rotate(8deg) scale(0.95); }
-    30% { transform: translateX(-12px) rotate(-6deg) scale(0.95); }
-    40% { transform: translateX(12px) rotate(6deg) scale(0.95); }
-    50% { transform: translateX(-8px) rotate(-4deg) scale(0.98); }
-    60% { transform: translateX(8px) rotate(4deg) scale(0.98); }
-    70% { transform: translateX(-5px) rotate(-2deg) scale(0.99); }
-    80% { transform: translateX(5px) rotate(2deg) scale(0.99); }
-    90% { transform: translateX(0) rotate(0deg) scale(1); }
-}
-
-@keyframes celebrateSpin {
-    0% { transform: scale(1) rotate(0deg); }
-    15% { transform: scale(1.2) rotate(-15deg); }
-    30% { transform: scale(1.25) rotate(15deg); }
-    45% { transform: scale(1.2) rotate(-10deg); }
-    60% { transform: scale(1.15) rotate(10deg); }
-    75% { transform: scale(1.1) rotate(-5deg); }
-    90% { transform: scale(1.05) rotate(5deg); }
-    100% { transform: scale(1) rotate(0deg); }
 }
 
 @keyframes pulse {

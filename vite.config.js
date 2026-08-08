@@ -8,7 +8,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html'
-        // single-player.html excluded - not needed for multiplayer deployment
       }
     }
   },

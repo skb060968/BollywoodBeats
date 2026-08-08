@@ -1078,6 +1078,14 @@ function scheduleFinalRevealAcknowledgement() {
             return;
         }
 
+        const levelDots = document.querySelectorAll('#levelsDots .level-dot');
+        const finalLevelDot = levelDots[levelDots.length - 1];
+        if (levelDots.length !== gameState.maxLevels || !finalLevelDot?.classList.contains('completed')) {
+            if (finalRevealAckScheduledId === revealId) finalRevealAckScheduledId = 0;
+            requestAnimationFrame(() => scheduleFinalRevealAcknowledgement());
+            return;
+        }
+
         try {
             await acknowledgeFinalReveal(expectedRoomCode, revealId);
             acknowledgedFinalRevealId = revealId;
@@ -1217,14 +1225,23 @@ function updateGameUI() {
     const scoreEl = document.getElementById('scoreDisplay');
     if (scoreEl) scoreEl.textContent = gameState.score;
     
-    // Update level dots
+    // Update level dots. The current dot becomes complete as soon as its
+    // phrase is solved, rather than waiting for the next level to begin.
     const levelsDots = document.getElementById('levelsDots');
     if (levelsDots) {
+        const currentLevelIsComplete = gameState.phase === 'levelComplete'
+            || gameState.phase === 'finalReveal'
+            || (gameState.phase === 'finished' && gameState.gameResult === 'won');
+        const completedLevels = Math.min(
+            gameState.maxLevels,
+            Math.max(0, gameState.currentLevel - (currentLevelIsComplete ? 0 : 1)),
+        );
+
         levelsDots.innerHTML = '';
         for (let i = 0; i < gameState.maxLevels; i++) {
             const dot = document.createElement('div');
             dot.className = 'level-dot';
-            if (i < gameState.currentLevel - 1) {
+            if (i < completedLevels) {
                 dot.classList.add('completed');
             }
             levelsDots.appendChild(dot);
