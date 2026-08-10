@@ -243,9 +243,9 @@
     <!-- Update Toast Notification -->
     <div id="updateToast" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; padding: 15px 25px; border-radius: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 10001; font-family: 'Arial Black', sans-serif; text-align: center; min-width: 300px;">
         <div style="font-size: 1.1rem; margin-bottom: 8px;">🎉 New Update Available!</div>
-        <div style="font-size: 0.9rem; margin-bottom: 12px; opacity: 0.9;">Refresh to get the latest version</div>
-        <button onclick="reloadForUpdate()" style="background: white; color: #388E3C; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">Reload Now</button>
-        <button onclick="dismissUpdate()" style="background: transparent; color: white; border: 2px solid white; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 0.9rem;">Later</button>
+        <div id="updateToastMessage" style="font-size: 0.9rem; margin-bottom: 12px; opacity: 0.9;">Refresh to get the latest version</div>
+        <button id="updateToastReload" onclick="reloadForUpdate()" style="background: white; color: #388E3C; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">Reload Now</button>
+        <button id="updateToastLater" onclick="dismissUpdate()" style="background: transparent; color: white; border: 2px solid white; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 0.9rem;">Later</button>
     </div>
 
     <style>
@@ -312,18 +312,45 @@
                 .catch(err => console.error('[SW] Registration failed:', err));
         }
 
+        function setUpdateToastProgress(isUpdating, message = null) {
+            const toast = document.getElementById('updateToast');
+            const reloadButton = document.getElementById('updateToastReload');
+            const laterButton = document.getElementById('updateToastLater');
+            const messageElement = document.getElementById('updateToastMessage');
+            if (reloadButton) {
+                reloadButton.disabled = isUpdating;
+                reloadButton.textContent = isUpdating ? 'Updating…' : 'Reload Now';
+                reloadButton.style.cursor = isUpdating ? 'wait' : 'pointer';
+                reloadButton.style.opacity = isUpdating ? '0.7' : '1';
+                reloadButton.toggleAttribute('aria-busy', isUpdating);
+            }
+            if (laterButton) {
+                laterButton.disabled = isUpdating;
+                laterButton.style.cursor = isUpdating ? 'wait' : 'pointer';
+                laterButton.style.opacity = isUpdating ? '0.7' : '1';
+            }
+            if (messageElement) messageElement.textContent = message || (isUpdating
+                ? 'Applying update… The app will reload automatically.'
+                : 'Refresh to get the latest version');
+            if (toast) toast.toggleAttribute('aria-busy', isUpdating);
+        }
+
         function showUpdateToast() {
             const toast = document.getElementById('updateToast');
             if (toast) {
                 console.log('[SW] Showing update toast');
+                setUpdateToastProgress(false);
                 toast.style.display = 'block';
                 toast.style.animation = 'slideUp 0.5s ease-out';
             }
         }
 
         function reloadForUpdate() {
+            const reloadButton = document.getElementById('updateToastReload');
+            if (reloadButton?.disabled) return;
             console.log('[SW] User requested reload');
-            
+            setUpdateToastProgress(true);
+
             // Get the waiting service worker
             navigator.serviceWorker.getRegistration().then(reg => {
                 if (reg && reg.waiting) {
@@ -332,8 +359,13 @@
                     reg.waiting.postMessage({ type: 'SKIP_WAITING' });
                 } else {
                     console.log('[SW] No waiting worker, reloading directly');
-                    window.location.reload();
+                    requestAnimationFrame(() => requestAnimationFrame(() => window.location.reload()));
                 }
+            }).catch(error => {
+                console.error('[SW] Could not apply update:', error);
+                setUpdateToastProgress(false, 'Update could not start. Please try again.');
+                const button = document.getElementById('updateToastReload');
+                if (button) button.textContent = 'Try again';
             });
         }
 
