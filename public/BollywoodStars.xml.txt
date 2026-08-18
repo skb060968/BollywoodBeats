@@ -102,7 +102,7 @@
       <phrase>Chunky Pandey</phrase>
 	  <phrase>Rajkummar Rao</phrase>
       <phrase>Ram Kapoor</phrase>
-	  
+	  <phrase>Sushant Singh Rajput</phrase>
       </category>
     <category name="BOLLYWOOD HEROINE"> 
       <phrase>Shraddha Kapoor</phrase>
@@ -149,6 +149,7 @@
       <phrase>Tara Sutaria</phrase>
       <phrase>Esha Gupta</phrase>
       <phrase>Amrita Rao</phrase>
+	  <phrase>Urmila Matondkar</phrase>
       </category>
     <category name="SOUTH INDIAN FILM STAR">
       <phrase>Ram Charan</phrase>

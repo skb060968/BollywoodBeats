@@ -112,6 +112,7 @@
 	  <phrase>Kamal Haasan</phrase>
       <phrase>Rajinikanth</phrase>
       <phrase>Madhavan</phrase>
+	  <phrase>Sushant Singh Rajput</phrase>
       </category>
     <category name="BOLLYWOOD HEROINE"> 
       <phrase>Shraddha Kapoor</phrase>
@@ -136,7 +137,7 @@
       <phrase>Madhuri Dixit</phrase>
       <phrase>Kajol</phrase>
       <phrase>Tabu</phrase>
-	    <phrase>Sai Pallavi</phrase>
+	  <phrase>Sai Pallavi</phrase>
       <phrase>Pooja Hegde</phrase>
       <phrase>Rashmika Mandanna</phrase>
       <phrase>Shruti Haasan</phrase>
@@ -162,6 +163,7 @@
       <phrase>Tara Sutaria</phrase>
       <phrase>Esha Gupta</phrase>
       <phrase>Amrita Rao</phrase>
+	  <phrase>Urmila Matondkar</phrase>
       </category>
     <category name="FILMS">
       <phrase>Dhurandhar The Revenge</phrase>
