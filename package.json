@@ -18,6 +18,9 @@
   "license": "ISC",
   "dependencies": {
     "firebase": "^12.16.0",
+    "jose": "^6.2.10",
+    "livekit-client": "^2.22.0",
+    "livekit-server-sdk": "^2.18.0",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {

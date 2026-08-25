@@ -1,4 +1,4 @@
-const CACHE_VERSION = '4.1.0';
+const CACHE_VERSION = '4.2.0';
 const CACHE_PREFIX = 'bollywood-beats-';
 const CACHE_NAME = `${CACHE_PREFIX}v${CACHE_VERSION}`;
 const APP_SHELL = [
@@ -25,6 +25,9 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   const isFirebase = /(^|\.)(firebaseio\.com|firebasedatabase\.app|firebaseapp\.com|googleapis\.com)$/.test(url.hostname);
   if (url.origin !== self.location.origin || isFirebase) return;
+
+  // Never intercept/cache API calls (e.g. the LiveKit token endpoint).
+  if (url.pathname.startsWith('/api/')) return;
 
   // Cache Storage cannot store 206 Partial Content responses. Media elements
   // commonly use Range requests, so let those requests pass through untouched.

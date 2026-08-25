@@ -8,13 +8,13 @@ import { getAuth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyD87l2vtWyiwoH3IV5hdvA2e1QQd3CeOXU',
-  authDomain: 'snakes-and-ladders3d.firebaseapp.com',
-  databaseURL: 'https://snakes-and-ladders3d-default-rtdb.asia-southeast1.firebasedatabase.app',
-  projectId: 'snakes-and-ladders3d',
-  storageBucket: 'snakes-and-ladders3d.firebasestorage.app',
-  messagingSenderId: '954516346847',
-  appId: '1:954516346847:web:7bcb2989c8b64986c2d66a',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);

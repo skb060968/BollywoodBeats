@@ -23,6 +23,8 @@ import {
   transactGameState,
 } from './firebase-sync.js';
 import { initDeepLinkHandler, createShareHandler, showQRCode } from './deep-link-handler.js';
+import { authReady } from './firebase-config.js';
+import { mountVoiceChat } from './voice-chat-widget.js';
 
 // ========== SPEECH PHRASES ==========
 const SpeechPhrases = {
@@ -498,7 +500,32 @@ let finalFeedbackId = 0;
 let finalFeedbackCompleteId = 0;
 let hostPhraseDeck = [];
 let actionQueue = Promise.resolve();
+let voiceWidget = null;
 const pendingLetters = new Set();
+
+/**
+ * Mounts the standardized voice-chat widget once we're in a room and on the
+ * game screen. Idempotent — safe to call on every game-screen entry. Voice is
+ * opt-in and isolated; any failure only updates the widget button.
+ */
+function mountVoice() {
+    if (voiceWidget || roomCode == null || playerIndex == null) return;
+    voiceWidget = mountVoiceChat({
+        mount: '#voice-widget',
+        game: 'bollywoodbeats',
+        getRoomCode: () => roomCode,
+        getIdentity: () => (playerIndex != null ? `player_${playerIndex}` : null),
+        getDisplayName: () => latestPlayers?.[`player_${playerIndex}`]?.name || 'Player',
+        getIdToken: async () => (await authReady).getIdToken(),
+        notify: (message) => showToast(message, true),
+    });
+}
+
+function stopVoice() {
+    if (voiceWidget) {
+        try { voiceWidget.stop(); } catch (_) {}
+    }
+}
 
 const SESSION_KEY = 'bollywood_beats_session_v2';
 
@@ -657,6 +684,7 @@ window.showMenu = function() {
     finalFeedbackId = 0;
     finalFeedbackCompleteId = 0;
     AudioManager.stopBackgroundMusic();
+    stopVoice();
     clearSession();
     unsubscribeRoom?.();
     unsubscribeActions?.();
@@ -839,6 +867,7 @@ function startLobbyListener() {
                     showScreen('gameScreen');
                     hideLoading();
                     AudioManager.startBackgroundMusic(0.15);
+                    mountVoice();
                 }
                 if (game.phase === 'active') startTimer();
                 else stopTimer();
@@ -1788,6 +1817,7 @@ async function restoreSession() {
             showScreen('gameScreen');
             startTimer();
             AudioManager.startBackgroundMusic(0.15);
+            mountVoice();
             showToast('Reconnected to game');
             return true;
         }
