@@ -89,6 +89,11 @@ export async function createRoom(hostName) {
   throw new Error('Could not reserve a room code. Please try again.');
 }
 
+function isPermissionDenied(error) {
+  const blob = `${error?.code || ''} ${error?.message || ''}`.toLowerCase();
+  return blob.includes('permission');
+}
+
 export async function joinRoom(rawRoomCode, playerName) {
   const user = await currentUser();
   const roomCode = String(rawRoomCode || '').trim().toUpperCase();
@@ -99,34 +104,45 @@ export async function joinRoom(rawRoomCode, playerName) {
   if (metaSnapshot.val().status !== 'lobby') throw new Error('Game already started');
 
   const playersRef = ref(db, roomPath(roomCode, 'players'));
-  let playerIndex = null;
-  let existingPlayer = false;
-  const result = await runTransaction(playersRef, current => {
-    const players = current || {};
-    const existing = Object.entries(players).find(([, player]) => player.uid === user.uid);
-    if (existing) {
-      playerIndex = Number(existing[0].slice('player_'.length));
-      existingPlayer = true;
-      return undefined;
+  let players = (await get(playersRef)).val() || {};
+
+  // If this browser's uid already holds a slot, restore its connection rather
+  // than taking a new one.
+  const ownedKey = Object.keys(players).find((key) => players[key]?.uid === user.uid);
+  if (ownedKey) {
+    const idx = Number(ownedKey.slice('player_'.length));
+    await restoreConnection(roomCode, idx);
+    return { playerIndex: idx, uid: user.uid };
+  }
+
+  // Claim the lowest free slot with a PER-CHILD create transaction. Writing only
+  // our own `players/player_N` node (never the whole players map) means we can
+  // never displace another player, and the rules authorize each slot on its own.
+  for (let index = 1; index < MAX_PLAYERS; index += 1) {
+    const key = `player_${index}`;
+    if (players[key]) continue;
+    try {
+      const result = await runTransaction(
+        ref(db, roomPath(roomCode, `players/${key}`)),
+        current => (current === null
+          ? { name, uid: user.uid, connected: true, joinedAt: serverTimestamp() }
+          : undefined),
+        { applyLocally: false },
+      );
+      if (result.committed) return { playerIndex: index, uid: user.uid };
+      // Slot was taken between our read and the write — refresh and try the next.
+      players = (await get(playersRef)).val() || {};
+    } catch (error) {
+      if (!isPermissionDenied(error)) throw error;
+      // Rules rejected (slot raced, or the lobby just closed). Re-read to decide.
+      players = (await get(playersRef)).val() || {};
+      const mine = Object.keys(players).find((k) => players[k]?.uid === user.uid);
+      if (mine) return { playerIndex: Number(mine.slice('player_'.length)), uid: user.uid };
+      const status = (await get(ref(db, roomPath(roomCode, 'meta/status')))).val();
+      if (status !== 'lobby') throw new Error('Game already started');
     }
-
-    playerIndex = Array.from({ length: MAX_PLAYERS - 1 }, (_, index) => index + 1)
-      .find(index => !players[`player_${index}`]);
-    if (playerIndex == null) return undefined;
-    return {
-      ...players,
-      [`player_${playerIndex}`]: {
-        name,
-        uid: user.uid,
-        connected: true,
-        joinedAt: serverTimestamp(),
-      },
-    };
-  }, { applyLocally: false });
-
-  if (!result.committed && !existingPlayer) throw new Error('Room is full');
-  if (existingPlayer) await restoreConnection(roomCode, playerIndex);
-  return { playerIndex, uid: user.uid };
+  }
+  throw new Error('Room is full');
 }
 
 export function listenRoom(roomCode, callbacks = {}) {
