@@ -480,18 +480,29 @@ body {
 
 /* Game Title Bar */
 .game-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(8px, 1.5vw, 16px);
     background: rgba(0,0,0,0.2);
     border-radius: clamp(5px, 10px, 15px);
     padding: clamp(3px, 0.5vh, 1vh) clamp(8px, 1vw, 2vw);
-    text-align: center;
 }
 
 .game-title-bar h1 {
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: clamp(0.9rem, 2vh, 2.5rem);
     color: #FFD700;
     margin: 0;
+    text-align: center;
     text-shadow: 2px 2px 0 #8B0000, 3px 3px 0 rgba(0,0,0,0.3);
     line-height: 1.2;
+}
+
+/* Voice pill sits at the right of the title bar (does not grow/shrink). */
+.game-title-bar #voice-widget {
+    flex: 0 0 auto;
 }
 
 /* Status Bar - Flexible responsive layout */
