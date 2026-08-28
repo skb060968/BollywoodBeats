@@ -6,6 +6,7 @@
 import { db, authReady } from './firebase-config.js';
 import {
   get,
+  off,
   onChildAdded,
   onDisconnect,
   onValue,
@@ -253,11 +254,30 @@ export async function setupDisconnectHandler(roomCode, playerIndex) {
   const key = `${roomCode}:${playerIndex}`;
   await disconnectRegistrations.get(key)?.cancel().catch(() => {});
   const connectedRef = ref(db, roomPath(roomCode, `players/player_${playerIndex}/connected`));
-  const registration = onDisconnect(connectedRef);
-  await registration.set(false);
-  disconnectRegistrations.set(key, registration);
+  const infoRef = ref(db, '.info/connected');
+  let registration = null;
+  let disposed = false;
+  // Re-arm the offline write and self-heal `connected=true` on every (re)connect,
+  // so a brief drop that fired onDisconnect is undone automatically.
+  const handler = async (snapshot) => {
+    if (!snapshot.val() || disposed) return;
+    try {
+      registration = onDisconnect(connectedRef);
+      await registration.set(false);
+      if (!disposed) await set(connectedRef, true);
+    } catch (_) { /* transient presence write failure */ }
+  };
+  onValue(infoRef, handler);
+  const entry = {
+    async cancel() {
+      disposed = true;
+      off(infoRef, 'value', handler);
+      if (registration) { try { await registration.cancel(); } catch (_) {} }
+    },
+  };
+  disconnectRegistrations.set(key, entry);
   return async () => {
-    await registration.cancel().catch(() => {});
+    await entry.cancel();
     disconnectRegistrations.delete(key);
   };
 }

@@ -493,6 +493,12 @@ let finalRevealAckRetryTimer = null;
 let finalRevealAckScheduledId = 0;
 let acknowledgedFinalRevealId = 0;
 let latestPlayers = {};
+
+/* Lobby presence: a dropped player lingers briefly with the offline dot, then is
+   pruned. The host (player_0) and the local player are never hidden. */
+const LOBBY_PRUNE_DELAY_MS = 2500;
+let lobbyDisconnectedSince = {};
+let lobbyPruneTimer = null;
 let latestFinalRevealAcks = {};
 let finalizationInFlight = false;
 let finalizationRetryTimer = null;
@@ -894,6 +900,35 @@ function startLobbyListener() {
     }
 }
 
+/** Connected players, the host (player_0), and the local player always show; a
+    dropped player lingers with the offline dot, then is pruned. */
+function isBBPlayerVisible(key, player) {
+    if (player?.connected !== false) return true;
+    if (key === 'player_0' || key === `player_${playerIndex}`) return true;
+    const since = lobbyDisconnectedSince[key];
+    return typeof since === 'number' && Date.now() - since < LOBBY_PRUNE_DELAY_MS;
+}
+
+/** Track when each player first went offline so a dropped row can linger then prune. */
+function trackBBDisconnections(players) {
+    const stamp = Date.now();
+    const next = {};
+    let pruneNeeded = false;
+    Object.keys(players).forEach((key) => {
+        if (players[key]?.name && players[key]?.connected === false) {
+            next[key] = lobbyDisconnectedSince[key] || stamp;
+            const prunable = key !== 'player_0' && key !== `player_${playerIndex}`;
+            if (prunable && stamp - next[key] < LOBBY_PRUNE_DELAY_MS) pruneNeeded = true;
+        }
+    });
+    lobbyDisconnectedSince = next;
+    if (!pruneNeeded || lobbyPruneTimer !== null) return;
+    lobbyPruneTimer = setTimeout(() => {
+        lobbyPruneTimer = null;
+        updatePlayersList(latestPlayers);
+    }, LOBBY_PRUNE_DELAY_MS);
+}
+
 function updatePlayersList(players) {
     const list = document.getElementById('playersList');
     if (!list) return;
@@ -903,13 +938,18 @@ function updatePlayersList(players) {
         return;
     }
     list.innerHTML = '';
-    
-    const playerEntries = Object.entries(players).sort((a, b) => {
-        const indexA = parseInt(a[0].split('_')[1]);
-        const indexB = parseInt(b[0].split('_')[1]);
-        return indexA - indexB;
-    });
-    
+
+    trackBBDisconnections(players);
+    // Only named players are real; no-name nodes are stale onDisconnect ghosts.
+    const namedEntries = Object.entries(players).filter(([, player]) => player && player.name);
+    const playerEntries = namedEntries
+        .filter(([key, player]) => isBBPlayerVisible(key, player))
+        .sort((a, b) => parseInt(a[0].split('_')[1]) - parseInt(b[0].split('_')[1]));
+
+    const connectedCount = namedEntries.filter(([, player]) => player.connected !== false).length;
+    const startBtn = document.getElementById('startGameBtn');
+    if (startBtn && isHost) startBtn.disabled = connectedCount < 1;
+
     playerEntries.forEach(([key, player]) => {
         const playerDiv = document.createElement('div');
         playerDiv.className = 'player-item';
@@ -980,6 +1020,12 @@ window.removePlayer = async function(playerKey, playerName) {
 // ========== GAME START ==========
 window.startMultiplayerGame = async function() {
     if (!isHost) return;
+
+    const connectedCount = Object.values(latestPlayers).filter((p) => p?.name && p?.connected !== false).length;
+    if (connectedCount < 1) {
+        showToast('Waiting for players to connect…', true);
+        return;
+    }
 
     // Start during the trusted button gesture so mobile autoplay policies allow it.
     AudioManager.startBackgroundMusic(0.15);
