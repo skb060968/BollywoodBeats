@@ -3,6 +3,11 @@
  * Real-time collaborative phrase guessing game
  */
 
+// On-device diagnostics: records failures to localStorage and adds a 5-tap
+// viewer with a Copy button. Import-only integration; must come first so
+// startup errors are captured too.
+import './diagnostics.js';
+
 import {
   ROOM_CODE_PATTERN,
   acknowledgeFinalReveal,
