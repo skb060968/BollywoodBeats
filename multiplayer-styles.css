@@ -382,3 +382,20 @@
     opacity: 1;
   }
 }
+
+/* =========================================================
+   CENTERED CARD (STANDARD — adopted from Dots & Boxes, Sep 2026)
+   Create / Join / Lobby content sits on one translucent card. The screen is
+   already centred both ways by .screen.active; landscape phones are short, so
+   the padding is capped with svh.
+   ========================================================= */
+.lobby-container {
+  width: min(100%, 600px);
+  padding: clamp(10px, 2.5svh, 24px) clamp(14px, 3vw, 24px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: clamp(16px, 3svh, 24px);
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
