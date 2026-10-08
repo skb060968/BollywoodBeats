@@ -83,6 +83,31 @@ const AudioManager = (() => {
     let voicesLoaded = false;
     const speechSupported = Boolean(speechSynthesis);
 
+    // Pick the best English voice the device exposes rather than its default (often the
+    // low-quality "compact" voice that mispronounces words). A web app can only choose among
+    // the selected TTS engine's voices; it cannot switch engines or reach Bixby/Gemini voices.
+    const pickEnglishVoice = () => {
+        if (!speechSynthesis) return null;
+        const voices = speechSynthesis.getVoices();
+        if (!voices || !voices.length) return null;
+        const score = (v) => {
+            const n = (v.name || '').toLowerCase();
+            const lang = (v.lang || '').replace('_', '-').toLowerCase();
+            if (!/^en-/.test(lang)) return -100;
+            let s = 0;
+            if (/compact|eloquence/.test(n)) s -= 50;
+            if (/natural|neural/.test(n)) s += 6;
+            if (/google/.test(n)) s += 5;
+            if (/siri|enhanced|premium/.test(n)) s += 5;
+            if (!v.localService) s += 3;
+            if (lang === 'en-in') s += 3; else if (lang === 'en-us' || lang === 'en-gb') s += 1;
+            return s;
+        };
+        let best = null, bestScore = -Infinity;
+        for (const v of voices) { const sc = score(v); if (sc > bestScore) { bestScore = sc; best = v; } }
+        return bestScore > -100 ? best : null;
+    };
+
     // Mobile browsers often expose voices late. An empty voice list does not
     // mean synthesis is unsupported; the browser can still use its default.
     if (speechSynthesis) {
@@ -230,11 +255,13 @@ const AudioManager = (() => {
             utterance.lang = 'en-US';
             activeUtterance = utterance;
             
-            // Select voice if available
-            const voices = speechSynthesis.getVoices();
-            if (voices.length > 0) {
-                const englishVoice = voices.find(v => v.lang.startsWith('en-')) || voices[0];
-                utterance.voice = englishVoice;
+            // Select the BEST English voice, not just the first. The device default /
+            // first en- voice is often the low-quality "compact" voice that mispronounces
+            // words; prefer Google / neural voices and avoid "compact"/"eloquence".
+            const bestVoice = pickEnglishVoice();
+            if (bestVoice) {
+                utterance.voice = bestVoice;
+                utterance.lang = bestVoice.lang || 'en-US';
                 voicesLoaded = true;
             }
             
