@@ -100,9 +100,10 @@
       <phrase>Bobby Deol</phrase>
       <phrase>Jaaved Jaaferi</phrase>
       <phrase>Chunky Pandey</phrase>
-	  <phrase>Rajkummar Rao</phrase>
+      <phrase>Rajkummar Rao</phrase>
       <phrase>Ram Kapoor</phrase>
-	  <phrase>Sushant Singh Rajput</phrase>
+      <phrase>Sushant Singh Rajput</phrase>
+      <phrase>Pankaj Tripathi</phrase>
       </category>
     <category name="BOLLYWOOD HEROINE"> 
       <phrase>Shraddha Kapoor</phrase>

@@ -83,7 +83,7 @@
       <phrase>Kulbhushan Kharbanda</phrase>
       <phrase>Om Prakash</phrase>
       <phrase>Rahul Bose</phrase>
-	  <phrase>Ram Charan</phrase>
+      <phrase>Ram Charan</phrase>
       <phrase>Prabhas</phrase>
       <phrase>Jr NTR</phrase>
       <phrase>Yash</phrase>
@@ -107,12 +107,13 @@
       <phrase>Bobby Deol</phrase>
       <phrase>Jaaved Jaaferi</phrase>
       <phrase>Chunky Pandey</phrase>
-	  <phrase>Rajkummar Rao</phrase>
+      <phrase>Rajkummar Rao</phrase>
       <phrase>Ram Kapoor</phrase>
-	  <phrase>Kamal Haasan</phrase>
+      <phrase>Kamal Haasan</phrase>
       <phrase>Rajinikanth</phrase>
       <phrase>Madhavan</phrase>
-	  <phrase>Sushant Singh Rajput</phrase>
+      <phrase>Sushant Singh Rajput</phrase>
+      <phrase>Pankaj Tripathi</phrase>
       </category>
     <category name="BOLLYWOOD HEROINE"> 
       <phrase>Shraddha Kapoor</phrase>
@@ -137,7 +138,7 @@
       <phrase>Madhuri Dixit</phrase>
       <phrase>Kajol</phrase>
       <phrase>Tabu</phrase>
-	  <phrase>Sai Pallavi</phrase>
+      <phrase>Sai Pallavi</phrase>
       <phrase>Pooja Hegde</phrase>
       <phrase>Rashmika Mandanna</phrase>
       <phrase>Shruti Haasan</phrase>
@@ -163,7 +164,7 @@
       <phrase>Tara Sutaria</phrase>
       <phrase>Esha Gupta</phrase>
       <phrase>Amrita Rao</phrase>
-	  <phrase>Urmila Matondkar</phrase>
+      <phrase>Urmila Matondkar</phrase>
       </category>
     <category name="FILMS">
       <phrase>Dhurandhar The Revenge</phrase>
@@ -410,7 +411,7 @@
       <phrase>Once Upon Ay Time In Mumbai Dobaara!</phrase>
       <phrase>Tees Maar Khan</phrase>
       <phrase>Race</phrase>
-    </category>
+      </category>
     <category name="PLAYBACK SINGERS">
       <phrase>Lata Mangeshkar</phrase>
       <phrase>Asha Bhosle</phrase>
@@ -447,5 +448,5 @@
       <phrase>Diljit Dosanjh</phrase>
       <phrase>B Praak</phrase>
       <phrase>Palak Muchhal</phrase>
-    </category>
+      </category>
 </bollywood_phrases>
