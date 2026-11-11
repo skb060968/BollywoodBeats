@@ -22,6 +22,8 @@ import {
   removeGameAction,
   removePlayer as firebaseRemovePlayer,
   restoreConnection,
+  serverClockReady,
+  serverNow,
   setupDisconnectHandler,
   startGame as firebaseStartGame,
   submitGameAction,
@@ -540,6 +542,18 @@ let hostPhraseDeck = [];
 let actionQueue = Promise.resolve();
 let voiceWidget = null;
 const pendingLetters = new Set();
+// The rules allow one pending action per player (actions/{uid} must not exist),
+// so quick taps are queued and each guess is sent once the previous one is gone.
+const guessQueue = [];
+let guessPumpRunning = false;
+const GUESS_RETRY_MS = 400;
+const GUESS_GIVE_UP_MS = 10000;
+// Level/phase last seen: pending letters are dropped when either changes, because
+// the host discards actions that arrive outside the phase they were sent in.
+let pendingSeenLevel = null;
+let pendingSeenPhase = null;
+// Host presence last seen, so "Host disconnected" is shown once per drop.
+let hostSeenConnected = null;
 
 /**
  * Mounts the standardized voice-chat widget once we're in a room and on the
@@ -736,6 +750,10 @@ window.showMenu = function() {
     isHost = false;
     hostPhraseDeck = [];
     pendingLetters.clear();
+    guessQueue.length = 0;
+    pendingSeenLevel = null;
+    pendingSeenPhase = null;
+    hostSeenConnected = null;
     previousActionId = 0;
     previousResult = 'none';
     showScreen('menuScreen');
@@ -854,6 +872,7 @@ function startLobbyListener() {
     unsubscribeActions = null;
     latestPlayers = {};
     latestFinalRevealAcks = {};
+    hostSeenConnected = null;
 
     let finishSyncPromise = null;
     const reconcileFinishedRoom = (game) => {
@@ -888,9 +907,12 @@ function startLobbyListener() {
             latestPlayers = players;
             updatePlayersList(players);
             const host = players.player_0;
-            if (!isHost && host && !host.connected) {
+            const hostConnected = host ? Boolean(host.connected) : null;
+            // Only when the host's flag changes to false, not on every players snapshot.
+            if (!isHost && host && !hostConnected && hostSeenConnected !== false) {
                 showToast('Host disconnected — game will resume when the host returns', true);
             }
+            hostSeenConnected = hostConnected;
             maybeFinalizeWin();
         },
         onGameUpdate: (game, status) => {
@@ -1068,8 +1090,10 @@ window.startMultiplayerGame = async function() {
         previousActionId = 0;
         previousResult = 'none';
         pendingLetters.clear();
+        guessQueue.length = 0;
         const phraseData = hostPhraseDeck[0];
-        const now = Date.now();
+        await serverClockReady();
+        const now = serverNow();   // deadline is checked against server time
         gameState = {
             currentPhraseIndex: 0,
             phraseDisplay: maskPhrase(phraseData.text),
@@ -1155,7 +1179,7 @@ function deserializeGameState(firebaseState) {
         guessedLetters: new Set(firebaseState.guessedLetters || ''),
         correctLetters: new Set(firebaseState.correctLetters || ''),
         lifelinesUsed: String(firebaseState.lifelinesUsed || '000').split('').map(value => value === '1'),
-        timeRemaining: Math.max(0, Math.ceil((deadline - Date.now()) / 1000)),
+        timeRemaining: Math.max(0, Math.ceil((deadline - serverNow()) / 1000)),
         deadline,
     };
 }
@@ -1178,7 +1202,7 @@ function scheduleFinalRevealAcknowledgement() {
 
     const expectedRoomCode = roomCode;
     finalRevealAckScheduledId = revealId;
-    requestAnimationFrame(() => requestAnimationFrame(async () => {
+    afterPaintOrTimeout(async () => {
         if (roomCode !== expectedRoomCode || gameState.phase !== 'finalReveal'
             || gameState.lastActionId !== revealId) {
             if (finalRevealAckScheduledId === revealId) finalRevealAckScheduledId = 0;
@@ -1189,7 +1213,7 @@ function scheduleFinalRevealAcknowledgement() {
         const finalLevelDot = levelDots[levelDots.length - 1];
         if (levelDots.length !== gameState.maxLevels || !finalLevelDot?.classList.contains('completed')) {
             if (finalRevealAckScheduledId === revealId) finalRevealAckScheduledId = 0;
-            requestAnimationFrame(() => scheduleFinalRevealAcknowledgement());
+            afterPaintOrTimeout(() => scheduleFinalRevealAcknowledgement());
             return;
         }
 
@@ -1207,7 +1231,23 @@ function scheduleFinalRevealAcknowledgement() {
         } finally {
             if (finalRevealAckScheduledId === revealId) finalRevealAckScheduledId = 0;
         }
-    }));
+    });
+}
+
+/** Runs `callback` after the next paint, or after a timer if no frame comes:
+ *  requestAnimationFrame never fires in a hidden tab, and the host waits for an
+ *  ack from every connected player before finishing the game. */
+function afterPaintOrTimeout(callback, timeoutMs = 300) {
+    let done = false;
+    let timer = null;
+    const run = () => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        callback();
+    };
+    timer = setTimeout(run, timeoutMs);
+    requestAnimationFrame(() => requestAnimationFrame(run));
 }
 
 function connectedPlayerUids() {
@@ -1263,6 +1303,14 @@ function updateGameFromFirebase(firebaseGameState) {
     if (!firebaseGameState) return;
     const hadPreviousAction = previousActionId !== 0;
     gameState = deserializeGameState(firebaseGameState);
+    if (gameState.currentLevel !== pendingSeenLevel || gameState.phase !== pendingSeenPhase) {
+        // A guess the host dropped (e.g. processed during levelComplete) never
+        // reaches guessedLetters; without this its key stayed disabled for good.
+        pendingLetters.clear();
+        guessQueue.length = 0;
+        pendingSeenLevel = gameState.currentLevel;
+        pendingSeenPhase = gameState.phase;
+    }
     for (const letter of gameState.guessedLetters) pendingLetters.delete(letter);
 
     if (gameState.lastActionId !== previousActionId) {
@@ -1412,7 +1460,7 @@ function startTimer() {
             stopTimer();
             return;
         }
-        gameState.timeRemaining = Math.max(0, Math.ceil((gameState.deadline - Date.now()) / 1000));
+        gameState.timeRemaining = Math.max(0, Math.ceil((gameState.deadline - serverNow()) / 1000));
         updateTimerDisplay();
         if (gameState.timeRemaining === 0) {
             stopTimer();
@@ -1491,20 +1539,54 @@ function createKeyboard() {
     }
 }
 
-window.guessLetter = async function(letter, keyElement) {
+window.guessLetter = function(letter, keyElement) {
     if (!roomCode || gameState.phase !== 'active' || gameState.guessedLetters.has(letter) || pendingLetters.has(letter)) return;
     AudioManager.resumeBackgroundMusic();
     pendingLetters.add(letter);
     keyElement.disabled = true;
-    try {
-        await submitGameAction(roomCode, { type: 'guess', letter });
-    } catch (error) {
-        pendingLetters.delete(letter);
-        keyElement.disabled = false;
-        console.error('Failed to submit guess:', error);
-        showToast('Guess could not be sent', true);
-    }
+    guessQueue.push({ letter, level: gameState.currentLevel, room: roomCode });
+    pumpGuessQueue();
 };
+
+const isPermissionError = (error) => `${error?.code || ''} ${error?.message || ''}`.toLowerCase().includes('permission');
+
+/** Sends queued guesses one at a time. While the previous action node still
+ *  exists the rules deny the create, so retry until the host has removed it. */
+async function pumpGuessQueue() {
+    if (guessPumpRunning) return;
+    guessPumpRunning = true;
+    try {
+        while (guessQueue.length) {
+            const item = guessQueue[0];
+            const startedAt = Date.now();
+            for (;;) {
+                if (guessQueue[0] !== item) break;   // queue was cleared (new level/phase, menu)
+                if (roomCode !== item.room || gameState.phase !== 'active'
+                    || gameState.currentLevel !== item.level || gameState.guessedLetters.has(item.letter)) {
+                    pendingLetters.delete(item.letter);
+                    break;
+                }
+                try {
+                    await submitGameAction(item.room, { type: 'guess', letter: item.letter });
+                    break;
+                } catch (error) {
+                    if (guessQueue[0] !== item) break;   // cleared while sending
+                    if (!isPermissionError(error) || Date.now() - startedAt >= GUESS_GIVE_UP_MS) {
+                        pendingLetters.delete(item.letter);
+                        console.error('Failed to submit guess:', error);
+                        showToast('Guess could not be sent', true);
+                        createKeyboard();
+                        break;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, GUESS_RETRY_MS));
+                }
+            }
+            if (guessQueue[0] === item) guessQueue.shift();
+        }
+    } finally {
+        guessPumpRunning = false;
+    }
+}
 
 window.useLifeline = async function(index) {
     if (!roomCode || gameState.phase !== 'active' || gameState.lifelinesUsed[index]) return;
@@ -1531,7 +1613,7 @@ async function processHostAction(actionId, action) {
         if (!isHost || !hostPhraseDeck.length) return;
         const transaction = await transactGameState(roomCode, firebaseState => {
             const state = deserializeGameState(firebaseState);
-            if (state.gameResult !== 'none' || state.phase !== 'active' || Date.now() >= state.deadline) return undefined;
+            if (state.gameResult !== 'none' || state.phase !== 'active' || serverNow() >= state.deadline) return undefined;
             const answer = hostPhraseDeck[state.currentPhraseIndex]?.text?.toUpperCase();
             if (!answer) return undefined;
 
@@ -1585,7 +1667,8 @@ async function processHostAction(actionId, action) {
                     state.phase = 'levelComplete';
                     // Safety fallback only; the host normally advances as soon
                     // as its complete feedback sequence reports completion.
-                    state.advanceAt = Date.now() + 5000;
+                    // Server-corrected: the rules cap advanceAt at server now + 10 s.
+                    state.advanceAt = serverNow() + 5000;
                 }
             }
             return serializeGameState(state);
@@ -1616,7 +1699,7 @@ function requestLevelAdvance() {
 
 function scheduleLevelAdvance() {
     if (!isHost || levelAdvanceTimer || levelAdvanceInFlight || gameState.phase !== 'levelComplete') return;
-    const delay = Math.max(0, gameState.advanceAt - Date.now());
+    const delay = Math.max(0, gameState.advanceAt - serverNow());
     levelAdvanceTimer = setTimeout(() => {
         levelAdvanceTimer = null;
         requestLevelAdvance();

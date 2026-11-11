@@ -42,6 +42,29 @@ async function currentUser() {
   return user;
 }
 
+/* Server-corrected clock. deadline / advanceAt are checked by the rules against
+   the server's `now`, and every device counts down to them, so nobody may use
+   the raw phone clock. The offset listener starts at module load, before any
+   game write. */
+let serverOffsetMs = 0;
+let serverClockKnown = false;
+let resolveServerClock;
+const serverClockPromise = new Promise(resolve => { resolveServerClock = resolve; });
+onValue(ref(db, '.info/serverTimeOffset'), snapshot => {
+  const value = snapshot.val();
+  if (Number.isFinite(value)) {
+    serverOffsetMs = value;
+    serverClockKnown = true;
+    resolveServerClock();
+  }
+});
+export const serverNow = () => Date.now() + serverOffsetMs;
+/** Resolves once the offset is known (or after a short timeout). */
+export function serverClockReady(timeoutMs = 3000) {
+  if (serverClockKnown) return Promise.resolve();
+  return Promise.race([serverClockPromise, new Promise(resolve => setTimeout(resolve, timeoutMs))]);
+}
+
 export function generateRoomCode() {
   const randomValues = new Uint32Array(4);
   if (globalThis.crypto?.getRandomValues) {
