@@ -542,8 +542,10 @@ let hostPhraseDeck = [];
 let actionQueue = Promise.resolve();
 let voiceWidget = null;
 const pendingLetters = new Set();
+const pendingLifelines = new Set();
 // The rules allow one pending action per player (actions/{uid} must not exist),
-// so quick taps are queued and each guess is sent once the previous one is gone.
+// so quick taps are queued and each guess or lifeline is sent once the previous
+// one is gone.
 const guessQueue = [];
 let guessPumpRunning = false;
 const GUESS_RETRY_MS = 400;
@@ -750,6 +752,7 @@ window.showMenu = function() {
     isHost = false;
     hostPhraseDeck = [];
     pendingLetters.clear();
+    pendingLifelines.clear();
     guessQueue.length = 0;
     pendingSeenLevel = null;
     pendingSeenPhase = null;
@@ -1090,6 +1093,7 @@ window.startMultiplayerGame = async function() {
         previousActionId = 0;
         previousResult = 'none';
         pendingLetters.clear();
+        pendingLifelines.clear();
         guessQueue.length = 0;
         const phraseData = hostPhraseDeck[0];
         await serverClockReady();
@@ -1307,11 +1311,13 @@ function updateGameFromFirebase(firebaseGameState) {
         // A guess the host dropped (e.g. processed during levelComplete) never
         // reaches guessedLetters; without this its key stayed disabled for good.
         pendingLetters.clear();
+        pendingLifelines.clear();
         guessQueue.length = 0;
         pendingSeenLevel = gameState.currentLevel;
         pendingSeenPhase = gameState.phase;
     }
     for (const letter of gameState.guessedLetters) pendingLetters.delete(letter);
+    gameState.lifelinesUsed.forEach((used, index) => { if (used) pendingLifelines.delete(index); });
 
     if (gameState.lastActionId !== previousActionId) {
         previousActionId = gameState.lastActionId;
@@ -1435,7 +1441,7 @@ function updateLifelineUI() {
         const bulb = bulbs[index];
         if (!bulb) return;
         bulb.className = `lifeline-bulb ${used ? 'used' : 'active'}`;
-        bulb.disabled = used || gameState.phase !== 'active';
+        bulb.disabled = used || pendingLifelines.has(index) || gameState.phase !== 'active';
         bulb.setAttribute('aria-label', used ? `Lifeline ${index + 1} used` : `Use lifeline ${index + 1}`);
         bulb.onclick = () => window.useLifeline(index);
     });
@@ -1550,32 +1556,46 @@ window.guessLetter = function(letter, keyElement) {
 
 const isPermissionError = (error) => `${error?.code || ''} ${error?.message || ''}`.toLowerCase().includes('permission');
 
-/** Sends queued guesses one at a time. While the previous action node still
- *  exists the rules deny the create, so retry until the host has removed it. */
+/** Sends queued guesses and lifelines one at a time. While the previous action
+ *  node still exists the rules deny the create, so retry until the host has removed it. */
 async function pumpGuessQueue() {
     if (guessPumpRunning) return;
     guessPumpRunning = true;
     try {
         while (guessQueue.length) {
             const item = guessQueue[0];
+            const isLifeline = item.type === 'lifeline';
+            const dropPending = () => {
+                if (isLifeline) pendingLifelines.delete(item.lifelineIndex);
+                else pendingLetters.delete(item.letter);
+            };
             const startedAt = Date.now();
             for (;;) {
                 if (guessQueue[0] !== item) break;   // queue was cleared (new level/phase, menu)
-                if (roomCode !== item.room || gameState.phase !== 'active'
-                    || gameState.currentLevel !== item.level || gameState.guessedLetters.has(item.letter)) {
-                    pendingLetters.delete(item.letter);
+                if (roomCode !== item.room || gameState.phase !== 'active' || gameState.currentLevel !== item.level
+                    || (isLifeline ? gameState.lifelinesUsed[item.lifelineIndex] : gameState.guessedLetters.has(item.letter))) {
+                    dropPending();
+                    if (isLifeline) updateLifelineUI();
                     break;
                 }
                 try {
-                    await submitGameAction(item.room, { type: 'guess', letter: item.letter });
+                    await submitGameAction(item.room, isLifeline
+                        ? { type: 'lifeline', lifelineIndex: item.lifelineIndex }
+                        : { type: 'guess', letter: item.letter });
                     break;
                 } catch (error) {
                     if (guessQueue[0] !== item) break;   // cleared while sending
                     if (!isPermissionError(error) || Date.now() - startedAt >= GUESS_GIVE_UP_MS) {
-                        pendingLetters.delete(item.letter);
-                        console.error('Failed to submit guess:', error);
-                        showToast('Guess could not be sent', true);
-                        createKeyboard();
+                        dropPending();
+                        if (isLifeline) {
+                            console.error('Failed to submit lifeline:', error);
+                            showToast('Lifeline could not be sent', true);
+                            updateLifelineUI();
+                        } else {
+                            console.error('Failed to submit guess:', error);
+                            showToast('Guess could not be sent', true);
+                            createKeyboard();
+                        }
                         break;
                     }
                     await new Promise(resolve => setTimeout(resolve, GUESS_RETRY_MS));
@@ -1588,18 +1608,14 @@ async function pumpGuessQueue() {
     }
 }
 
-window.useLifeline = async function(index) {
-    if (!roomCode || gameState.phase !== 'active' || gameState.lifelinesUsed[index]) return;
+window.useLifeline = function(index) {
+    if (!roomCode || gameState.phase !== 'active' || gameState.lifelinesUsed[index] || pendingLifelines.has(index)) return;
     AudioManager.resumeBackgroundMusic();
+    pendingLifelines.add(index);
     const bulb = document.querySelectorAll('.lifeline-bulb')[index];
     if (bulb) bulb.disabled = true;
-    try {
-        await submitGameAction(roomCode, { type: 'lifeline', lifelineIndex: index });
-    } catch (error) {
-        if (bulb) bulb.disabled = false;
-        console.error('Failed to submit lifeline:', error);
-        showToast('Lifeline could not be sent', true);
-    }
+    guessQueue.push({ type: 'lifeline', lifelineIndex: index, level: gameState.currentLevel, room: roomCode });
+    pumpGuessQueue();
 };
 
 function enqueueHostAction(actionId, action) {
