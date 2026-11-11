@@ -1764,6 +1764,13 @@ async function gameLost() {
     if (transaction.committed) await firebaseEndGame(roomCode, transaction.snapshot.val());
 }
 
+/** Shared game state is written by the host's device: never let it become markup. */
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    })[ch]);
+}
+
 function showGameOver(won) {
     stopTimer();
     const content = document.getElementById('gameOverContent');
@@ -1775,8 +1782,8 @@ function showGameOver(won) {
     if (won) {
         content.innerHTML = `
             <h2 class="win">🎉 Congratulations! 🎉</h2>
-            <p style="font-size: 1rem; margin: 8px 0; color: #333; line-height: 1.2;">You completed all ${gameState.maxLevels} levels!</p>
-            <div class="final-score">Final Score: <span style="color: #0066CC;">${gameState.score}</span></div>
+            <p style="font-size: 1rem; margin: 8px 0; color: #333; line-height: 1.2;">You completed all ${escapeHtml(gameState.maxLevels)} levels!</p>
+            <div class="final-score">Final Score: <span style="color: #0066CC;">${escapeHtml(gameState.score)}</span></div>
             <div class="gameover-buttons">
                 <button class="gameover-btn" onclick="exitToMenu()">
                     <span>🏠</span> Main Menu
@@ -1787,9 +1794,9 @@ function showGameOver(won) {
         content.innerHTML = `
             <h2 class="lose">😢 Game Over</h2>
             <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">The phrase was:</p>
-            <div class="revealed-phrase">${gameState.phraseDisplay}</div>
-            <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">Level Reached: ${gameState.currentLevel}</p>
-            <div class="final-score">Final Score: <span style="color: #0066CC;">${gameState.score}</span></div>
+            <div class="revealed-phrase">${escapeHtml(gameState.phraseDisplay)}</div>
+            <p style="font-size: 1rem; margin: 8px 0; color: #333; font-weight: bold; line-height: 1.2;">Level Reached: ${escapeHtml(gameState.currentLevel)}</p>
+            <div class="final-score">Final Score: <span style="color: #0066CC;">${escapeHtml(gameState.score)}</span></div>
             <div class="gameover-buttons">
                 <button class="gameover-btn" onclick="exitToMenu()">
                     <span>🏠</span> Main Menu
@@ -1914,6 +1921,11 @@ function recordPhraseUsage(phrases) {
     }
 }
 
+/** Characters a phrase may use (after upper-casing). Must match the phraseDisplay rule
+ *  in the bollywood-beats-rooms rules ('_' is the mask): a phrase outside this set
+ *  would be refused by the rules mid-game, so it is skipped here instead. */
+const PHRASE_CHARS_RE = /^[A-Z0-9 .:()!&\u2013-]+$/;
+
 async function loadAndShufflePhrases() {
     try {
         const response = await fetch('Bollywood.xml.txt');
@@ -1934,7 +1946,7 @@ async function loadAndShufflePhrases() {
                 const phraseText = phraseElement.textContent.trim();
                 const phraseKey = phraseText.toUpperCase();
                 if (!phraseText || phraseText.length > 100 || !/[A-Z0-9]/i.test(phraseText)
-                    || seenPhrases.has(phraseKey)) continue;
+                    || !PHRASE_CHARS_RE.test(phraseKey) || seenPhrases.has(phraseKey)) continue;
                 seenPhrases.add(phraseKey);
                 validPhrases.push({ text: phraseText, category: categoryName });
             }
